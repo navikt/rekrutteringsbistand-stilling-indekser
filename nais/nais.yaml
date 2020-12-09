@@ -1,0 +1,14 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: rekrutteringsbistand-statistikk-api
+  namespace: arbeidsgiver
+  labels:
+    team: arbeidsgiver
+spec:
+  image: {{version}}
+  port: 8222
+  liveness:
+    path: /rekrutteringsbistand-stilling-indekser/internal/isAlive
+  readiness:
+    path: /rekrutteringsbistand-stilling-indekser/internal/isReady
