@@ -6,7 +6,7 @@ metadata:
   labels:
     team: arbeidsgiver
 spec:
-  image: {{version}}
+  image: {{image}}
   port: 8222
   liveness:
     path: /rekrutteringsbistand-stilling-indekser/internal/isAlive
