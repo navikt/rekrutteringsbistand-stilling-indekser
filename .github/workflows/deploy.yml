@@ -37,12 +37,14 @@ jobs:
                   java-version: "13.x"
             - uses: actions/cache@v2
               with:
-                  path: ~/.m2
-                  key: ${{ runner.os }}-maven-cache-${{ hashFiles('pom.xml') }}
+                  path: |
+                      ~/.gradle/caches
+                      ~/.gradle/wrapper
+                  key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
                   restore-keys: |
-                      ${{ runner.os }}-maven-cache-
-            - name: Build jar with Maven
-              run: mvn clean package -DskipTests
+                      ${{ runner.os }}-gradle-
+            - name: Build jar with Gradle
+              run: ./gradlew shadowJar
             - name: Build and publish Docker image
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
