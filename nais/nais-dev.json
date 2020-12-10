@@ -2,5 +2,5 @@
   "ingress": [
     "https://rekrutteringsbistand-stilling-indekser.dev.intern.nav.no"
   ],
-  "outbound": "https://rekrutteringsbistand-api.dev.intern.nav.no"
+  "outbound": "rekrutteringsbistand-api.dev.intern.nav.no"
 }
