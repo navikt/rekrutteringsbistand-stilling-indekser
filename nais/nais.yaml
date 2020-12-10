@@ -16,3 +16,7 @@ spec:
     path: /internal/isAlive
   readiness:
     path: /internal/isReady
+  accessPolicy:
+    outbound:
+      external:
+        - host: {{outbound}}
