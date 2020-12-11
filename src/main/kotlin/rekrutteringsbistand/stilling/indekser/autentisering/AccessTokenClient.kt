@@ -18,8 +18,10 @@ class AccessTokenClient {
             "client_id" to System.getenv("AZURE_APP_CLIENT_ID"),
             "scope" to "api://fe698176-ac44-4260-b8d0-dbf45dd956cf/.default"
         )
+
+        val tenant = System.getenv("AZURE_APP_TENANT_ID")
         val (_, _, result) = Fuel
-            .post("enUrl", formData)
+            .post("https://login.microsoftonline.com/$tenant/oauth2/v2.0/token", formData)
             .responseObject<AccessToken>()
 
         when (result) {
