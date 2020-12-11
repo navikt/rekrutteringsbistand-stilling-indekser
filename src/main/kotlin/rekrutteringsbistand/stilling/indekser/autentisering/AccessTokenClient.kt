@@ -20,7 +20,7 @@ class AccessTokenClient {
         )
 
         val tenant = System.getenv("AZURE_APP_TENANT_ID")
-        val (_, _, result) = Fuel
+        val (_, response, result) = Fuel
             .post("https://login.microsoftonline.com/$tenant/oauth2/v2.0/token", formData)
             .responseObject<AccessToken>()
 
@@ -31,6 +31,7 @@ class AccessTokenClient {
                 return accessToken
             }
             is Result.Failure -> {
+                println("Feilmelding: " + String(response.data))
                 throw RuntimeException("Noe feil skjedde: ", result.getException())
             }
         }
