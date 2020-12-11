@@ -1,10 +1,6 @@
 package rekrutteringsbistand.stilling.indekser.autentisering
 
 import com.github.kittinunf.fuel.Fuel
-import com.github.kittinunf.fuel.core.FuelError
-import com.github.kittinunf.fuel.core.Request
-import com.github.kittinunf.fuel.core.Response
-import com.github.kittinunf.fuel.core.ResponseResultOf
 import com.github.kittinunf.fuel.jackson.responseObject
 import com.github.kittinunf.result.Result
 import java.lang.RuntimeException
@@ -13,7 +9,7 @@ class AccessTokenClient {
 
     fun getAccessToken(): AccessToken {
         val formData = listOf(
-            "grant_type" to "client-credentials",
+            "grant_type" to "client_credentials",
             "client_secret" to System.getenv("AZURE_APP_CLIENT_SECRET"),
             "client_id" to System.getenv("AZURE_APP_CLIENT_ID"),
             "scope" to "api://fe698176-ac44-4260-b8d0-dbf45dd956cf/.default"
