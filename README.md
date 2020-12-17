@@ -2,7 +2,7 @@
 
 Henter stillinger fra Kafka og indekserer dem i ElasticSearch.
 
-Kjør prosjekt: `./gradlew run`
+Kjør prosjekt lokalt: Høyreklikk på `LokalApp.kt` og vel `Run`
 
 # Henvendelser
 
