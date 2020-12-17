@@ -4,6 +4,10 @@ plugins {
     application
 }
 
+application {
+    mainClassName = "rekrutteringsbistand.stilling.indekser.AppKt"
+}
+
 repositories {
     jcenter()
 }
@@ -12,7 +16,8 @@ dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("io.javalin:javalin:3.12.0")
-    implementation("org.slf4j:slf4j-simple:1.7.30")
+    implementation("ch.qos.logback:logback-classic:1.2.3")
+    implementation("net.logstash.logback:logstash-logback-encoder:6.3")
     implementation("com.github.kittinunf.fuel:fuel:2.3.0")
     implementation("com.github.kittinunf.fuel:fuel-jackson:2.3.0")
 
@@ -20,6 +25,3 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
 }
 
-application {
-    mainClassName = "rekrutteringsbistand.stilling.indekser.AppKt"
-}
