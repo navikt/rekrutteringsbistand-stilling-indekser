@@ -5,7 +5,7 @@ import io.javalin.apibuilder.ApiBuilder.get
 
 class App {
     companion object {
-        fun setup() {
+        fun start() {
             val basePath = "/rekrutteringsbistand-stilling-indekser"
             val app = Javalin.create().start(8222)
 
@@ -18,5 +18,5 @@ class App {
 }
 
 fun main() {
-    App.setup()
+    App.start()
 }
