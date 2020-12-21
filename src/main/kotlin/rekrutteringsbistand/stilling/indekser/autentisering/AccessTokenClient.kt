@@ -9,10 +9,6 @@ import java.lang.RuntimeException
 class AccessTokenClient {
 
     fun getAccessToken(scope: String): AccessToken {
-        val azureClientSecret = environment().get("AZURE_APP_CLIENT_SECRET")
-        val azureClientId = environment().get("AZURE_APP_CLIENT_ID")
-        val azureTenantId = environment().get("AZURE_APP_TENANT_ID")
-
         val formData = listOf(
             "grant_type" to "client_credentials",
             "client_secret" to azureClientSecret,
@@ -36,6 +32,12 @@ class AccessTokenClient {
                 throw RuntimeException("Noe feil skjedde ved henting av access_token: ", result.getException())
             }
         }
+    }
+
+    companion object {
+        val azureClientSecret: String = environment().get("AZURE_APP_CLIENT_SECRET")
+        val azureClientId: String = environment().get("AZURE_APP_CLIENT_ID")
+        val azureTenantId: String = environment().get("AZURE_APP_TENANT_ID")
     }
 }
 
