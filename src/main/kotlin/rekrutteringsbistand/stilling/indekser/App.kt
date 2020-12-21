@@ -8,7 +8,9 @@ class App {
     companion object {
         fun start() {
             val app = Javalin.create().start(8222)
+            val basePath = "/rekrutteringsbistand-stilling-indekser"
             val accessTokenClient = AccessTokenClient()
+
             accessTokenClient.getAccessToken()
 
             //    val autentisertHttpClient = FuelManager()
@@ -20,8 +22,8 @@ class App {
             //    }
 
             app.routes {
-                get("/internal/isAlive") { ctx -> ctx.status(200) }
-                get("/internal/isReady") { ctx -> ctx.status(200) }
+                get("$basePath/internal/isAlive") { ctx -> ctx.status(200) }
+                get("$basePath/internal/isReady") { ctx -> ctx.status(200) }
             }
         }
     }
