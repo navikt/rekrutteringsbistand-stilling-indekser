@@ -15,24 +15,10 @@ class App {
         fun start(httpClient: FuelManager) {
             val app = Javalin.create().start(8222)
             val basePath = "/rekrutteringsbistand-stilling-indekser"
-            val stillingsinfoClient = StillingsinfoClient(httpClient)
 
             app.routes {
                 get("$basePath/internal/isAlive") { ctx -> ctx.status(200) }
                 get("$basePath/internal/isReady") { ctx -> ctx.status(200) }
-                get("$basePath/stilling/:id") { ctx ->
-                    val stillingsId = ctx.pathParam("id")
-
-                    try {
-                        when (val stillingsinfo = stillingsinfoClient.getStillingsinfo(stillingsId)) {
-                            null -> ctx.status(HttpStatus.NOT_FOUND_404)
-                            else -> ctx.json(stillingsinfo)
-                        }
-                    } catch (error: Error) {
-                        println("Klarte ikke å hente stillingsinfo: $error")
-                        ctx.status(HttpStatus.INTERNAL_SERVER_ERROR_500)
-                    }
-                }
             }
         }
     }
