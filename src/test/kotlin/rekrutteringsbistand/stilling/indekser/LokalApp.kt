@@ -1,6 +1,4 @@
-package rekrutteringsbistand.stilling.indekser.app
-
-import rekrutteringsbistand.stilling.indekser.App
+package rekrutteringsbistand.stilling.indekser
 
 fun main() {
     App.start()
