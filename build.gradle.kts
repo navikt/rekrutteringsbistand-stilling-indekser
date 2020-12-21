@@ -21,6 +21,7 @@ dependencies {
     implementation("com.github.kittinunf.fuel:fuel:2.3.0")
     implementation("com.github.kittinunf.fuel:fuel-jackson:2.3.0")
     implementation("io.github.cdimascio:dotenv-kotlin:6.2.1")
+    implementation("com.github.ben-manes.caffeine:caffeine:2.8.8")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
