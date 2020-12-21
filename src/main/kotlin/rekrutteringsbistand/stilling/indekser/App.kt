@@ -4,6 +4,9 @@ import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.extensions.authentication
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.get
+import io.javalin.http.NotFoundResponse
+import org.eclipse.jetty.http.HttpStatus
+import rekrutteringsbistand.stilling.indekser.autentisering.AccessToken
 import rekrutteringsbistand.stilling.indekser.autentisering.AccessTokenClient
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClient
 
@@ -21,11 +24,13 @@ class App {
                     val stillingsId = ctx.pathParam("id")
 
                     try {
-                        val stillingsinfo = stillingsinfoClient.getStillingsinfo(stillingsId)
-                        ctx.json(stillingsinfo)
+                        when (val stillingsinfo = stillingsinfoClient.getStillingsinfo(stillingsId)) {
+                            null -> ctx.status(HttpStatus.NOT_FOUND_404)
+                            else -> ctx.json(stillingsinfo)
+                        }
                     } catch (error: Error) {
                         println("Klarte ikke å hente stillingsinfo: $error")
-                        ctx.status(500)
+                        ctx.status(HttpStatus.INTERNAL_SERVER_ERROR_500)
                     }
                 }
             }
@@ -35,17 +40,26 @@ class App {
 
 fun main() {
     val accessTokenClient = AccessTokenClient()
-    val autentisertHttpClient = FuelManager()
+    val defaultHttpClient = FuelManager()
+    val authenticatedClient = authenticateAllRequests(defaultHttpClient, accessTokenClient)
 
-    autentiserKallMedAccessToken(autentisertHttpClient, accessTokenClient)
-
-    App.start(autentisertHttpClient)
+    App.start(authenticatedClient)
 }
 
-fun autentiserKallMedAccessToken(httpClient: FuelManager, accessTokenClient: AccessTokenClient) {
+fun authenticateAllRequests(httpClient: FuelManager, accessTokenClient: AccessTokenClient): FuelManager {
+    val rekrutteringsbistandApiClientId = "fe698176-ac44-4260-b8d0-dbf45dd956cf"
+
+    addAccessToken(httpClient) {
+        accessTokenClient.getAccessToken(scope = "api://$rekrutteringsbistandApiClientId/.default")
+    }
+
+    return httpClient
+}
+
+fun addAccessToken(httpClient: FuelManager, getToken: () -> AccessToken) {
     httpClient.addRequestInterceptor {
         { request ->
-            val token = accessTokenClient.getAccessToken()
+            val token = getToken()
             request.authentication().bearer(token.access_token)
             it(request)
         }

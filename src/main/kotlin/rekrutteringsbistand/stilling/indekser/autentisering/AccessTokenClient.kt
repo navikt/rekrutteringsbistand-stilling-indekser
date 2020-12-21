@@ -8,27 +8,31 @@ import java.lang.RuntimeException
 
 class AccessTokenClient {
 
-    fun getAccessToken(): AccessToken {
+    fun getAccessToken(scope: String): AccessToken {
+        val azureClientSecret = environment().get("AZURE_APP_CLIENT_SECRET")
+        val azureClientId = environment().get("AZURE_APP_CLIENT_ID")
+        val azureTenantId = environment().get("AZURE_APP_TENANT_ID")
+
         val formData = listOf(
             "grant_type" to "client_credentials",
-            "client_secret" to environment().get("AZURE_APP_CLIENT_SECRET"),
-            "client_id" to environment().get("AZURE_APP_CLIENT_ID"),
-            "scope" to "api://fe698176-ac44-4260-b8d0-dbf45dd956cf/.default"
+            "client_secret" to azureClientSecret,
+            "client_id" to azureClientId,
+            "scope" to scope
         )
 
-        val tenant = environment().get("AZURE_APP_TENANT_ID")
-        val (_, response, result) = Fuel
-            .post("https://login.microsoftonline.com/$tenant/oauth2/v2.0/token", formData)
+        println("Henter access_token for request")
+        val (_, _, result) = Fuel
+            .post("https://login.microsoftonline.com/$azureTenantId/oauth2/v2.0/token", formData)
             .responseObject<AccessToken>()
 
         when (result) {
             is Result.Success -> {
                 val accessToken = result.get()
-                println("Hentet access_token med lengde ${accessToken.access_token.length}")
+                println("Fikk access_token med lengde ${accessToken.access_token.length}")
                 return accessToken
             }
+
             is Result.Failure -> {
-                println("Feilmelding: ${String(response.data)}")
                 throw RuntimeException("Noe feil skjedde ved henting av access_token: ", result.getException())
             }
         }
