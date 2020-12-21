@@ -15,8 +15,6 @@ class AccessTokenClient {
             "client_id" to environment().get("AZURE_APP_CLIENT_ID"),
             "scope" to "api://fe698176-ac44-4260-b8d0-dbf45dd956cf/.default"
         )
-        
-        println("Bruker clientID ${environment().get("AZURE_APP_CLIENT_ID")}")
 
         val tenant = environment().get("AZURE_APP_TENANT_ID")
         val (_, response, result) = Fuel
@@ -26,12 +24,12 @@ class AccessTokenClient {
         when (result) {
             is Result.Success -> {
                 val accessToken = result.get()
-                println("access_token lengde: ${accessToken.access_token.length}")
+                println("Hentet access_token med lengde ${accessToken.access_token.length}")
                 return accessToken
             }
             is Result.Failure -> {
-                println("Feilmelding: " + String(response.data))
-                throw RuntimeException("Noe feil skjedde: ", result.getException())
+                println("Feilmelding: ${String(response.data)}")
+                throw RuntimeException("Noe feil skjedde ved henting av access_token: ", result.getException())
             }
         }
     }
