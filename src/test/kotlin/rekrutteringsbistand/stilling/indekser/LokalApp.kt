@@ -1,5 +1,9 @@
 package rekrutteringsbistand.stilling.indekser
 
+import com.github.kittinunf.fuel.core.FuelManager
+
 fun main() {
-    App.start()
+    val lokalHttpClient = FuelManager()
+
+    App.start(lokalHttpClient)
 }

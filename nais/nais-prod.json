@@ -2,5 +2,5 @@
   "ingress": [
     "https://rekrutteringsbistand-stilling-indekser.intern.nav.no"
   ],
-  "outbound": "rekrutteringsbistand-api.prod-fss-pub.nais.io"
+  "rekrutteringsbistand-api-host": "rekrutteringsbistand-api.prod-fss-pub.nais.io"
 }

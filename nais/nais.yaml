@@ -27,4 +27,7 @@ spec:
   accessPolicy:
     outbound:
       external:
-        - host: {{outbound}}
+        - host: {{rekrutteringsbistand-api-host}}
+  env:
+    - name: REKRUTTERINGSBISTAND_API
+      value: https://{{rekrutteringsbistand-api-host}}/rekrutteringsbistand-api
