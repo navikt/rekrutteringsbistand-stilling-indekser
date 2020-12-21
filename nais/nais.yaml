@@ -28,6 +28,8 @@ spec:
     outbound:
       external:
         - host: {{rekrutteringsbistand-api-host}}
+  elastic:
+    instance: rekrutteringsbistand-stilling
   env:
     - name: REKRUTTERINGSBISTAND_API
       value: https://{{rekrutteringsbistand-api-host}}/rekrutteringsbistand-api
