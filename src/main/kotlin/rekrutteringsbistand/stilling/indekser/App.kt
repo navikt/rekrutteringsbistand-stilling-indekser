@@ -4,11 +4,14 @@ import com.github.kittinunf.fuel.core.FuelManager
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.get
 import rekrutteringsbistand.stilling.indekser.autentisering.AccessTokenClient
-import rekrutteringsbistand.stilling.indekser.autentisering.authenticateAllRequests
+import rekrutteringsbistand.stilling.indekser.autentisering.authenticateWithAzureAdToken
+import rekrutteringsbistand.stilling.indekser.autentisering.authenticateWithElasticSearchCredentials
+import rekrutteringsbistand.stilling.indekser.elasticsearch.ElasticSearchClient
+import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClient
 
 class App {
     companion object {
-        fun start(httpClient: FuelManager) {
+        fun start(stillingsinfoClient: StillingsinfoClient, elasticSearchClient: ElasticSearchClient) {
             val app = Javalin.create().start(8222)
             val basePath = "/rekrutteringsbistand-stilling-indekser"
 
@@ -21,10 +24,15 @@ class App {
 }
 
 fun main() {
-    val accessTokenClient = AccessTokenClient()
     val defaultHttpClient = FuelManager()
-    val authenticatedClient = authenticateAllRequests(defaultHttpClient, accessTokenClient)
 
-    App.start(authenticatedClient)
+    val accessTokenClient = AccessTokenClient(defaultHttpClient)
+    val stillingsinfoClient = StillingsinfoClient(
+            authenticateWithAzureAdToken(defaultHttpClient, accessTokenClient))
+
+    val elasticSearchClient = ElasticSearchClient(
+            authenticateWithElasticSearchCredentials(defaultHttpClient))
+
+    App.start(stillingsinfoClient, elasticSearchClient)
 }
 

@@ -2,14 +2,14 @@ package rekrutteringsbistand.stilling.indekser.autentisering
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
-import com.github.kittinunf.fuel.Fuel
+import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.jackson.responseObject
 import com.github.kittinunf.result.Result
 import rekrutteringsbistand.stilling.indekser.environment
 import java.lang.RuntimeException
 import java.util.concurrent.TimeUnit
 
-class AccessTokenClient() {
+class AccessTokenClient(private val httpClient: FuelManager) {
     private val tokenCache: LoadingCache<String, AccessToken>;
 
     init {
@@ -34,7 +34,7 @@ class AccessTokenClient() {
                 "scope" to scope
         )
 
-        val (_, _, result) = Fuel
+        val (_, _, result) = httpClient
                 .post("https://login.microsoftonline.com/$azureTenantId/oauth2/v2.0/token", formData)
                 .responseObject<AccessToken>()
 
