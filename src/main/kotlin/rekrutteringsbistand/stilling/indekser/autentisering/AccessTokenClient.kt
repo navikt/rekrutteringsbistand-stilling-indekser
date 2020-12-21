@@ -5,7 +5,7 @@ import com.github.benmanes.caffeine.cache.LoadingCache
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.jackson.responseObject
 import com.github.kittinunf.result.Result
-import rekrutteringsbistand.stilling.indekser.environment.environment
+import rekrutteringsbistand.stilling.indekser.environment
 import java.lang.RuntimeException
 import java.util.concurrent.TimeUnit
 
@@ -14,19 +14,19 @@ class AccessTokenClient() {
 
     init {
         tokenCache = Caffeine.newBuilder()
-                .expireAfterWrite(30, TimeUnit.SECONDS)
+                .expireAfterWrite(59, TimeUnit.MINUTES)
                 .build { scope ->
-                    println("Token er utgått, oppretter nytt ...");
-                    requestNewAccessToken(scope)
+                    println("Token er utgått, henter et nytt ...");
+                    refreshAccessToken(scope)
                 }
     }
 
     fun getAccessToken(scope: String): AccessToken {
         println("Bruker access_token fra cache")
-        return tokenCache.get(scope) ?: requestNewAccessToken(scope)
+        return tokenCache.get(scope) ?: throw RuntimeException("Token-cache klarte ikke å beregne key");
     }
 
-    private fun requestNewAccessToken(scope: String): AccessToken {
+    private fun refreshAccessToken(scope: String): AccessToken {
         val formData = listOf(
                 "grant_type" to "client_credentials",
                 "client_secret" to azureClientSecret,
@@ -34,7 +34,6 @@ class AccessTokenClient() {
                 "scope" to scope
         )
 
-        println("Henter access_token for request")
         val (_, _, result) = Fuel
                 .post("https://login.microsoftonline.com/$azureTenantId/oauth2/v2.0/token", formData)
                 .responseObject<AccessToken>()
