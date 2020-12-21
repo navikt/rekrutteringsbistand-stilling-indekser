@@ -3,13 +3,13 @@ package rekrutteringsbistand.stilling.indekser.stillingsinfo
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.jackson.responseObject
 import com.github.kittinunf.result.Result
-import io.github.cdimascio.dotenv.dotenv
+import rekrutteringsbistand.stilling.indekser.environment.environment
 import java.lang.RuntimeException
 
 class StillingsinfoClient(private val httpClient: FuelManager) {
 
     fun getStillingsinfo(stillingsId: String): Stillingsinfo {
-        val url = "${dotenv().get("REKRUTTERINGSBISTAND_API")}/indekser/stillingsinfo/$stillingsId"
+        val url = "${environment().get("REKRUTTERINGSBISTAND_API")}/indekser/stillingsinfo/$stillingsId"
         val (_, response, result) = httpClient.get(path = url).responseObject<Stillingsinfo>()
 
         when (result) {
