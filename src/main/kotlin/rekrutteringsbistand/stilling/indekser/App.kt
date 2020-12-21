@@ -42,6 +42,7 @@ fun autentiserKallMedAccessToken(httpClient: FuelManager, accessTokenClient: Acc
     httpClient.addRequestInterceptor {
         { request ->
             val token = accessTokenClient.getAccessToken()
+            println("Fikk token: $token")
             request.authentication().bearer(token.access_token)
             it(request)
         }

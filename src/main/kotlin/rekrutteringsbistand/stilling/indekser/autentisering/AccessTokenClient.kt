@@ -15,6 +15,8 @@ class AccessTokenClient {
             "client_id" to environment().get("AZURE_APP_CLIENT_ID"),
             "scope" to "api://fe698176-ac44-4260-b8d0-dbf45dd956cf/.default"
         )
+        
+        println("Bruker clientID ${environment().get("AZURE_APP_CLIENT_ID")}")
 
         val tenant = environment().get("AZURE_APP_TENANT_ID")
         val (_, response, result) = Fuel
