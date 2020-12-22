@@ -4,8 +4,6 @@ import com.github.kittinunf.fuel.core.FuelManager
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.get
 import rekrutteringsbistand.stilling.indekser.autentisering.AccessTokenClient
-import rekrutteringsbistand.stilling.indekser.autentisering.authenticateWithAzureAdToken
-import rekrutteringsbistand.stilling.indekser.autentisering.authenticateWithElasticSearchCredentials
 import rekrutteringsbistand.stilling.indekser.elasticsearch.ElasticSearchClient
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClient
 
@@ -28,10 +26,10 @@ fun main() {
 
     val accessTokenClient = AccessTokenClient(defaultHttpClient)
     val stillingsinfoClient = StillingsinfoClient(
-            authenticateWithAzureAdToken(defaultHttpClient, accessTokenClient))
+            StillingsinfoClient.authenticateWithAzureAdToken(defaultHttpClient, accessTokenClient))
 
     val elasticSearchClient = ElasticSearchClient(
-            authenticateWithElasticSearchCredentials(defaultHttpClient))
+            ElasticSearchClient.authenticateWithElasticSearchCredentials(defaultHttpClient))
 
     App.start(stillingsinfoClient, elasticSearchClient)
 }
