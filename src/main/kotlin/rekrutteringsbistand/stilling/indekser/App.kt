@@ -26,7 +26,7 @@ fun main() {
 
     val accessTokenClient = AccessTokenClient(defaultHttpClient)
     val stillingsinfoClient = StillingsinfoClient(
-            StillingsinfoClient.authenticateWithAzureAdToken(defaultHttpClient, accessTokenClient))
+            StillingsinfoClient.authenticateWithAccessToken(defaultHttpClient, accessTokenClient))
 
     val elasticSearchClient = ElasticSearchClient(
             ElasticSearchClient.authenticateWithElasticSearchCredentials(defaultHttpClient))

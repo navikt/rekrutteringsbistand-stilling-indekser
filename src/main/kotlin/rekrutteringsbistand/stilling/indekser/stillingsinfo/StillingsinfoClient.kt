@@ -34,7 +34,7 @@ class StillingsinfoClient(private val httpClient: FuelManager) {
     companion object {
         val stillingsinfoUrl: String = "${environment().get("REKRUTTERINGSBISTAND_API")}/indekser/stillingsinfo"
 
-        fun authenticateWithAzureAdToken(httpClient: FuelManager, accessTokenClient: AccessTokenClient): FuelManager {
+        fun authenticateWithAccessToken(httpClient: FuelManager, accessTokenClient: AccessTokenClient): FuelManager {
             val rekrutteringsbistandApiClientId = "fe698176-ac44-4260-b8d0-dbf45dd956cf"
 
             addBearerToken(httpClient) {
