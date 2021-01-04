@@ -3,14 +3,26 @@ package rekrutteringsbistand.stilling.indekser.elasticsearch
 import com.github.kittinunf.fuel.core.FuelManager
 import rekrutteringsbistand.stilling.indekser.autentisering.addBasicAuthentication
 import rekrutteringsbistand.stilling.indekser.environment
+import com.github.kittinunf.result.Result
 
 class ElasticSearchClient(private val httpClient: FuelManager) {
     fun indekserStilling(stilling: Stilling) {
         httpClient.put("$esUrl/$esIndex/$esType")
     }
 
-    fun getElasticSearchInfo() {
-        httpClient.get(esUrl)
+    fun printElasticSearchInfo() {
+        val (_, response, result) = httpClient.get(esUrl).response()
+
+
+        when (result) {
+            is Result.Success -> {
+                println("ES-info: $result $response")
+            }
+
+            is Result.Failure -> {
+                println("Klarte ikke å hente ES-info")
+            }
+        }
     }
 
     companion object {
