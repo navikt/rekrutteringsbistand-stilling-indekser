@@ -24,14 +24,12 @@ class App {
 }
 
 fun main() {
-    val defaultHttpClient = FuelManager()
-
-    val accessTokenClient = AccessTokenClient(defaultHttpClient)
+    val accessTokenClient = AccessTokenClient(FuelManager())
     val stillingsinfoClient = StillingsinfoClient(
-            StillingsinfoClient.authenticateWithAccessToken(defaultHttpClient, accessTokenClient))
+            StillingsinfoClient.authenticateWithAccessToken(FuelManager(), accessTokenClient))
 
     val elasticSearchClient = ElasticSearchClient(
-            ElasticSearchClient.authenticateWithElasticSearchCredentials(defaultHttpClient))
+            ElasticSearchClient.authenticateWithElasticSearchCredentials(FuelManager()))
 
     App.start(stillingsinfoClient, elasticSearchClient)
 }
