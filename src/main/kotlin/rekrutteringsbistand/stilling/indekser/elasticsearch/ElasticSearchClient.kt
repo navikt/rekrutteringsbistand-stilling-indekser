@@ -20,7 +20,7 @@ class ElasticSearchClient(private val httpClient: FuelManager) {
 
         fun authenticateWithElasticSearchCredentials(httpClient: FuelManager): FuelManager {
             addBasicAuthentication(httpClient,
-                    username = environment().get("ES_USER"),
+                    username = environment().get("ES_USERNAME"),
                     password = environment().get("ES_PASSWORD")
             )
 
