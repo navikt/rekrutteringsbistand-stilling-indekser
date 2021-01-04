@@ -30,6 +30,8 @@ spec:
         - host: {{rekrutteringsbistand-api-host}}
   elastic:
     instance: rekrutteringsbistand-stilling
+  envFrom:
+    - secret: rekrutteringsbistand-stilling-indekser-es-credentials
   env:
     - name: REKRUTTERINGSBISTAND_API
       value: https://{{rekrutteringsbistand-api-host}}/rekrutteringsbistand-api
