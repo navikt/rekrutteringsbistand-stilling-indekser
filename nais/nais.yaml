@@ -35,3 +35,5 @@ spec:
   env:
     - name: REKRUTTERINGSBISTAND_API
       value: https://{{rekrutteringsbistand-api-host}}/rekrutteringsbistand-api
+    - name: ELASTIC_SEARCH_API
+      value: {{elastic-search-api}}
