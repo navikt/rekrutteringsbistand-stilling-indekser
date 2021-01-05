@@ -4,12 +4,11 @@ import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.jackson.responseObject
 import com.github.kittinunf.result.Result
 import org.eclipse.jetty.http.HttpStatus
-import rekrutteringsbistand.stilling.indekser.autentisering.AccessTokenClient
-import rekrutteringsbistand.stilling.indekser.autentisering.addBearerToken
 import rekrutteringsbistand.stilling.indekser.environment
 import java.lang.RuntimeException
 
 class StillingsinfoClient(private val httpClient: FuelManager) {
+    private val stillingsinfoUrl: String = "${environment().get("REKRUTTERINGSBISTAND_API")}/indekser/stillingsinfo"
 
     fun getStillingsinfo(stillingsId: String): Stillingsinfo? {
         val (_, response, result) = httpClient
@@ -28,20 +27,6 @@ class StillingsinfoClient(private val httpClient: FuelManager) {
 
                 throw RuntimeException("Kunne ikke hente stillingsinfo for stilling $stillingsId")
             }
-        }
-    }
-
-    companion object {
-        val stillingsinfoUrl: String = "${environment().get("REKRUTTERINGSBISTAND_API")}/indekser/stillingsinfo"
-
-        fun authenticateWithAccessToken(httpClient: FuelManager, accessTokenClient: AccessTokenClient): FuelManager {
-            val rekrutteringsbistandApiClientId = "fe698176-ac44-4260-b8d0-dbf45dd956cf"
-
-            addBearerToken(httpClient) {
-                accessTokenClient.getAccessToken(scope = "api://$rekrutteringsbistandApiClientId/.default")
-            }
-
-            return httpClient
         }
     }
 }

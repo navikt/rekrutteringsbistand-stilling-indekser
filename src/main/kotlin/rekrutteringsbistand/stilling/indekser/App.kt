@@ -5,7 +5,9 @@ import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.get
 import rekrutteringsbistand.stilling.indekser.autentisering.AccessTokenClient
 import rekrutteringsbistand.stilling.indekser.elasticsearch.ElasticSearchClient
+import rekrutteringsbistand.stilling.indekser.elasticsearch.authenticateWithElasticSearchCredentials
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClient
+import rekrutteringsbistand.stilling.indekser.stillingsinfo.authenticateWithAccessToken
 
 class App {
     companion object {
@@ -23,11 +25,11 @@ class App {
 
 fun main() {
     val accessTokenClient = AccessTokenClient(FuelManager())
-    val stillingsinfoClient = StillingsinfoClient(
-            StillingsinfoClient.authenticateWithAccessToken(FuelManager(), accessTokenClient))
+    val httpClientAutentisertMedAccessToken = authenticateWithAccessToken(FuelManager(), accessTokenClient)
+    val stillingsinfoClient = StillingsinfoClient(httpClientAutentisertMedAccessToken)
 
-    val elasticSearchClient = ElasticSearchClient(
-            ElasticSearchClient.authenticateWithElasticSearchCredentials(FuelManager()))
+    val httpClientAutentisertMedEsCredentials = authenticateWithElasticSearchCredentials(FuelManager())
+    val elasticSearchClient = ElasticSearchClient(httpClientAutentisertMedEsCredentials)
 
     App.start(stillingsinfoClient, elasticSearchClient)
 }

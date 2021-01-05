@@ -10,20 +10,23 @@ import java.lang.RuntimeException
 import java.util.concurrent.TimeUnit
 
 class AccessTokenClient(private val httpClient: FuelManager) {
-    private val tokenCache: LoadingCache<String, AccessToken>;
+    private val azureClientSecret: String = environment().get("AZURE_APP_CLIENT_SECRET")
+    private val azureClientId: String = environment().get("AZURE_APP_CLIENT_ID")
+    private val azureTenantId: String = environment().get("AZURE_APP_TENANT_ID")
+    private val tokenCache: LoadingCache<String, AccessToken>
 
     init {
         tokenCache = Caffeine.newBuilder()
                 .expireAfterWrite(59, TimeUnit.MINUTES)
                 .build { scope ->
-                    println("Token er utgått, henter et nytt ...");
+                    println("Token er utgått, henter et nytt ...")
                     refreshAccessToken(scope)
                 }
     }
 
     fun getAccessToken(scope: String): AccessToken {
         println("Bruker access_token fra cache")
-        return tokenCache.get(scope) ?: throw RuntimeException("Token-cache klarte ikke å beregne key");
+        return tokenCache.get(scope) ?: throw RuntimeException("Token-cache klarte ikke å beregne key")
     }
 
     private fun refreshAccessToken(scope: String): AccessToken {
@@ -49,12 +52,6 @@ class AccessTokenClient(private val httpClient: FuelManager) {
                 throw RuntimeException("Noe feil skjedde ved henting av access_token: ", result.getException())
             }
         }
-    }
-
-    companion object {
-        val azureClientSecret: String = environment().get("AZURE_APP_CLIENT_SECRET")
-        val azureClientId: String = environment().get("AZURE_APP_CLIENT_ID")
-        val azureTenantId: String = environment().get("AZURE_APP_TENANT_ID")
     }
 }
 
