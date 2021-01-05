@@ -6,18 +6,31 @@ import io.javalin.apibuilder.ApiBuilder.get
 import rekrutteringsbistand.stilling.indekser.autentisering.AccessTokenClient
 import rekrutteringsbistand.stilling.indekser.elasticsearch.ElasticSearchClient
 import rekrutteringsbistand.stilling.indekser.elasticsearch.authenticateWithElasticSearchCredentials
+import rekrutteringsbistand.stilling.indekser.kafka.StillingConsumer
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClient
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.authenticateWithAccessToken
+import java.lang.Exception
 
 class App {
     companion object {
-        fun start(stillingsinfoClient: StillingsinfoClient, elasticSearchClient: ElasticSearchClient) {
+        fun start(
+                stillingsinfoClient: StillingsinfoClient,
+                elasticSearchClient: ElasticSearchClient,
+                stillingConsumer: StillingConsumer
+        ) {
             val app = Javalin.create().start(8222)
             val basePath = "/rekrutteringsbistand-stilling-indekser"
+            var isAlive: Boolean = false
 
             app.routes {
-                get("$basePath/internal/isAlive") { ctx -> ctx.status(200) }
+                get("$basePath/internal/isAlive") { ctx -> ctx.status(if (isAlive) 200 else 500) }
                 get("$basePath/internal/isReady") { ctx -> ctx.status(200) }
+            }
+
+            try {
+                stillingConsumer.start()
+            } catch (error: Exception) {
+                isAlive = false
             }
         }
     }
@@ -31,6 +44,8 @@ fun main() {
     val httpClientAutentisertMedEsCredentials = authenticateWithElasticSearchCredentials(FuelManager())
     val elasticSearchClient = ElasticSearchClient(httpClientAutentisertMedEsCredentials)
 
-    App.start(stillingsinfoClient, elasticSearchClient)
+    val stillingConsumer = StillingConsumer()
+
+    App.start(stillingsinfoClient, elasticSearchClient, stillingConsumer)
 }
 

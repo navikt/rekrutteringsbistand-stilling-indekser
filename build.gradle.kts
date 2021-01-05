@@ -10,6 +10,10 @@ application {
 
 repositories {
     jcenter()
+
+    maven {
+        url = uri("https://packages.confluent.io/maven/")
+    }
 }
 
 dependencies {
@@ -22,6 +26,9 @@ dependencies {
     implementation("com.github.kittinunf.fuel:fuel-jackson:2.3.0")
     implementation("io.github.cdimascio:dotenv-kotlin:6.2.1")
     implementation("com.github.ben-manes.caffeine:caffeine:2.8.8")
+    implementation("org.apache.kafka:kafka-clients:2.7.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
+    implementation("io.confluent:kafka-avro-serializer:6.0.1")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
