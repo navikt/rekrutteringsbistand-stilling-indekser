@@ -20,7 +20,8 @@ class ElasticSearchClient(private val httpClient: FuelManager) {
             }
 
             is Result.Failure -> {
-                println("Klarte ikke å hente ES-info")
+                println("Klarte ikke å hente ES-info: " + String(response.data))
+                throw RuntimeException(result.getException())
             }
         }
     }
