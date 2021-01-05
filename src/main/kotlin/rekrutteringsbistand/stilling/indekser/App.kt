@@ -4,11 +4,14 @@ import com.github.kittinunf.fuel.core.FuelManager
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.get
 import rekrutteringsbistand.stilling.indekser.autentisering.AccessTokenClient
-import rekrutteringsbistand.stilling.indekser.autentisering.authenticateAllRequests
+import rekrutteringsbistand.stilling.indekser.elasticsearch.ElasticSearchClient
+import rekrutteringsbistand.stilling.indekser.elasticsearch.authenticateWithElasticSearchCredentials
+import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClient
+import rekrutteringsbistand.stilling.indekser.stillingsinfo.authenticateWithAccessToken
 
 class App {
     companion object {
-        fun start(httpClient: FuelManager) {
+        fun start(stillingsinfoClient: StillingsinfoClient, elasticSearchClient: ElasticSearchClient) {
             val app = Javalin.create().start(8222)
             val basePath = "/rekrutteringsbistand-stilling-indekser"
 
@@ -21,10 +24,13 @@ class App {
 }
 
 fun main() {
-    val accessTokenClient = AccessTokenClient()
-    val defaultHttpClient = FuelManager()
-    val authenticatedClient = authenticateAllRequests(defaultHttpClient, accessTokenClient)
+    val accessTokenClient = AccessTokenClient(FuelManager())
+    val httpClientAutentisertMedAccessToken = authenticateWithAccessToken(FuelManager(), accessTokenClient)
+    val stillingsinfoClient = StillingsinfoClient(httpClientAutentisertMedAccessToken)
 
-    App.start(authenticatedClient)
+    val httpClientAutentisertMedEsCredentials = authenticateWithElasticSearchCredentials(FuelManager())
+    val elasticSearchClient = ElasticSearchClient(httpClientAutentisertMedEsCredentials)
+
+    App.start(stillingsinfoClient, elasticSearchClient)
 }
 

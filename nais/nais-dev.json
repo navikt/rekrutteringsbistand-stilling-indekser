@@ -2,5 +2,6 @@
   "ingress": [
     "https://rekrutteringsbistand-stilling-indekser.dev.intern.nav.no"
   ],
-  "rekrutteringsbistand-api-host": "rekrutteringsbistand-api.dev-fss-pub.nais.io"
+  "rekrutteringsbistand-api-host": "rekrutteringsbistand-api.dev-fss-pub.nais.io",
+  "elastic-search-api": "https://elastic-arbeidsgiver-rekrutteringsbistand-stilling-nav-dev.aivencloud.com:26482"
 }

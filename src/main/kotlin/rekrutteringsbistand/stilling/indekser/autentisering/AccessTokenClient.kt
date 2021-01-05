@@ -2,28 +2,29 @@ package rekrutteringsbistand.stilling.indekser.autentisering
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
-import com.github.kittinunf.fuel.Fuel
+import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.jackson.responseObject
 import com.github.kittinunf.result.Result
 import rekrutteringsbistand.stilling.indekser.environment
 import java.lang.RuntimeException
 import java.util.concurrent.TimeUnit
 
-class AccessTokenClient() {
-    private val tokenCache: LoadingCache<String, AccessToken>;
+class AccessTokenClient(private val httpClient: FuelManager) {
+    private val azureClientSecret: String = environment().get("AZURE_APP_CLIENT_SECRET")
+    private val azureClientId: String = environment().get("AZURE_APP_CLIENT_ID")
+    private val azureTenantId: String = environment().get("AZURE_APP_TENANT_ID")
+    private val tokenCache: LoadingCache<String, AccessToken>
 
     init {
         tokenCache = Caffeine.newBuilder()
                 .expireAfterWrite(59, TimeUnit.MINUTES)
                 .build { scope ->
-                    println("Token er utgått, henter et nytt ...");
                     refreshAccessToken(scope)
                 }
     }
 
     fun getAccessToken(scope: String): AccessToken {
-        println("Bruker access_token fra cache")
-        return tokenCache.get(scope) ?: throw RuntimeException("Token-cache klarte ikke å beregne key");
+        return tokenCache.get(scope) ?: throw RuntimeException("Token-cache klarte ikke å beregne key")
     }
 
     private fun refreshAccessToken(scope: String): AccessToken {
@@ -34,27 +35,14 @@ class AccessTokenClient() {
                 "scope" to scope
         )
 
-        val (_, _, result) = Fuel
+        val (_, _, result) = httpClient
                 .post("https://login.microsoftonline.com/$azureTenantId/oauth2/v2.0/token", formData)
                 .responseObject<AccessToken>()
 
         when (result) {
-            is Result.Success -> {
-                val accessToken = result.get()
-                println("Fikk access_token med lengde ${accessToken.access_token.length}")
-                return accessToken
-            }
-
-            is Result.Failure -> {
-                throw RuntimeException("Noe feil skjedde ved henting av access_token: ", result.getException())
-            }
+            is Result.Success -> return result.get()
+            is Result.Failure -> throw RuntimeException("Noe feil skjedde ved henting av access_token: ", result.getException())
         }
-    }
-
-    companion object {
-        val azureClientSecret: String = environment().get("AZURE_APP_CLIENT_SECRET")
-        val azureClientId: String = environment().get("AZURE_APP_CLIENT_ID")
-        val azureTenantId: String = environment().get("AZURE_APP_TENANT_ID")
     }
 }
 
