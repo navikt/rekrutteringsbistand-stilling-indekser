@@ -17,8 +17,6 @@ class App {
                 get("$basePath/internal/isAlive") { ctx -> ctx.status(200) }
                 get("$basePath/internal/isReady") { ctx -> ctx.status(200) }
             }
-
-            elasticSearchClient.printElasticSearchInfo()
         }
     }
 }
