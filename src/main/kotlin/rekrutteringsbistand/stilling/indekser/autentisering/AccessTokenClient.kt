@@ -19,13 +19,11 @@ class AccessTokenClient(private val httpClient: FuelManager) {
         tokenCache = Caffeine.newBuilder()
                 .expireAfterWrite(59, TimeUnit.MINUTES)
                 .build { scope ->
-                    println("Token er utgått, henter et nytt ...")
                     refreshAccessToken(scope)
                 }
     }
 
     fun getAccessToken(scope: String): AccessToken {
-        println("Bruker access_token fra cache")
         return tokenCache.get(scope) ?: throw RuntimeException("Token-cache klarte ikke å beregne key")
     }
 
@@ -42,15 +40,8 @@ class AccessTokenClient(private val httpClient: FuelManager) {
                 .responseObject<AccessToken>()
 
         when (result) {
-            is Result.Success -> {
-                val accessToken = result.get()
-                println("Fikk access_token med lengde ${accessToken.access_token.length}")
-                return accessToken
-            }
-
-            is Result.Failure -> {
-                throw RuntimeException("Noe feil skjedde ved henting av access_token: ", result.getException())
-            }
+            is Result.Success -> return result.get()
+            is Result.Failure -> throw RuntimeException("Noe feil skjedde ved henting av access_token: ", result.getException())
         }
     }
 }
