@@ -14,9 +14,9 @@ import java.lang.Exception
 class App {
     companion object {
         fun start(
-                stillingsinfoClient: StillingsinfoClient,
-                elasticSearchClient: ElasticSearchClient,
-                stillingConsumer: StillingConsumer
+            stillingsinfoClient: StillingsinfoClient,
+            elasticSearchClient: ElasticSearchClient,
+            stillingConsumer: StillingConsumer
         ) {
             val app = Javalin.create().start(8222)
             val basePath = "/rekrutteringsbistand-stilling-indekser"
