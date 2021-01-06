@@ -12,6 +12,7 @@ import rekrutteringsbistand.stilling.indekser.kafka.StillingMottattService
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClient
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.authenticateWithAccessToken
 import java.lang.Exception
+import kotlin.system.exitProcess
 
 class App {
     companion object {
@@ -20,20 +21,21 @@ class App {
             elasticSearchClient: ElasticSearchClient,
             stillingConsumer: StillingConsumer
         ) {
-            val app = Javalin.create().start(8222)
-            val basePath = "/rekrutteringsbistand-stilling-indekser"
-            var isAlive = true
-
-            app.routes {
-                get("$basePath/internal/isAlive") { ctx -> ctx.status(if (isAlive) 200 else 500) }
-                get("$basePath/internal/isReady") { ctx -> ctx.status(200) }
-            }
-
+            val webServer = Javalin.create().start(8222)
             try {
+                val basePath = "/rekrutteringsbistand-stilling-indekser"
+
+                webServer.routes {
+                    get("$basePath/internal/isAlive") { ctx -> ctx.status(200) }
+                    get("$basePath/internal/isReady") { ctx -> ctx.status(200) }
+                }
+
                 stillingConsumer.start()
+
             } catch (exception: Exception) {
-                log.error("StillingConsumer feilet, Setter isAlive = false", exception)
-                isAlive = false
+                log.error("Noe galt skjedde, stopper appen", exception)
+                webServer.stop()
+                exitProcess(1)
             }
         }
     }
