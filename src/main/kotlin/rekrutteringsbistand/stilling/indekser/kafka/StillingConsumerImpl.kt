@@ -1,9 +1,11 @@
 package rekrutteringsbistand.stilling.indekser.kafka
 
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.clients.consumer.KafkaConsumer
+import rekrutteringsbistand.stilling.indekser.log
 import java.lang.RuntimeException
 import java.time.Duration
 
@@ -11,16 +13,19 @@ import java.time.Duration
 class StillingConsumerImpl(private val stillingMottattService: StillingMottattService): StillingConsumer {
 
     override fun start() {
-        GlobalScope.launch {
+        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+            log.error("Feil i StillingConsumer", exception)
+        }
+        GlobalScope.launch(exceptionHandler) {
             KafkaConsumer<String, StillingDto>(consumerConfig).use { consumer ->
                 consumer.subscribe(listOf("StillingEkstern"))
 
-//            while (true) {
-//                // Poll, behandle, repeat
-//                val records = consumer.poll(Duration.ofMillis(100))
-//                failHvisMerEnnEnRecord(records)
-//                stillingMottattService.behandleStilling(records.first().value())
-//            }
+//                while (true) {
+//                    // Poll, behandle, repeat
+//                    val records = consumer.poll(Duration.ofMillis(100))
+//                    failHvisMerEnnEnRecord(records)
+//                    stillingMottattService.behandleStilling(records.first().value())
+//                }
             }
         }
     }
