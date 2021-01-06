@@ -4,6 +4,6 @@ import rekrutteringsbistand.stilling.indekser.log
 
 class StillingMottattService {
     fun behandleStilling(stilling: StillingDto) {
-        log.info("Mottok stilling ${stilling.id}")
+        log.info("Mottok stilling med id: ${stilling.id}")
     }
 }
