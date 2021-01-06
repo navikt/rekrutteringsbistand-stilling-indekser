@@ -17,7 +17,7 @@ class StillingConsumerImpl(private val stillingMottattService: StillingMottattSe
             log.error("Feil i StillingConsumer", exception)
         }
         GlobalScope.launch(exceptionHandler) {
-            KafkaConsumer<String, StillingDto>(consumerConfig).use { consumer ->
+            KafkaConsumer<String, StillingDto>(consumerConfig()).use { consumer ->
                 consumer.subscribe(listOf("StillingEkstern"))
 
 //                while (true) {
