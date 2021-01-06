@@ -22,7 +22,7 @@ class App {
         ) {
             val app = Javalin.create().start(8222)
             val basePath = "/rekrutteringsbistand-stilling-indekser"
-            var isAlive = false
+            var isAlive = true
 
             app.routes {
                 get("$basePath/internal/isAlive") { ctx -> ctx.status(if (isAlive) 200 else 500) }
