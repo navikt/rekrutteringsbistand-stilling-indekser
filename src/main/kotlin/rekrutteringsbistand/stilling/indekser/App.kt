@@ -7,6 +7,8 @@ import rekrutteringsbistand.stilling.indekser.autentisering.AccessTokenClient
 import rekrutteringsbistand.stilling.indekser.elasticsearch.ElasticSearchClient
 import rekrutteringsbistand.stilling.indekser.elasticsearch.authenticateWithElasticSearchCredentials
 import rekrutteringsbistand.stilling.indekser.kafka.StillingConsumer
+import rekrutteringsbistand.stilling.indekser.kafka.StillingConsumerImpl
+import rekrutteringsbistand.stilling.indekser.kafka.StillingMottattService
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClient
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.authenticateWithAccessToken
 import java.lang.Exception
@@ -44,7 +46,8 @@ fun main() {
     val httpClientAutentisertMedEsCredentials = authenticateWithElasticSearchCredentials(FuelManager())
     val elasticSearchClient = ElasticSearchClient(httpClientAutentisertMedEsCredentials)
 
-    val stillingConsumer = StillingConsumer()
+    val stillingMottattService = StillingMottattService()
+    val stillingConsumer = StillingConsumerImpl(stillingMottattService)
 
     App.start(stillingsinfoClient, elasticSearchClient, stillingConsumer)
 }

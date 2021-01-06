@@ -8,17 +8,19 @@ import java.lang.RuntimeException
 import java.time.Duration
 
 // TODO: Injecte KafkaConsumer her? Da kan den også brukes i konsumerTopicFraStart()
-class StillingConsumer(private val stillingMottattService: StillingMottattService) {
+class StillingConsumerImpl(private val stillingMottattService: StillingMottattService): StillingConsumer {
 
-    fun start() = GlobalScope.launch {
-        KafkaConsumer<String, StillingDto>(consumerConfig).use { consumer ->
-            consumer.subscribe(listOf("StillingEkstern"))
+    override fun start() {
+        GlobalScope.launch {
+            KafkaConsumer<String, StillingDto>(consumerConfig).use { consumer ->
+                consumer.subscribe(listOf("StillingEkstern"))
 
-            while (true) {
-                // Poll, behandle, repeat
-                val records = consumer.poll(Duration.ofMillis(100))
-                failHvisMerEnnEnRecord(records)
-                stillingMottattService.behandleStilling(records.first().value())
+//            while (true) {
+//                // Poll, behandle, repeat
+//                val records = consumer.poll(Duration.ofMillis(100))
+//                failHvisMerEnnEnRecord(records)
+//                stillingMottattService.behandleStilling(records.first().value())
+//            }
             }
         }
     }
@@ -44,3 +46,7 @@ class StillingConsumer(private val stillingMottattService: StillingMottattServic
 data class StillingDto(
     val id: String,
 )
+
+interface StillingConsumer {
+    fun start()
+}
