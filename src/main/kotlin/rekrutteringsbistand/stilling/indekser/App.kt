@@ -22,7 +22,7 @@ class App {
         ) {
             val app = Javalin.create().start(8222)
             val basePath = "/rekrutteringsbistand-stilling-indekser"
-            var isAlive: Boolean = false
+            var isAlive = false
 
             app.routes {
                 get("$basePath/internal/isAlive") { ctx -> ctx.status(if (isAlive) 200 else 500) }
@@ -31,7 +31,8 @@ class App {
 
             try {
                 stillingConsumer.start()
-            } catch (error: Exception) {
+            } catch (exception: Exception) {
+                log.error("StillingConsumer feilet, Setter isAlive = false", exception)
                 isAlive = false
             }
         }
