@@ -14,7 +14,7 @@ class StillingConsumerImpl(private val stillingMottattService: StillingMottattSe
         KafkaConsumer<String, Ad>(consumerConfig()).use { consumer ->
             consumer.subscribe(listOf("StillingEkstern"))
 
-            val records: ConsumerRecords<String, Ad> = consumer.poll(Duration.ofMillis(100))
+            val records: ConsumerRecords<String, Ad> = consumer.poll(Duration.ofSeconds(30))
             log.info("Mottok melding på Kafka: ${records.first()}")
 
 //            while (true) {
