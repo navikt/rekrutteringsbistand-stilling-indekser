@@ -1,6 +1,7 @@
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.4.21"
     id("com.github.johnrengelman.shadow") version "6.1.0"
+    id("com.commercehub.gradle.plugin.avro") version "0.21.0"
     application
 }
 
@@ -27,7 +28,6 @@ dependencies {
     implementation("io.github.cdimascio:dotenv-kotlin:6.2.1")
     implementation("com.github.ben-manes.caffeine:caffeine:2.8.8")
     implementation("org.apache.kafka:kafka-clients:2.7.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
     implementation("io.confluent:kafka-avro-serializer:6.0.1")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")

@@ -1,8 +1,6 @@
 package rekrutteringsbistand.stilling.indekser.kafka
 
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import no.nav.pam.ad.ext.avro.Ad
 import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import rekrutteringsbistand.stilling.indekser.log
@@ -13,20 +11,18 @@ import java.time.Duration
 class StillingConsumerImpl(private val stillingMottattService: StillingMottattService): StillingConsumer {
 
     override fun start() {
-        val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-            log.error("Feil i StillingConsumer", exception)
-        }
-        GlobalScope.launch(exceptionHandler) {
-            KafkaConsumer<String, StillingDto>(consumerConfig()).use { consumer ->
-                consumer.subscribe(listOf("StillingEkstern"))
+        KafkaConsumer<String, Ad>(consumerConfig()).use { consumer ->
+            consumer.subscribe(listOf("StillingEkstern"))
 
-//                while (true) {
-//                    // Poll, behandle, repeat
-//                    val records = consumer.poll(Duration.ofMillis(100))
-//                    failHvisMerEnnEnRecord(records)
-//                    stillingMottattService.behandleStilling(records.first().value())
-//                }
-            }
+            val records: ConsumerRecords<String, Ad> = consumer.poll(Duration.ofMillis(100))
+            log.info("Mottok melding på Kafka: ${records.first()}")
+
+//            while (true) {
+//                // Poll, behandle, repeat
+//                val records = consumer.poll(Duration.ofMillis(100))
+//                failHvisMerEnnEnRecord(records)
+//                stillingMottattService.behandleStilling(records.first().value())
+//            }
         }
     }
 

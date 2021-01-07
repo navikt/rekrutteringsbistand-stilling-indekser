@@ -12,7 +12,7 @@ import rekrutteringsbistand.stilling.indekser.kafka.StillingConsumerImpl
 import rekrutteringsbistand.stilling.indekser.kafka.StillingMottattService
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClient
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.authenticateWithAccessToken
-import java.lang.Exception
+import kotlin.Exception
 import kotlin.system.exitProcess
 
 class App {
