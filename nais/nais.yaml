@@ -28,6 +28,7 @@ spec:
     outbound:
       external:
         - host: {{rekrutteringsbistand-api-host}}
+        - host: {{schema-registry-host}}
   elastic:
     instance: rekrutteringsbistand-stilling
   envFrom:

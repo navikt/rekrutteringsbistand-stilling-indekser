@@ -3,5 +3,6 @@
     "https://rekrutteringsbistand-stilling-indekser.dev.intern.nav.no"
   ],
   "rekrutteringsbistand-api-host": "rekrutteringsbistand-api.dev-fss-pub.nais.io",
+  "schema-registry-host": "kafka-schema-registry.nais.preprod.local",
   "elastic-search-api": "https://elastic-arbeidsgiver-rekrutteringsbistand-stilling-nav-dev.aivencloud.com:26482"
 }
