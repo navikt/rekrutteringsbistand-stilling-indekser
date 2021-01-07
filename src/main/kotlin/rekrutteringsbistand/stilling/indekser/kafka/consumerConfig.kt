@@ -28,7 +28,7 @@ fun consumerConfig() = Properties().apply {
     put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers)
 
     val schemaRegistryUrl = when (environment().get("NAIS_CLUSTER_NAME")) {
-        "dev-gcp" -> "https://kafka-schema-registry.nais.preprod.local"
+        "dev-gcp" -> "https://kafka-schema-registry.nais-q.adeo.no"
         "prod-gcp" -> "https://kafka-schema-registry.nais.adeo.no"
         else -> throw Exception("Kunne ikke hente Schema Registry URL")
     }
