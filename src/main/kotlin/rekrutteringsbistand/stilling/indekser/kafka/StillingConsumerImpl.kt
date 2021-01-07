@@ -15,7 +15,11 @@ class StillingConsumerImpl(private val stillingMottattService: StillingMottattSe
             consumer.subscribe(listOf("StillingEkstern"))
 
             val records: ConsumerRecords<String, Ad> = consumer.poll(Duration.ofSeconds(30))
-            log.info("Mottok melding på Kafka: ${records.first()}")
+            if (records.count() > 0) {
+                log.info("Mottok melding på Kafka: ${records.first()}")
+            } else {
+                log.info("Fikk ikke noen meldinger")
+            }
 
 //            while (true) {
 //                // Poll, behandle, repeat
@@ -28,7 +32,7 @@ class StillingConsumerImpl(private val stillingMottattService: StillingMottattSe
 
     private fun failHvisMerEnnEnRecord(records: ConsumerRecords<String, StillingDto>) {
         if (records.count() > 1) {
-            throw RuntimeException("""
+            throw Exception("""
                 Kafka konsumer er konfigurert til å kun motta én melding om gangen.
                 Får vi flere meldinger om gangen kan vi miste meldinger pga. feil committa offset.
             """.trimIndent())
