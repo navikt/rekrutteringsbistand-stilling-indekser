@@ -20,6 +20,7 @@ class ElasticSearchService(private val esClient: RestHighLevelClient) {
         if (!indeksFinnes) {
             val request = CreateIndexRequest(indeksNavn)
             esClient.indices().create(request, RequestOptions.DEFAULT)
+            log.info("Opprettet indeks '$indeksNavn'")
         }
     }
 
@@ -33,8 +34,8 @@ class ElasticSearchService(private val esClient: RestHighLevelClient) {
         val request = IndicesAliasesRequest()
             .addAliasAction(remove)
             .addAliasAction(add)
-        log.info("Oppdaterer alias '$stillingAlias' til å peke på '$indeksNavn'")
         esClient.indices().updateAliases(request, RequestOptions.DEFAULT)
+        log.info("Oppdaterte alias '$stillingAlias' til å peke på '$indeksNavn'")
     }
 }
 
