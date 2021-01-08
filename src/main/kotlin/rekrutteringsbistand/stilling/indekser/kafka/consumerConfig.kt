@@ -7,7 +7,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.config.SaslConfigs
 import org.apache.kafka.common.config.SslConfigs
 import org.apache.kafka.common.serialization.StringDeserializer
-import rekrutteringsbistand.stilling.indekser.environment
+import rekrutteringsbistand.stilling.indekser.utils.environment
 import java.io.File
 import java.util.*
 

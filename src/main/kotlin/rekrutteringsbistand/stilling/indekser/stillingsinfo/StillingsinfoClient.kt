@@ -4,7 +4,7 @@ import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.jackson.responseObject
 import com.github.kittinunf.result.Result
 import org.eclipse.jetty.http.HttpStatus
-import rekrutteringsbistand.stilling.indekser.environment
+import rekrutteringsbistand.stilling.indekser.utils.environment
 import java.lang.RuntimeException
 
 class StillingsinfoClient(private val httpClient: FuelManager) {

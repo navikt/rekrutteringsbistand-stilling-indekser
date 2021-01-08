@@ -1,6 +1,6 @@
 package rekrutteringsbistand.stilling.indekser.kafka
 
-import rekrutteringsbistand.stilling.indekser.log
+import rekrutteringsbistand.stilling.indekser.utils.log
 
 class StillingMottattService {
     fun behandleStilling(stilling: StillingDto) {

@@ -3,7 +3,7 @@ package rekrutteringsbistand.stilling.indekser.kafka
 import no.nav.pam.ad.ext.avro.Ad
 import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.clients.consumer.KafkaConsumer
-import rekrutteringsbistand.stilling.indekser.log
+import rekrutteringsbistand.stilling.indekser.utils.log
 import java.time.Duration
 
 // TODO: Injecte KafkaConsumer her? Da kan den også brukes i konsumerTopicFraStart()

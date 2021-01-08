@@ -3,7 +3,6 @@ package rekrutteringsbistand.stilling.indekser
 import com.github.kittinunf.fuel.core.FuelManager
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.get
-import org.slf4j.LoggerFactory
 import rekrutteringsbistand.stilling.indekser.autentisering.AccessTokenClient
 import rekrutteringsbistand.stilling.indekser.elasticsearch.ElasticSearchClient
 import rekrutteringsbistand.stilling.indekser.elasticsearch.authenticateWithElasticSearchCredentials
@@ -12,6 +11,7 @@ import rekrutteringsbistand.stilling.indekser.kafka.StillingConsumerImpl
 import rekrutteringsbistand.stilling.indekser.kafka.StillingMottattService
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClient
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.authenticateWithAccessToken
+import rekrutteringsbistand.stilling.indekser.utils.log
 import kotlin.Exception
 import kotlin.system.exitProcess
 
@@ -56,7 +56,7 @@ fun main() {
         )
 
     } catch (exception: Exception) {
-        LoggerFactory.getLogger("main()").error("Noe galt skjedde, stopper appen", exception)
+        log("main()").error("Noe galt skjedde, stopper appen", exception)
         webServer.stop()
         exitProcess(1)
     }

@@ -1,7 +1,7 @@
 package rekrutteringsbistand.stilling.indekser.elasticsearch
 
 import com.github.kittinunf.fuel.core.FuelManager
-import rekrutteringsbistand.stilling.indekser.environment
+import rekrutteringsbistand.stilling.indekser.utils.environment
 
 class ElasticSearchClient(private val httpClient: FuelManager) {
     private val esUrl: String = environment().get("ELASTIC_SEARCH_API")
