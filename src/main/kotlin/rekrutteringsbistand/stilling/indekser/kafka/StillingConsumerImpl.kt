@@ -15,7 +15,9 @@ class StillingConsumerImpl(private val stillingMottattService: StillingMottattSe
 
             val records: ConsumerRecords<String, Ad> = consumer.poll(Duration.ofSeconds(30))
             if (records.count() > 0) {
-                log.info("Mottok melding på Kafka: ${records.first()}")
+                val melding = records.first()
+                log.info("Mottok melding på Kafka: $melding")
+                stillingMottattService.behandleStilling(melding.value())
             } else {
                 log.info("Fikk ikke noen meldinger")
             }
@@ -24,7 +26,7 @@ class StillingConsumerImpl(private val stillingMottattService: StillingMottattSe
         }
     }
 
-    private fun failHvisMerEnnEnRecord(records: ConsumerRecords<String, StillingDto>) {
+    private fun failHvisMerEnnEnRecord(records: ConsumerRecords<String, Ad>) {
         if (records.count() > 1) {
             throw Exception("""
                 Kafka konsumer er konfigurert til å kun motta én melding om gangen.
@@ -38,10 +40,6 @@ class StillingConsumerImpl(private val stillingMottattService: StillingMottattSe
         //  Brukes for reindeksering av hele indeks
     }
 }
-
-data class StillingDto(
-    val id: String,
-)
 
 interface StillingConsumer {
     fun start()

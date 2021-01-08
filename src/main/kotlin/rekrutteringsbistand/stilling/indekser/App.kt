@@ -32,9 +32,7 @@ class App {
 
             webServer.start(8222)
 
-            val indeksNavn = indeksNavnMedTimestamp()
-            elasticSearchService.opprettIndeksHvisDenIkkeFinnes(indeksNavn)
-            elasticSearchService.oppdaterAlias(indeksNavn)
+            elasticSearchService.initialiser()
 
             stillingConsumer.start()
         }
@@ -51,7 +49,7 @@ fun main() {
         val esClient = getEsClient()
         val elasticSearchService = ElasticSearchService(esClient)
 
-        val stillingMottattService = StillingMottattService()
+        val stillingMottattService = StillingMottattService(elasticSearchService)
         val stillingConsumer = StillingConsumerImpl(stillingMottattService)
 
         App.start(

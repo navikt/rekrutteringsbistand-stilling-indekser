@@ -17,7 +17,7 @@ fun main() {
     val localEsClient = getLocalEsClient()
     val elasticSearchService = ElasticSearchService(localEsClient)
 
-    val stillingMottattService = StillingMottattService()
+    val stillingMottattService = StillingMottattService(elasticSearchService)
     val fakeStillingConsumer = FakeStillingConsumer(stillingMottattService)
 
     App.start(
