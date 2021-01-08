@@ -32,9 +32,9 @@ class App {
 
             webServer.start(8222)
 
-//            val indeksNavn = indeksNavnMedTimestamp()
-//            elasticSearchService.opprettIndeksHvisDenIkkeFinnes(indeksNavn)
-//            elasticSearchService.oppdaterAlias(indeksNavn)
+            val indeksNavn = indeksNavnMedTimestamp()
+            elasticSearchService.opprettIndeksHvisDenIkkeFinnes(indeksNavn)
+            elasticSearchService.oppdaterAlias(indeksNavn)
 
             stillingConsumer.start()
         }
