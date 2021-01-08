@@ -28,7 +28,7 @@ spec:
     outbound:
       external:
         - host: {{rekrutteringsbistand-api-host}}
-        - host: {{schema-registry-host}}
+        - host: {{kafka-schema-registry-host}}
   elastic:
     instance: rekrutteringsbistand-stilling
   envFrom:
@@ -39,3 +39,7 @@ spec:
       value: https://{{rekrutteringsbistand-api-host}}/rekrutteringsbistand-api
     - name: ELASTIC_SEARCH_API
       value: {{elastic-search-api}}
+    - name: KAFKA_SCHEMA_REGISTRY_URL
+      value: https://{{kafka-schema-registry-host}}
+    - name: KAFKA_BROKER_URLS
+      value: {{kafka-broker-urls}}

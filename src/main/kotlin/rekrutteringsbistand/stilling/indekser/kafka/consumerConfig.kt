@@ -19,19 +19,8 @@ fun consumerConfig() = Properties().apply {
     put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer::class.java)
     put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer::class.java)
 
-    val bootstrapServers = when (environment().get("NAIS_CLUSTER_NAME")) {
-        "dev-gcp" -> "b27apvl00045.preprod.local:8443, b27apvl00046.preprod.local:8443, b27apvl00047.preprod.local:8443"
-        "prod-gcp" -> "a01apvl00145.adeo.no:8443, a01apvl00146.adeo.no:8443, a01apvl00147.adeo.no:8443, a01apvl00148.adeo.no:8443, a01apvl00149.adeo.no:8443, a01apvl00150.adeo.no:8443"
-        else -> throw Exception("Kunne ikke hente Kafka bootstrap server URLer")
-    }
-    put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers)
-
-    val schemaRegistryUrl = when (environment().get("NAIS_CLUSTER_NAME")) {
-        "dev-gcp" -> "https://kafka-schema-registry.nais-q.adeo.no"
-        "prod-gcp" -> "https://kafka-schema-registry.nais.adeo.no"
-        else -> throw Exception("Kunne ikke hente Schema Registry URL")
-    }
-    put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl)
+    put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, environment().get("KAFKA_BROKER_URLS"))
+    put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, environment().get("KAFKA_SCHEMA_REGISTRY_URL"))
 
     val serviceuserUsername: String = environment().get("SERVICEBRUKER_BRUKERNAVN")
     val serviceuserPassword: String = environment().get("SERVICEBRUKER_PASSORD")
