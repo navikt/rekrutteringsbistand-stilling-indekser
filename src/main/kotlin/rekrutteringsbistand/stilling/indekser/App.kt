@@ -30,8 +30,7 @@ class App {
             }
 
             webServer.start(8222)
-
-            // elasticSearchService.opprettIndeks()
+            // elasticSearchService.opprettIndeksHvisDenIkkeFinnes()
             stillingConsumer.start()
         }
     }
