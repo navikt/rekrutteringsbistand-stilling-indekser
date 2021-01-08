@@ -5,19 +5,19 @@ data class Stilling(
     val uuid: String,
     val status: String,
     val privacy: String,
-    val published: String,
-    val expires: String,
+    val published: String?,
+    val expires: String?,
     val created: String,
     val updated: String,
-    val employer: Company,
+    val employer: Company?,
     val categories: List<StyrkCategory>,
     val source: String,
     val medium: String,
-    val publishedByAdmin: String,
-    val businessName: String,
+    val publishedByAdmin: String?,
+    val businessName: String?,
     val locations: List<Location>,
     val reference: String,
-    val administration: Administration,
+    val administration: Administration?,
     val properties: List<Property>,
 )
 
@@ -27,15 +27,15 @@ data class Property(
 )
 
 data class Location(
-    val address: String,
-    val postalCode: String,
-    val county: String,
-    val municipal: String,
+    val address: String?,
+    val postalCode: String?,
+    val county: String?,
+    val municipal: String?,
     val country: String,
-    val latitue: String,
-    val longitude: String,
-    val municipal_code: String,
-    val county_code: String
+    val latitue: String?,
+    val longitude: String?,
+    val municipal_code: String?,
+    val county_code: String?
 )
 
 data class StyrkCategory(
@@ -47,8 +47,8 @@ data class StyrkCategory(
 data class Company(
     val navn: String,
     val publicname: String,
-    val orgnr: String,
-    val parentOrgnr: String,
+    val orgnr: String?,
+    val parentOrgnr: String?,
     val orgform: String
 )
 
