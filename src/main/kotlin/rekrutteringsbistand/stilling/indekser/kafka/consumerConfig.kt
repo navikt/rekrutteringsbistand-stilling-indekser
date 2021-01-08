@@ -21,6 +21,7 @@ fun consumerConfig() = Properties().apply {
 
     put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, environment().get("KAFKA_BROKER_URLS"))
     put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, environment().get("KAFKA_SCHEMA_REGISTRY_URL"))
+    put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true)
 
     val serviceuserUsername: String = environment().get("SERVICEBRUKER_BRUKERNAVN")
     val serviceuserPassword: String = environment().get("SERVICEBRUKER_PASSORD")

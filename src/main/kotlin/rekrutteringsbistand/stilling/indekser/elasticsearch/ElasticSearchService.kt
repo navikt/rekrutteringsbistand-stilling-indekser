@@ -31,7 +31,7 @@ class ElasticSearchService(private val esClient: RestHighLevelClient) {
         esClient.index(indexRequest, RequestOptions.DEFAULT)
     }
 
-    fun opprettIndeksHvisDenIkkeFinnes(indeksNavn: String): Boolean {
+    private fun opprettIndeksHvisDenIkkeFinnes(indeksNavn: String): Boolean {
         val getIndexRequest = GetIndexRequest(stillingAlias)
         val indeksFinnes = esClient.indices().exists(getIndexRequest, RequestOptions.DEFAULT)
 
@@ -44,7 +44,7 @@ class ElasticSearchService(private val esClient: RestHighLevelClient) {
         return false
     }
 
-    fun oppdaterAlias(indeksNavn: String) {
+    private fun oppdaterAlias(indeksNavn: String) {
         val remove = IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.REMOVE)
             .index("$stillingAlias*")
             .alias(stillingAlias)
