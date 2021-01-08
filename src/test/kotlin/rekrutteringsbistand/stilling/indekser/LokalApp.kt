@@ -2,9 +2,10 @@ package rekrutteringsbistand.stilling.indekser
 
 import com.github.kittinunf.fuel.core.FuelManager
 import io.javalin.Javalin
-import rekrutteringsbistand.stilling.indekser.elasticsearch.ElasticSearchClient
+import rekrutteringsbistand.stilling.indekser.elasticsearch.ElasticSearchService
 import rekrutteringsbistand.stilling.indekser.kafka.FakeStillingConsumer
 import rekrutteringsbistand.stilling.indekser.kafka.StillingMottattService
+import rekrutteringsbistand.stilling.indekser.kafka.getLocalEsClient
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClient
 
 fun main() {
@@ -12,7 +13,9 @@ fun main() {
 
     val localHttpClient = FuelManager()
     val stillingsinfoClient = StillingsinfoClient(localHttpClient)
-    val elasticSearchClient = ElasticSearchClient(localHttpClient)
+
+    val localEsClient = getLocalEsClient()
+    val elasticSearchService = ElasticSearchService(localEsClient)
 
     val stillingMottattService = StillingMottattService()
     val fakeStillingConsumer = FakeStillingConsumer(stillingMottattService)
@@ -20,7 +23,7 @@ fun main() {
     App.start(
         webServer,
         stillingsinfoClient,
-        elasticSearchClient,
+        elasticSearchService,
         fakeStillingConsumer
     )
 }

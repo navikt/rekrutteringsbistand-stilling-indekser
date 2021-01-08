@@ -4,8 +4,8 @@ import com.github.kittinunf.fuel.core.FuelManager
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.get
 import rekrutteringsbistand.stilling.indekser.autentisering.AccessTokenClient
-import rekrutteringsbistand.stilling.indekser.elasticsearch.ElasticSearchClient
-import rekrutteringsbistand.stilling.indekser.elasticsearch.authenticateWithElasticSearchCredentials
+import rekrutteringsbistand.stilling.indekser.elasticsearch.ElasticSearchService
+import rekrutteringsbistand.stilling.indekser.elasticsearch.getEsClient
 import rekrutteringsbistand.stilling.indekser.kafka.StillingConsumer
 import rekrutteringsbistand.stilling.indekser.kafka.StillingConsumerImpl
 import rekrutteringsbistand.stilling.indekser.kafka.StillingMottattService
@@ -18,10 +18,10 @@ import kotlin.system.exitProcess
 class App {
     companion object {
         fun start(
-            webServer: Javalin,
-            stillingsinfoClient: StillingsinfoClient,
-            elasticSearchClient: ElasticSearchClient,
-            stillingConsumer: StillingConsumer
+                webServer: Javalin,
+                stillingsinfoClient: StillingsinfoClient,
+                elasticSearchService: ElasticSearchService,
+                stillingConsumer: StillingConsumer
         ) {
             val basePath = "/rekrutteringsbistand-stilling-indekser"
             webServer.routes {
@@ -30,6 +30,8 @@ class App {
             }
 
             webServer.start(8222)
+
+            // elasticSearchService.opprettIndeks()
             stillingConsumer.start()
         }
     }
@@ -42,8 +44,8 @@ fun main() {
         val httpClientAutentisertMedAccessToken = authenticateWithAccessToken(FuelManager(), accessTokenClient)
         val stillingsinfoClient = StillingsinfoClient(httpClientAutentisertMedAccessToken)
 
-        val httpClientAutentisertMedEsCredentials = authenticateWithElasticSearchCredentials(FuelManager())
-        val elasticSearchClient = ElasticSearchClient(httpClientAutentisertMedEsCredentials)
+        val esClient = getEsClient()
+        val elasticSearchService = ElasticSearchService(esClient)
 
         val stillingMottattService = StillingMottattService()
         val stillingConsumer = StillingConsumerImpl(stillingMottattService)
@@ -51,7 +53,7 @@ fun main() {
         App.start(
             webServer,
             stillingsinfoClient,
-            elasticSearchClient,
+            elasticSearchService,
             stillingConsumer
         )
 
