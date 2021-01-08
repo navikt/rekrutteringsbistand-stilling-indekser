@@ -9,7 +9,6 @@ import org.apache.kafka.common.config.SslConfigs
 import org.apache.kafka.common.serialization.StringDeserializer
 import rekrutteringsbistand.stilling.indekser.environment
 import java.io.File
-import java.lang.RuntimeException
 import java.util.*
 
 fun consumerConfig() = Properties().apply {

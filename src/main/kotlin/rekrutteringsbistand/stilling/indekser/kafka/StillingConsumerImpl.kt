@@ -4,7 +4,6 @@ import no.nav.pam.ad.ext.avro.Ad
 import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import rekrutteringsbistand.stilling.indekser.log
-import java.lang.RuntimeException
 import java.time.Duration
 
 // TODO: Injecte KafkaConsumer her? Da kan den også brukes i konsumerTopicFraStart()
@@ -20,13 +19,8 @@ class StillingConsumerImpl(private val stillingMottattService: StillingMottattSe
             } else {
                 log.info("Fikk ikke noen meldinger")
             }
-
-//            while (true) {
-//                // Poll, behandle, repeat
-//                val records = consumer.poll(Duration.ofMillis(100))
-//                failHvisMerEnnEnRecord(records)
-//                stillingMottattService.behandleStilling(records.first().value())
-//            }
+            // TODO: Behandle melding
+            // TODO: Retry-mekanismer
         }
     }
 
@@ -42,9 +36,6 @@ class StillingConsumerImpl(private val stillingMottattService: StillingMottattSe
     fun konsumerTopicFraStart() {
         // TODO Implementer denne
         //  Brukes for reindeksering av hele indeks
-//        val consumer = KafkaConsumer<String, StillingDto>(consumerConfig)
-//        val partitions = consumer.partitionsFor("StillingEkstern")
-//        consumer.seekToBeginning(listOf())
     }
 }
 
