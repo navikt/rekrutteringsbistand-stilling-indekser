@@ -29,6 +29,7 @@ dependencies {
     implementation("com.github.ben-manes.caffeine:caffeine:2.8.8")
     implementation("org.apache.kafka:kafka-clients:2.7.0")
     implementation("io.confluent:kafka-avro-serializer:6.0.1")
+    implementation("org.elasticsearch.client:elasticsearch-rest-high-level-client:7.10.1")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")

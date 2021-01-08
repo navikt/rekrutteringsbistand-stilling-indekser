@@ -4,6 +4,13 @@ Henter stillinger fra Kafka og indekserer dem i ElasticSearch.
 
 Kjør prosjekt lokalt: Høyreklikk på `LokalApp.kt` og vel `Run`
 
+## Kjør ElasticSearch lokalt
+
+```shell
+./start-elastic-search.sh
+```
+
+
 # Henvendelser
 
 ## For Nav-ansatte
