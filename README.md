@@ -2,14 +2,12 @@
 
 Henter stillinger fra Kafka og indekserer dem i ElasticSearch.
 
-Kjør prosjekt lokalt: Høyreklikk på `LokalApp.kt` og vel `Run`
-
-## Kjør ElasticSearch lokalt
-
+Start Elastic Search i Docker:
 ```shell
+chmod +x start-elastic-search.sh
 ./start-elastic-search.sh
 ```
-
+Kjør prosjekt lokalt: Høyreklikk på `LokalApp.kt` og vel `Run`
 
 # Henvendelser
 
