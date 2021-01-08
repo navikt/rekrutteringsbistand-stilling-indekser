@@ -6,6 +6,7 @@ import io.javalin.apibuilder.ApiBuilder.get
 import rekrutteringsbistand.stilling.indekser.autentisering.AccessTokenClient
 import rekrutteringsbistand.stilling.indekser.elasticsearch.ElasticSearchService
 import rekrutteringsbistand.stilling.indekser.elasticsearch.getEsClient
+import rekrutteringsbistand.stilling.indekser.elasticsearch.indeksNavnMedTimestamp
 import rekrutteringsbistand.stilling.indekser.kafka.StillingConsumer
 import rekrutteringsbistand.stilling.indekser.kafka.StillingConsumerImpl
 import rekrutteringsbistand.stilling.indekser.kafka.StillingMottattService
@@ -30,7 +31,11 @@ class App {
             }
 
             webServer.start(8222)
-            // elasticSearchService.opprettIndeksHvisDenIkkeFinnes()
+
+//            val indeksNavn = indeksNavnMedTimestamp()
+//            elasticSearchService.opprettIndeksHvisDenIkkeFinnes(indeksNavn)
+//            elasticSearchService.oppdaterAlias(indeksNavn)
+
             stillingConsumer.start()
         }
     }

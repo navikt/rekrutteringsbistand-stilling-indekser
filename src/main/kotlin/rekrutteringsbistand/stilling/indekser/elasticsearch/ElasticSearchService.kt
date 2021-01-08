@@ -1,19 +1,20 @@
 package rekrutteringsbistand.stilling.indekser.elasticsearch
 
+import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest
 import org.elasticsearch.client.RequestOptions
 import org.elasticsearch.client.RestHighLevelClient
 import org.elasticsearch.client.indices.CreateIndexRequest
 import org.elasticsearch.client.indices.GetIndexRequest
+import rekrutteringsbistand.stilling.indekser.utils.log
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-const val stillingIndeks: String = "stilling"
+const val stillingAlias: String = "stilling"
 
 class ElasticSearchService(private val esClient: RestHighLevelClient) {
 
-    fun opprettIndeksHvisDenIkkeFinnes() {
-        val indeksNavn = indeksNavnMedTimestamp()
-        val getIndexRequest = GetIndexRequest(indeksNavn)
+    fun opprettIndeksHvisDenIkkeFinnes(indeksNavn: String) {
+        val getIndexRequest = GetIndexRequest(stillingAlias)
         val indeksFinnes = esClient.indices().exists(getIndexRequest, RequestOptions.DEFAULT)
 
         if (!indeksFinnes) {
@@ -21,9 +22,23 @@ class ElasticSearchService(private val esClient: RestHighLevelClient) {
             esClient.indices().create(request, RequestOptions.DEFAULT)
         }
     }
+
+    fun oppdaterAlias(indeksNavn: String) {
+        val remove = IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.REMOVE)
+            .index("$stillingAlias*")
+            .alias(stillingAlias)
+        val add = IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.ADD)
+            .index(indeksNavn)
+            .alias(stillingAlias)
+        val request = IndicesAliasesRequest()
+            .addAliasAction(remove)
+            .addAliasAction(add)
+        log.info("Oppdaterer alias '$stillingAlias' til å peke på '$indeksNavn'")
+        esClient.indices().updateAliases(request, RequestOptions.DEFAULT)
+    }
 }
 
-private fun indeksNavnMedTimestamp(): String {
+fun indeksNavnMedTimestamp(): String {
     val dateTimeFormat = DateTimeFormatter.ofPattern("_yyyyMMdd_HHmmss")
-    return stillingIndeks + LocalDateTime.now().format(dateTimeFormat)
+    return stillingAlias + LocalDateTime.now().format(dateTimeFormat)
 }
