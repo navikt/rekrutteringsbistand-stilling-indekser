@@ -5,7 +5,7 @@ import com.github.benmanes.caffeine.cache.LoadingCache
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.jackson.responseObject
 import com.github.kittinunf.result.Result
-import rekrutteringsbistand.stilling.indekser.environment
+import rekrutteringsbistand.stilling.indekser.utils.environment
 import java.lang.RuntimeException
 import java.util.concurrent.TimeUnit
 

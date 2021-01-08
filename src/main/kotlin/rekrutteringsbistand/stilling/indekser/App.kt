@@ -6,31 +6,59 @@ import io.javalin.apibuilder.ApiBuilder.get
 import rekrutteringsbistand.stilling.indekser.autentisering.AccessTokenClient
 import rekrutteringsbistand.stilling.indekser.elasticsearch.ElasticSearchClient
 import rekrutteringsbistand.stilling.indekser.elasticsearch.authenticateWithElasticSearchCredentials
+import rekrutteringsbistand.stilling.indekser.kafka.StillingConsumer
+import rekrutteringsbistand.stilling.indekser.kafka.StillingConsumerImpl
+import rekrutteringsbistand.stilling.indekser.kafka.StillingMottattService
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClient
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.authenticateWithAccessToken
+import rekrutteringsbistand.stilling.indekser.utils.log
+import kotlin.Exception
+import kotlin.system.exitProcess
 
 class App {
     companion object {
-        fun start(stillingsinfoClient: StillingsinfoClient, elasticSearchClient: ElasticSearchClient) {
-            val app = Javalin.create().start(8222)
+        fun start(
+            webServer: Javalin,
+            stillingsinfoClient: StillingsinfoClient,
+            elasticSearchClient: ElasticSearchClient,
+            stillingConsumer: StillingConsumer
+        ) {
             val basePath = "/rekrutteringsbistand-stilling-indekser"
-
-            app.routes {
+            webServer.routes {
                 get("$basePath/internal/isAlive") { ctx -> ctx.status(200) }
                 get("$basePath/internal/isReady") { ctx -> ctx.status(200) }
             }
+
+            webServer.start(8222)
+            stillingConsumer.start()
         }
     }
 }
 
 fun main() {
-    val accessTokenClient = AccessTokenClient(FuelManager())
-    val httpClientAutentisertMedAccessToken = authenticateWithAccessToken(FuelManager(), accessTokenClient)
-    val stillingsinfoClient = StillingsinfoClient(httpClientAutentisertMedAccessToken)
+    val webServer = Javalin.create()
+    try {
+        val accessTokenClient = AccessTokenClient(FuelManager())
+        val httpClientAutentisertMedAccessToken = authenticateWithAccessToken(FuelManager(), accessTokenClient)
+        val stillingsinfoClient = StillingsinfoClient(httpClientAutentisertMedAccessToken)
 
-    val httpClientAutentisertMedEsCredentials = authenticateWithElasticSearchCredentials(FuelManager())
-    val elasticSearchClient = ElasticSearchClient(httpClientAutentisertMedEsCredentials)
+        val httpClientAutentisertMedEsCredentials = authenticateWithElasticSearchCredentials(FuelManager())
+        val elasticSearchClient = ElasticSearchClient(httpClientAutentisertMedEsCredentials)
 
-    App.start(stillingsinfoClient, elasticSearchClient)
+        val stillingMottattService = StillingMottattService()
+        val stillingConsumer = StillingConsumerImpl(stillingMottattService)
+
+        App.start(
+            webServer,
+            stillingsinfoClient,
+            elasticSearchClient,
+            stillingConsumer
+        )
+
+    } catch (exception: Exception) {
+        log("main()").error("Noe galt skjedde, stopper appen", exception)
+        webServer.stop()
+        exitProcess(1)
+    }
 }
 
