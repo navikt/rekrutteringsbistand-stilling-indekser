@@ -5,7 +5,6 @@ import com.github.kittinunf.fuel.jackson.responseObject
 import com.github.kittinunf.result.Result
 import org.eclipse.jetty.http.HttpStatus
 import rekrutteringsbistand.stilling.indekser.utils.environment
-import java.lang.RuntimeException
 
 class StillingsinfoClient(private val httpClient: FuelManager) {
     private val stillingsinfoUrl: String = "${environment().get("REKRUTTERINGSBISTAND_API")}/indekser/stillingsinfo"
@@ -22,10 +21,11 @@ class StillingsinfoClient(private val httpClient: FuelManager) {
 
             is Result.Failure -> {
                 if (response.statusCode == HttpStatus.NOT_FOUND_404) {
-                    return null;
+                    return null
                 }
 
-                throw RuntimeException("Kunne ikke hente stillingsinfo for stilling $stillingsId")
+                // TODO: Ikke kaste exception her?
+                throw Exception("Kunne ikke hente stillingsinfo for stilling $stillingsId")
             }
         }
     }

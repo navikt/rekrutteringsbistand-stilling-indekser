@@ -8,10 +8,9 @@ import org.apache.kafka.clients.consumer.KafkaConsumer
 import rekrutteringsbistand.stilling.indekser.autentisering.AccessTokenClient
 import rekrutteringsbistand.stilling.indekser.elasticsearch.ElasticSearchService
 import rekrutteringsbistand.stilling.indekser.elasticsearch.getEsClient
-import rekrutteringsbistand.stilling.indekser.elasticsearch.indeksNavnMedTimestamp
 import rekrutteringsbistand.stilling.indekser.kafka.StillingConsumer
 import rekrutteringsbistand.stilling.indekser.kafka.StillingConsumerImpl
-import rekrutteringsbistand.stilling.indekser.kafka.StillingMottattService
+import rekrutteringsbistand.stilling.indekser.behandling.StillingMottattService
 import rekrutteringsbistand.stilling.indekser.kafka.consumerConfig
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClient
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.authenticateWithAccessToken
@@ -56,7 +55,7 @@ fun main() {
         val elasticSearchService = ElasticSearchService(esClient)
 
         val kafkaConsumer = KafkaConsumer<String, Ad>(consumerConfig())
-        val stillingMottattService = StillingMottattService(elasticSearchService)
+        val stillingMottattService = StillingMottattService(stillingsinfoClient, elasticSearchService)
         val stillingConsumer = StillingConsumerImpl(kafkaConsumer, stillingMottattService)
 
         App.start(
