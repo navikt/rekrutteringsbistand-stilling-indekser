@@ -3,7 +3,6 @@ package rekrutteringsbistand.stilling.indekser.kafka
 import no.nav.pam.ad.ext.avro.Ad
 import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.clients.consumer.KafkaConsumer
-import rekrutteringsbistand.stilling.indekser.utils.log
 import java.time.Duration
 
 // TODO: Injecte KafkaConsumer her? Da kan den også brukes i konsumerTopicFraStart()
@@ -13,14 +12,17 @@ class StillingConsumerImpl(private val stillingMottattService: StillingMottattSe
         KafkaConsumer<String, Ad>(consumerConfig()).use { consumer ->
             consumer.subscribe(listOf("StillingEkstern"))
 
-            val records: ConsumerRecords<String, Ad> = consumer.poll(Duration.ofSeconds(30))
-            if (records.count() > 0) {
+            var counter = 0
+            while (true) {
+                counter += 1
+                val records: ConsumerRecords<String, Ad> = consumer.poll(Duration.ofSeconds(30))
+                failHvisMerEnnEnRecord(records)
+                if (records.count() == 0) continue
                 val melding = records.first()
-                log.info("Mottok melding på Kafka: $melding")
-                stillingMottattService.behandleStilling(melding.value())
-            } else {
-                log.info("Fikk ikke noen meldinger")
+                stillingMottattService.behandleStilling(melding.value(), counter)
+                consumer.commitSync()
             }
+
             // TODO: Behandle melding
             // TODO: Retry-mekanismer
         }

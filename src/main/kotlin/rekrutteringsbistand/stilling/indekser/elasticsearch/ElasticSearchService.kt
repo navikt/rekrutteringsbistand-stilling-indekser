@@ -1,7 +1,5 @@
 package rekrutteringsbistand.stilling.indekser.elasticsearch
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import no.nav.pam.ad.ext.avro.Ad
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest
 import org.elasticsearch.action.index.IndexRequest
 import org.elasticsearch.client.RequestOptions
@@ -10,7 +8,6 @@ import org.elasticsearch.client.indices.CreateIndexRequest
 import org.elasticsearch.client.indices.GetIndexRequest
 import org.elasticsearch.client.indices.PutMappingRequest
 import org.elasticsearch.common.xcontent.XContentType
-import org.slf4j.LoggerFactory
 import rekrutteringsbistand.stilling.indekser.utils.log
 import rekrutteringsbistand.stilling.indekser.utils.objectMapper
 import java.time.LocalDateTime
@@ -26,11 +23,12 @@ class ElasticSearchService(private val esClient: RestHighLevelClient) {
         if (indeksBleOpprettet) oppdaterAlias(indeksNavn)
     }
 
-    fun indekser(stilling: Stilling) {
+    fun indekser(stilling: Stilling, counter: Int) {
         val indexRequest = IndexRequest(stillingAlias)
             .id(stilling.uuid)
             .source(objectMapper.writeValueAsString(stilling), XContentType.JSON)
         esClient.index(indexRequest, RequestOptions.DEFAULT)
+        log.info("Indekserte stilling #$counter med UUID: ${stilling.uuid}")
     }
 
     private fun opprettIndeksHvisDenIkkeFinnes(indeksNavn: String): Boolean {

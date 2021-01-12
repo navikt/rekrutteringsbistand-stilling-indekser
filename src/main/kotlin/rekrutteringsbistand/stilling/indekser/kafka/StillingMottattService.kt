@@ -2,14 +2,12 @@ package rekrutteringsbistand.stilling.indekser.kafka
 
 import no.nav.pam.ad.ext.avro.Ad
 import rekrutteringsbistand.stilling.indekser.elasticsearch.*
-import rekrutteringsbistand.stilling.indekser.utils.log
 
 class StillingMottattService(private val esService: ElasticSearchService) {
 
-    fun behandleStilling(ad: Ad) {
+    fun behandleStilling(ad: Ad, counter: Int) {
         val stilling = konverterTilStilling(ad)
-        log.info("Behandler stilling med id: ${stilling.uuid}")
-        esService.indekser(stilling)
+        esService.indekser(stilling, counter)
     }
 
     private fun konverterTilStilling(ad: Ad): Stilling {
