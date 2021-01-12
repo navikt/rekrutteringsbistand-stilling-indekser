@@ -39,14 +39,14 @@ data class Location(
 )
 
 data class StyrkCategory(
-    val kode: String,
+    val styrkCode: String,
     val name: String
 )
 
 
 data class Company(
-    val navn: String,
-    val publicname: String,
+    val name: String,
+    val publicName: String,
     val orgnr: String?,
     val parentOrgnr: String?,
     val orgform: String
@@ -55,7 +55,7 @@ data class Company(
 data class Administration(
     val status: String,
     val remarks: List<String>,
-    val kommentar: String,
+    val comments: String,
     val reportee: String,
     val navIdent: String
 )

@@ -8,7 +8,9 @@ import org.elasticsearch.client.RequestOptions
 import org.elasticsearch.client.RestHighLevelClient
 import org.elasticsearch.client.indices.CreateIndexRequest
 import org.elasticsearch.client.indices.GetIndexRequest
+import org.elasticsearch.client.indices.PutMappingRequest
 import org.elasticsearch.common.xcontent.XContentType
+import org.slf4j.LoggerFactory
 import rekrutteringsbistand.stilling.indekser.utils.log
 import rekrutteringsbistand.stilling.indekser.utils.objectMapper
 import java.time.LocalDateTime
@@ -36,8 +38,13 @@ class ElasticSearchService(private val esClient: RestHighLevelClient) {
         val indeksFinnes = esClient.indices().exists(getIndexRequest, RequestOptions.DEFAULT)
 
         if (!indeksFinnes) {
-            val request = CreateIndexRequest(indeksNavn)
+            val request = CreateIndexRequest(indeksNavn).source(INTERNALAD_COMMON_SETTINGS, XContentType.JSON)
             esClient.indices().create(request, RequestOptions.DEFAULT)
+
+            val putMappingRequest = PutMappingRequest(indeksNavn)
+                    .source(INTERNALAD_MAPPING, XContentType.JSON)
+            esClient.indices().putMapping(putMappingRequest, RequestOptions.DEFAULT)
+
             log.info("Opprettet indeks '$indeksNavn'")
             return true
         }
@@ -56,6 +63,13 @@ class ElasticSearchService(private val esClient: RestHighLevelClient) {
             .addAliasAction(add)
         esClient.indices().updateAliases(request, RequestOptions.DEFAULT)
         log.info("Oppdaterte alias '$stillingAlias' til å peke på '$indeksNavn'")
+    }
+
+    companion object {
+        private val INTERNALAD_COMMON_SETTINGS = ElasticSearchService::class.java
+                .getResource("/stilling-common.json").readText()
+        private val INTERNALAD_MAPPING = ElasticSearchService::class.java
+                .getResource("/stilling-mapping.json").readText()
     }
 }
 
