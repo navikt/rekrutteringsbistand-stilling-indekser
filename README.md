@@ -9,6 +9,28 @@ chmod +x start-elastic-search.sh
 ```
 Kjør prosjekt lokalt: Høyreklikk på `LokalApp.kt` og vel `Run`
 
+
+# Spørringer mot Elastic Search
+
+## Koble til
+Lokal Elastic Search: `localhost:9200/`
+URLer til Elastic Search i dev-gcp og prod-gcp ligger i filene `nais-dev.json` og `nais-prod.json`.
+Spørringer må gjøres inne i podden med WGET.
+
+Brukernavn og passord til Elastic Search finnes i Kubernetes-podden:
+```shell
+kubectl exec -it <pod> -- /bin/sh
+echo $ES_USERNAME
+echo $ES_PASSWORD
+```
+
+## Spørringer
+Vi har et alias `stilling` som peker på riktig indeks.
+
+Liste indekser: `wget <url>/_cat/indices --user <brukernavn> --password <passord>`
+Slette indeks: `wget --method=DELETE <url>/_cat/<indeksnavn> --user <brukernavn> --password <passord>`
+Hente ut dokument med UUID: `wget <url>/stilling/_doc/<uuid på stilling> --user <brukernavn> --password <passord>`
+
 # Henvendelser
 
 ## For Nav-ansatte
