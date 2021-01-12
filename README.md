@@ -28,7 +28,7 @@ echo $ES_PASSWORD
 Vi har et alias `stilling` som peker på riktig indeks.
 
 Liste indekser: `wget <url>/_cat/indices --user <brukernavn> --password <passord>`
-Slette indeks: `wget --method=DELETE <url>/_cat/<indeksnavn> --user <brukernavn> --password <passord>`
+Slette indeks: `wget --method=DELETE <url>/<indeksnavn> --user <brukernavn> --password <passord>`
 Hente ut dokument med UUID: `wget <url>/stilling/_doc/<uuid på stilling> --user <brukernavn> --password <passord>`
 
 # Henvendelser
