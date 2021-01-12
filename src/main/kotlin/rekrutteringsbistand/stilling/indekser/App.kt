@@ -31,8 +31,8 @@ class App {
             webServer.routes {
                 get("$basePath/internal/isAlive") { it.status(200) }
                 get("$basePath/internal/isReady") { it.status(200) }
-                get("$basePath/internal/resetTopic") { stillingConsumer.konsumerTopicFraBegynnelse() }
             }
+
 
             webServer.start(8222)
             try {

@@ -15,8 +15,9 @@ class StillingConsumerImpl(
         kafkaConsumer.use { consumer ->
             consumer.subscribe(listOf("StillingEkstern"))
 
-            while (true) {
-                val records: ConsumerRecords<String, Ad> = consumer.poll(Duration.ofSeconds(30))
+            // Under utvikling leser vi bare 100 meldinger om gangen
+            for (i in 1..100) {
+                val records: ConsumerRecords<String, Ad> = consumer.poll(Duration.ofMillis(100))
                 failHvisMerEnnEnRecord(records)
                 if (records.count() == 0) continue
                 val melding = records.first()
