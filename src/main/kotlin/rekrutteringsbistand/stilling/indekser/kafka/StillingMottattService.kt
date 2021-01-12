@@ -20,7 +20,7 @@ class StillingMottattService(private val esService: ElasticSearchService) {
             ad.getExpires(),
             ad.getCreated(),
             ad.getUpdated(),
-            ad.getEmployer().let {
+            ad.getEmployer()?.let {
                 Company(
                     it.getName(),
                     it.getPublicName(),
@@ -46,7 +46,7 @@ class StillingMottattService(private val esService: ElasticSearchService) {
                 it.countyCode
             ) },
             ad.getReference(),
-            ad.getAdministration().let {
+            ad.getAdministration()?.let {
                 Administration(
                     it.getStatus().name,
                     it.getRemarks().map { remark -> remark.name },
