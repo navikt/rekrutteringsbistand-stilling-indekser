@@ -31,10 +31,12 @@ class App {
             }
 
             webServer.start(8222)
-
-            elasticSearchService.initialiser()
-
-            stillingConsumer.start()
+            try {
+                elasticSearchService.initialiser()
+                stillingConsumer.start()
+            } catch (exception: Exception) {
+                log.error("Midlertidig feilhåndtering for at appen ikke skal kræsje ved exception", exception)
+            }
         }
     }
 }
