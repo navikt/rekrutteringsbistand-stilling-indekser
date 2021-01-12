@@ -3,27 +3,28 @@ package rekrutteringsbistand.stilling.indekser.kafka
 import no.nav.pam.ad.ext.avro.Ad
 import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.clients.consumer.KafkaConsumer
+import rekrutteringsbistand.stilling.indekser.utils.log
 import java.time.Duration
 
-// TODO: Injecte KafkaConsumer her? Da kan den også brukes i konsumerTopicFraStart()
-class StillingConsumerImpl(private val stillingMottattService: StillingMottattService): StillingConsumer {
+class StillingConsumerImpl(
+    private val kafkaConsumer: KafkaConsumer<String, Ad>,
+    private val stillingMottattService: StillingMottattService
+): StillingConsumer {
 
     override fun start() {
-        KafkaConsumer<String, Ad>(consumerConfig()).use { consumer ->
+        kafkaConsumer.use { consumer ->
             consumer.subscribe(listOf("StillingEkstern"))
 
-            var counter = 0
             while (true) {
-                counter += 1
                 val records: ConsumerRecords<String, Ad> = consumer.poll(Duration.ofSeconds(30))
                 failHvisMerEnnEnRecord(records)
                 if (records.count() == 0) continue
                 val melding = records.first()
-                stillingMottattService.behandleStilling(melding.value(), counter)
+                stillingMottattService.behandleStilling(melding.value())
                 consumer.commitSync()
+                log.info("Committet offset ${melding.offset()} til Kafka")
             }
 
-            // TODO: Behandle melding
             // TODO: Retry-mekanismer
         }
     }
@@ -37,12 +38,13 @@ class StillingConsumerImpl(private val stillingMottattService: StillingMottattSe
         }
     }
 
-    fun konsumerTopicFraStart() {
-        // TODO Implementer denne
-        //  Brukes for reindeksering av hele indeks
+    override fun konsumerTopicFraBegynnelse() {
+        log.info("Spoler Kafka-offset tilbake til begynnelsen")
+        kafkaConsumer.seekToBeginning(kafkaConsumer.assignment())
     }
 }
 
 interface StillingConsumer {
     fun start()
+    fun konsumerTopicFraBegynnelse()
 }

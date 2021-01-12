@@ -23,12 +23,12 @@ class ElasticSearchService(private val esClient: RestHighLevelClient) {
         if (indeksBleOpprettet) oppdaterAlias(indeksNavn)
     }
 
-    fun indekser(stilling: Stilling, counter: Int) {
+    fun indekser(stilling: Stilling) {
         val indexRequest = IndexRequest(stillingAlias)
             .id(stilling.uuid)
             .source(objectMapper.writeValueAsString(stilling), XContentType.JSON)
         esClient.index(indexRequest, RequestOptions.DEFAULT)
-        log.info("Indekserte stilling #$counter med UUID: ${stilling.uuid}")
+        log.info("Indekserte stilling med UUID: ${stilling.uuid}")
     }
 
     private fun opprettIndeksHvisDenIkkeFinnes(indeksNavn: String): Boolean {

@@ -5,9 +5,9 @@ import rekrutteringsbistand.stilling.indekser.elasticsearch.*
 
 class StillingMottattService(private val esService: ElasticSearchService) {
 
-    fun behandleStilling(ad: Ad, counter: Int) {
+    fun behandleStilling(ad: Ad) {
         val stilling = konverterTilStilling(ad)
-        esService.indekser(stilling, counter)
+        esService.indekser(stilling)
     }
 
     private fun konverterTilStilling(ad: Ad): Stilling {

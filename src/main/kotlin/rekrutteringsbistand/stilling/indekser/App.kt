@@ -3,6 +3,8 @@ package rekrutteringsbistand.stilling.indekser
 import com.github.kittinunf.fuel.core.FuelManager
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.get
+import no.nav.pam.ad.ext.avro.Ad
+import org.apache.kafka.clients.consumer.KafkaConsumer
 import rekrutteringsbistand.stilling.indekser.autentisering.AccessTokenClient
 import rekrutteringsbistand.stilling.indekser.elasticsearch.ElasticSearchService
 import rekrutteringsbistand.stilling.indekser.elasticsearch.getEsClient
@@ -10,6 +12,7 @@ import rekrutteringsbistand.stilling.indekser.elasticsearch.indeksNavnMedTimesta
 import rekrutteringsbistand.stilling.indekser.kafka.StillingConsumer
 import rekrutteringsbistand.stilling.indekser.kafka.StillingConsumerImpl
 import rekrutteringsbistand.stilling.indekser.kafka.StillingMottattService
+import rekrutteringsbistand.stilling.indekser.kafka.consumerConfig
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClient
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.authenticateWithAccessToken
 import rekrutteringsbistand.stilling.indekser.utils.log
@@ -26,8 +29,9 @@ class App {
         ) {
             val basePath = "/rekrutteringsbistand-stilling-indekser"
             webServer.routes {
-                get("$basePath/internal/isAlive") { ctx -> ctx.status(200) }
-                get("$basePath/internal/isReady") { ctx -> ctx.status(200) }
+                get("$basePath/internal/isAlive") { it.status(200) }
+                get("$basePath/internal/isReady") { it.status(200) }
+                get("$basePath/internal/resetTopic") { stillingConsumer.konsumerTopicFraBegynnelse() }
             }
 
             webServer.start(8222)
@@ -51,8 +55,9 @@ fun main() {
         val esClient = getEsClient()
         val elasticSearchService = ElasticSearchService(esClient)
 
+        val kafkaConsumer = KafkaConsumer<String, Ad>(consumerConfig())
         val stillingMottattService = StillingMottattService(elasticSearchService)
-        val stillingConsumer = StillingConsumerImpl(stillingMottattService)
+        val stillingConsumer = StillingConsumerImpl(kafkaConsumer, stillingMottattService)
 
         App.start(
             webServer,
