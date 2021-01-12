@@ -13,6 +13,7 @@ import rekrutteringsbistand.stilling.indekser.kafka.StillingConsumerImpl
 import rekrutteringsbistand.stilling.indekser.behandling.StillingMottattService
 import rekrutteringsbistand.stilling.indekser.kafka.consumerConfig
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClient
+import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClientImpl
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.authenticateWithAccessToken
 import rekrutteringsbistand.stilling.indekser.utils.log
 import kotlin.Exception
@@ -21,10 +22,9 @@ import kotlin.system.exitProcess
 class App {
     companion object {
         fun start(
-                webServer: Javalin,
-                stillingsinfoClient: StillingsinfoClient,
-                elasticSearchService: ElasticSearchService,
-                stillingConsumer: StillingConsumer
+            webServer: Javalin,
+            elasticSearchService: ElasticSearchService,
+            stillingConsumer: StillingConsumer
         ) {
             val basePath = "/rekrutteringsbistand-stilling-indekser"
             webServer.routes {
@@ -49,7 +49,7 @@ fun main() {
     try {
         val accessTokenClient = AccessTokenClient(FuelManager())
         val httpClientAutentisertMedAccessToken = authenticateWithAccessToken(FuelManager(), accessTokenClient)
-        val stillingsinfoClient = StillingsinfoClient(httpClientAutentisertMedAccessToken)
+        val stillingsinfoClient = StillingsinfoClientImpl(httpClientAutentisertMedAccessToken)
 
         val esClient = getEsClient()
         val elasticSearchService = ElasticSearchService(esClient)
@@ -60,7 +60,6 @@ fun main() {
 
         App.start(
             webServer,
-            stillingsinfoClient,
             elasticSearchService,
             stillingConsumer
         )

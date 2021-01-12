@@ -6,13 +6,13 @@ import com.github.kittinunf.result.Result
 import org.eclipse.jetty.http.HttpStatus
 import rekrutteringsbistand.stilling.indekser.utils.environment
 
-class StillingsinfoClient(private val httpClient: FuelManager) {
+class StillingsinfoClientImpl(private val httpClient: FuelManager): StillingsinfoClient {
     private val stillingsinfoUrl: String = "${environment().get("REKRUTTERINGSBISTAND_API")}/indekser/stillingsinfo"
 
-    fun getStillingsinfo(stillingsId: String): Stillingsinfo? {
+    override fun getStillingsinfo(stillingsId: String): Stillingsinfo? {
         val (_, response, result) = httpClient
-                .get(path = "$stillingsinfoUrl/$stillingsId")
-                .responseObject<Stillingsinfo>()
+            .get(path = "$stillingsinfoUrl/$stillingsId")
+            .responseObject<Stillingsinfo>()
 
         when (result) {
             is Result.Success -> {
@@ -32,9 +32,13 @@ class StillingsinfoClient(private val httpClient: FuelManager) {
 }
 
 data class Stillingsinfo(
-        val eierNavident: String?,
-        val eierNavn: String?,
-        val notat: String?,
-        val stillingsid: String,
-        val stillingsinfoid: String,
+    val eierNavident: String?,
+    val eierNavn: String?,
+    val notat: String?,
+    val stillingsid: String,
+    val stillingsinfoid: String,
 )
+
+interface StillingsinfoClient {
+    fun getStillingsinfo(stillingsId: String): Stillingsinfo?
+}

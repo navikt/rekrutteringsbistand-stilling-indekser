@@ -8,6 +8,7 @@ import org.elasticsearch.client.indices.CreateIndexRequest
 import org.elasticsearch.client.indices.GetIndexRequest
 import org.elasticsearch.client.indices.PutMappingRequest
 import org.elasticsearch.common.xcontent.XContentType
+import rekrutteringsbistand.stilling.indekser.stillingsinfo.Stillingsinfo
 import rekrutteringsbistand.stilling.indekser.utils.log
 import rekrutteringsbistand.stilling.indekser.utils.objectMapper
 import java.time.LocalDateTime
@@ -23,12 +24,12 @@ class ElasticSearchService(private val esClient: RestHighLevelClient) {
         if (indeksBleOpprettet) oppdaterAlias(indeksNavn)
     }
 
-    fun indekser(stilling: Stilling) {
+    fun indekser(esStilling: EsStilling) {
         val indexRequest = IndexRequest(stillingAlias)
-            .id(stilling.uuid)
-            .source(objectMapper.writeValueAsString(stilling), XContentType.JSON)
+            .id(esStilling.stilling.uuid)
+            .source(objectMapper.writeValueAsString(esStilling), XContentType.JSON)
         esClient.index(indexRequest, RequestOptions.DEFAULT)
-        log.info("Indekserte stilling med UUID: ${stilling.uuid}")
+        log.info("Indekserte stilling med UUID: ${esStilling.stilling.uuid}")
     }
 
     private fun opprettIndeksHvisDenIkkeFinnes(indeksNavn: String): Boolean {
@@ -75,3 +76,9 @@ fun indeksNavnMedTimestamp(): String {
     val dateTimeFormat = DateTimeFormatter.ofPattern("_yyyyMMdd_HHmmss")
     return stillingAlias + LocalDateTime.now().format(dateTimeFormat)
 }
+
+
+data class EsStilling(
+    val stilling: Stilling,
+    val stillingsinfo: Stillingsinfo?
+)

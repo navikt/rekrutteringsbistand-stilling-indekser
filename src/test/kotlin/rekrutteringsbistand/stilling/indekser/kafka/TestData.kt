@@ -1,6 +1,7 @@
 package rekrutteringsbistand.stilling.indekser.kafka
 
 import no.nav.pam.ad.ext.avro.*
+import rekrutteringsbistand.stilling.indekser.stillingsinfo.Stillingsinfo
 import java.time.LocalDateTime
 
 val enAd = Ad(
@@ -46,4 +47,12 @@ val enAd = Ad(
         )
     ),
     listOf(Property("key", "value"))
+)
+
+val enStillingsinfo = Stillingsinfo(
+    "eierNavIdent",
+    "eierNavn",
+    "notat",
+    "stillingsid",
+    "stillingsinfoid"
 )
