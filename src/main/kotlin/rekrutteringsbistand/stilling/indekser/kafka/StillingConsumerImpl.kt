@@ -18,7 +18,8 @@ class StillingConsumerImpl(
 
             // Under utvikling leser vi bare 100 meldinger om gangen
             for (i in 1..100) {
-                val records: ConsumerRecords<String, Ad> = consumer.poll(Duration.ofMillis(100))
+                log.info("Poller for nye meldinger på Kafka")
+                val records: ConsumerRecords<String, Ad> = consumer.poll(Duration.ofSeconds(30))
                 failHvisMerEnnEnRecord(records)
                 if (records.count() == 0) continue
                 val melding = records.first()
