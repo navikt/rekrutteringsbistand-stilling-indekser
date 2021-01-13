@@ -35,8 +35,10 @@ spec:
     - secret: rekrutteringsbistand-stilling-indekser-es-credentials
     - secret: rekrutteringsbistand-stilling-indekser-servicebruker
   env:
-    - name: REKRUTTERINGSBISTAND_API
+    - name: REKRUTTERINGSBISTAND_API_URL
       value: https://{{rekrutteringsbistand-api-host}}/rekrutteringsbistand-api
+    - name: REKRUTTERINGSBISTAND_API_CLIENT_ID
+      value: {{rekrutteringsbistand-api-client-id}}
     - name: ELASTIC_SEARCH_API
       value: {{elastic-search-api}}
     - name: KAFKA_SCHEMA_REGISTRY_URL
