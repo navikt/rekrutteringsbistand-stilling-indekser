@@ -25,7 +25,10 @@ class StillingsinfoClientImpl(private val httpClient: FuelManager): Stillingsinf
                 }
 
                 // TODO: Ikke kaste exception her?
-                throw Exception("Kunne ikke hente stillingsinfo for stilling $stillingsId")
+                throw Exception(
+                    "Kunne ikke hente stillingsinfo for stilling $stillingsId." +
+                    "HTTP-status: ${response.statusCode}, responseMessage: ${response.responseMessage}"
+                )
             }
         }
     }
