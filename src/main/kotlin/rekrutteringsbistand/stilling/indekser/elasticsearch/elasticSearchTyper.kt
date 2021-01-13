@@ -1,5 +1,12 @@
 package rekrutteringsbistand.stilling.indekser.elasticsearch
 
+import rekrutteringsbistand.stilling.indekser.stillingsinfo.Stillingsinfo
+
+data class RekrutteringsbistandStilling(
+    val stilling: Stilling,
+    val stillingsinfo: Stillingsinfo?
+)
+
 data class Stilling(
     val title: String,
     val uuid: String,
@@ -42,7 +49,6 @@ data class StyrkCategory(
     val styrkCode: String,
     val name: String
 )
-
 
 data class Company(
     val name: String,

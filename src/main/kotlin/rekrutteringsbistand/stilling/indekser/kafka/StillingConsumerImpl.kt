@@ -40,6 +40,8 @@ class StillingConsumerImpl(
         }
     }
 
+    // TODO: Trenger ikke denne på "hoved"-consumeren?
+    //  Trenger kun én consumer nr. 2 som alltid leser fra start
     override fun konsumerTopicFraBegynnelse() {
         log.info("Spoler Kafka-offset tilbake til begynnelsen")
         kafkaConsumer.seekToBeginning(kafkaConsumer.assignment())

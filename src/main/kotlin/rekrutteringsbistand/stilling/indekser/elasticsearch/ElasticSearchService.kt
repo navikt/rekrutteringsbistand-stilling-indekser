@@ -8,7 +8,6 @@ import org.elasticsearch.client.indices.CreateIndexRequest
 import org.elasticsearch.client.indices.GetIndexRequest
 import org.elasticsearch.client.indices.PutMappingRequest
 import org.elasticsearch.common.xcontent.XContentType
-import rekrutteringsbistand.stilling.indekser.stillingsinfo.Stillingsinfo
 import rekrutteringsbistand.stilling.indekser.utils.log
 import rekrutteringsbistand.stilling.indekser.utils.objectMapper
 import java.time.LocalDateTime
@@ -24,12 +23,12 @@ class ElasticSearchService(private val esClient: RestHighLevelClient) {
         if (indeksBleOpprettet) oppdaterAlias(indeksNavn)
     }
 
-    fun indekser(esStilling: EsStilling) {
+    fun indekser(rekrutteringsbistandStilling: RekrutteringsbistandStilling) {
         val indexRequest = IndexRequest(stillingAlias)
-            .id(esStilling.stilling.uuid)
-            .source(objectMapper.writeValueAsString(esStilling), XContentType.JSON)
+            .id(rekrutteringsbistandStilling.stilling.uuid)
+            .source(objectMapper.writeValueAsString(rekrutteringsbistandStilling), XContentType.JSON)
         esClient.index(indexRequest, RequestOptions.DEFAULT)
-        log.info("Indekserte stilling med UUID: ${esStilling.stilling.uuid}")
+        log.info("Indekserte stilling med UUID: ${rekrutteringsbistandStilling.stilling.uuid}")
     }
 
     private fun opprettIndeksHvisDenIkkeFinnes(indeksNavn: String): Boolean {
@@ -40,9 +39,9 @@ class ElasticSearchService(private val esClient: RestHighLevelClient) {
             val request = CreateIndexRequest(indeksNavn).source(INTERNALAD_COMMON_SETTINGS, XContentType.JSON)
             esClient.indices().create(request, RequestOptions.DEFAULT)
 
-            val putMappingRequest = PutMappingRequest(indeksNavn)
+            val stillingMappingRequest = PutMappingRequest(indeksNavn)
                     .source(INTERNALAD_MAPPING, XContentType.JSON)
-            esClient.indices().putMapping(putMappingRequest, RequestOptions.DEFAULT)
+            esClient.indices().putMapping(stillingMappingRequest, RequestOptions.DEFAULT)
 
             log.info("Opprettet indeks '$indeksNavn'")
             return true
@@ -77,8 +76,3 @@ fun indeksNavnMedTimestamp(): String {
     return stillingAlias + LocalDateTime.now().format(dateTimeFormat)
 }
 
-
-data class EsStilling(
-    val stilling: Stilling,
-    val stillingsinfo: Stillingsinfo?
-)

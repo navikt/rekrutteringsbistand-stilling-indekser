@@ -6,6 +6,6 @@ import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClient
 class FakeStillingsinfoClient: StillingsinfoClient {
 
     override fun getStillingsinfo(stillingsId: String): Stillingsinfo? {
-        return null
+        return enStillingsinfo
     }
 }

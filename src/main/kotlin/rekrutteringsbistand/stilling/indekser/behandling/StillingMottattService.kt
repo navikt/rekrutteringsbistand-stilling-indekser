@@ -13,7 +13,7 @@ class StillingMottattService(
     fun behandleStilling(ad: Ad) {
         val stilling = konverterTilStilling(ad)
         val stillingsinfo = stillingsinfoClient.getStillingsinfo(stilling.uuid)
-        val esStilling = EsStilling(stilling, stillingsinfo)
-        esService.indekser(esStilling)
+        val rekrutteringsbistandStilling = RekrutteringsbistandStilling(stilling, stillingsinfo)
+        esService.indekser(rekrutteringsbistandStilling)
     }
 }
