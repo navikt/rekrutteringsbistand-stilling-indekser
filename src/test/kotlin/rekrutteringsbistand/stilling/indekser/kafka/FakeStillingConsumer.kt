@@ -8,5 +8,6 @@ class FakeStillingConsumer(private val stillingMottattService: StillingMottattSe
         stillingMottattService.behandleStilling(enAd)
     }
 
-    override fun konsumerTopicFraBegynnelse() {}
+    override fun konsumerTopicFraBegynnelse() {
+    }
 }

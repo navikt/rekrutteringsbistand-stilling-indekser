@@ -23,8 +23,8 @@ class ElasticSearchService(private val esClient: RestHighLevelClient) {
         if (indeksBleOpprettet) oppdaterAlias(indeksNavn)
     }
 
-    fun indekser(rekrutteringsbistandStilling: RekrutteringsbistandStilling) {
-        val indexRequest = IndexRequest(stillingAlias)
+    fun indekser(rekrutteringsbistandStilling: RekrutteringsbistandStilling, indeks: String) {
+        val indexRequest = IndexRequest(indeks)
             .id(rekrutteringsbistandStilling.stilling.uuid)
             .source(objectMapper.writeValueAsString(rekrutteringsbistandStilling), XContentType.JSON)
         esClient.index(indexRequest, RequestOptions.DEFAULT)
@@ -36,17 +36,21 @@ class ElasticSearchService(private val esClient: RestHighLevelClient) {
         val indeksFinnes = esClient.indices().exists(getIndexRequest, RequestOptions.DEFAULT)
 
         if (!indeksFinnes) {
-            val request = CreateIndexRequest(indeksNavn).source(INTERNALAD_COMMON_SETTINGS, XContentType.JSON)
-            esClient.indices().create(request, RequestOptions.DEFAULT)
-
-            val stillingMappingRequest = PutMappingRequest(indeksNavn)
-                    .source(INTERNALAD_MAPPING, XContentType.JSON)
-            esClient.indices().putMapping(stillingMappingRequest, RequestOptions.DEFAULT)
-
-            log.info("Opprettet indeks '$indeksNavn'")
+            opprettIndeks(indeksNavn)
             return true
         }
         return false
+    }
+
+    fun opprettIndeks(indeksNavn: String) {
+        val request = CreateIndexRequest(indeksNavn).source(INTERNALAD_COMMON_SETTINGS, XContentType.JSON)
+        esClient.indices().create(request, RequestOptions.DEFAULT)
+
+        val stillingMappingRequest = PutMappingRequest(indeksNavn)
+            .source(INTERNALAD_MAPPING, XContentType.JSON)
+        esClient.indices().putMapping(stillingMappingRequest, RequestOptions.DEFAULT)
+
+        log.info("Opprettet indeks '$indeksNavn'")
     }
 
     private fun oppdaterAlias(indeksNavn: String) {

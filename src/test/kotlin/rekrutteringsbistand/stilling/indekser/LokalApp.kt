@@ -4,6 +4,7 @@ import io.javalin.Javalin
 import rekrutteringsbistand.stilling.indekser.elasticsearch.ElasticSearchService
 import rekrutteringsbistand.stilling.indekser.kafka.FakeStillingConsumer
 import rekrutteringsbistand.stilling.indekser.behandling.StillingMottattService
+import rekrutteringsbistand.stilling.indekser.elasticsearch.indeksNavnMedTimestamp
 import rekrutteringsbistand.stilling.indekser.kafka.FakeStillingsinfoClient
 import rekrutteringsbistand.stilling.indekser.kafka.getLocalEsClient
 
@@ -19,9 +20,17 @@ fun main() {
     val stillingMottattService = StillingMottattService(stillingsinfoClient, elasticSearchService)
     val fakeStillingConsumer = FakeStillingConsumer(stillingMottattService)
 
+    val nyStillingMottattService = StillingMottattService(
+        stillingsinfoClient,
+        elasticSearchService,
+        indeksNavn = indeksNavnMedTimestamp()
+    )
+    val nyFakeStillingConsumer = FakeStillingConsumer(nyStillingMottattService)
+
     App.start(
         webServer,
         elasticSearchService,
-        fakeStillingConsumer
+        fakeStillingConsumer,
+        nyFakeStillingConsumer
     )
 }
