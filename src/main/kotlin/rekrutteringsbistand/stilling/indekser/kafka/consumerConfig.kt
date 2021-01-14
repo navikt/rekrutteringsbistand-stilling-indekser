@@ -11,9 +11,7 @@ import rekrutteringsbistand.stilling.indekser.utils.environment
 import java.io.File
 import java.util.*
 
-fun consumerConfig(
-    groupId: String = "rekrutteringsbistand-stilling-indekser"
-) = Properties().apply {
+fun consumerConfig(groupId: String) = Properties().apply {
     put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 1)
     put(ConsumerConfig.GROUP_ID_CONFIG, groupId)
     put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false)

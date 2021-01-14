@@ -45,3 +45,5 @@ spec:
       value: https://{{kafka-schema-registry-host}}
     - name: KAFKA_BROKER_URLS
       value: {{kafka-broker-urls}}
+    - name: INDEKS_VERSJON
+      value: 1

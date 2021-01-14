@@ -12,7 +12,7 @@ class StillingConsumerImpl(
     private val stillingMottattService: StillingMottattService
 ): StillingConsumer {
 
-    override fun start() {
+    override fun start(indeksNavn: String) {
         kafkaConsumer.use { consumer ->
             consumer.subscribe(listOf("StillingEkstern"))
 
@@ -21,7 +21,7 @@ class StillingConsumerImpl(
                 failHvisMerEnnEnRecord(records)
                 if (records.count() == 0) continue
                 val melding = records.first()
-                stillingMottattService.behandleStilling(melding.value())
+                stillingMottattService.behandleStilling(melding.value(), indeksNavn)
                 consumer.commitSync()
                 log.info("Committet offset ${melding.offset()} til Kafka")
             }
@@ -38,16 +38,8 @@ class StillingConsumerImpl(
             """.trimIndent())
         }
     }
-
-    // TODO: Trenger ikke denne på "hoved"-consumeren?
-    //  Trenger kun én consumer nr. 2 som alltid leser fra start
-    override fun konsumerTopicFraBegynnelse() {
-        log.info("Spoler Kafka-offset tilbake til begynnelsen")
-        kafkaConsumer.seekToBeginning(kafkaConsumer.assignment())
-    }
 }
 
 interface StillingConsumer {
-    fun start()
-    fun konsumerTopicFraBegynnelse()
+    fun start(indeksNavn: String)
 }

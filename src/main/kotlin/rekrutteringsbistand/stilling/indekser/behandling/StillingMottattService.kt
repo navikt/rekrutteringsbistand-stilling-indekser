@@ -7,11 +7,10 @@ import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClient
 
 class StillingMottattService(
     private val stillingsinfoClient: StillingsinfoClient,
-    private val esService: ElasticSearchService,
-    private val indeksNavn: String = stillingAlias
+    private val esService: ElasticSearchService
 ) {
 
-    fun behandleStilling(ad: Ad) {
+    fun behandleStilling(ad: Ad, indeksNavn: String) {
         val stilling = konverterTilStilling(ad)
         val stillingsinfo = stillingsinfoClient.getStillingsinfo(stilling.uuid)
         val rekrutteringsbistandStilling = RekrutteringsbistandStilling(stilling, stillingsinfo)

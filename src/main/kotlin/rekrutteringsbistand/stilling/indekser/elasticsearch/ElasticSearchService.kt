@@ -1,6 +1,7 @@
 package rekrutteringsbistand.stilling.indekser.elasticsearch
 
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest
+import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest
 import org.elasticsearch.action.index.IndexRequest
 import org.elasticsearch.client.RequestOptions
 import org.elasticsearch.client.RestHighLevelClient
@@ -8,37 +9,28 @@ import org.elasticsearch.client.indices.CreateIndexRequest
 import org.elasticsearch.client.indices.GetIndexRequest
 import org.elasticsearch.client.indices.PutMappingRequest
 import org.elasticsearch.common.xcontent.XContentType
+import rekrutteringsbistand.stilling.indekser.utils.environment
 import rekrutteringsbistand.stilling.indekser.utils.log
 import rekrutteringsbistand.stilling.indekser.utils.objectMapper
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 const val stillingAlias: String = "stilling"
 
 class ElasticSearchService(private val esClient: RestHighLevelClient) {
-
-    fun initialiser() {
-        val indeksNavn = indeksNavnMedTimestamp()
-        val indeksBleOpprettet = opprettIndeksHvisDenIkkeFinnes(indeksNavn)
-        if (indeksBleOpprettet) oppdaterAlias(indeksNavn)
-    }
 
     fun indekser(rekrutteringsbistandStilling: RekrutteringsbistandStilling, indeks: String) {
         val indexRequest = IndexRequest(indeks)
             .id(rekrutteringsbistandStilling.stilling.uuid)
             .source(objectMapper.writeValueAsString(rekrutteringsbistandStilling), XContentType.JSON)
         esClient.index(indexRequest, RequestOptions.DEFAULT)
-        log.info("Indekserte stilling med UUID: ${rekrutteringsbistandStilling.stilling.uuid}")
+        log.info("Indekserte stilling med UUID: ${rekrutteringsbistandStilling.stilling.uuid} i indeks '$indeks'")
     }
 
-    private fun opprettIndeksHvisDenIkkeFinnes(indeksNavn: String): Boolean {
-        val getIndexRequest = GetIndexRequest(stillingAlias)
-        val indeksFinnes = esClient.indices().exists(getIndexRequest, RequestOptions.DEFAULT)
-
-        if (!indeksFinnes) {
+    fun opprettIndeksHvisDenIkkeFinnes(indeksNavn: String): Boolean {
+        if (ingenIndeksFinnes()) {
             opprettIndeks(indeksNavn)
             return true
         }
+        log.info("Bruker eksisterende indeks '$indeksNavn'")
         return false
     }
 
@@ -53,7 +45,7 @@ class ElasticSearchService(private val esClient: RestHighLevelClient) {
         log.info("Opprettet indeks '$indeksNavn'")
     }
 
-    private fun oppdaterAlias(indeksNavn: String) {
+    fun oppdaterAlias(indeksNavn: String) {
         val remove = IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.REMOVE)
             .index("$stillingAlias*")
             .alias(stillingAlias)
@@ -67,16 +59,62 @@ class ElasticSearchService(private val esClient: RestHighLevelClient) {
         log.info("Oppdaterte alias '$stillingAlias' til å peke på '$indeksNavn'")
     }
 
+    fun skalReindeksere(): Boolean {
+        if (ingenIndeksFinnes()) return false
+
+        val nyIndeksVersjon = hentVersjonFraNaisConfig()
+        val gjeldendeVersjon = hentVersjonAliasPekerPå()
+        return nyIndeksVersjon > gjeldendeVersjon
+    }
+
+    fun nyIndeksErIkkeOpprettet(): Boolean {
+        val nyIndeksVersjon = hentVersjonFraNaisConfig()
+        val request = GetIndexRequest(hentIndeksNavn(nyIndeksVersjon))
+        return !esClient.indices().exists(request, RequestOptions.DEFAULT)
+    }
+
+    private fun ingenIndeksFinnes(): Boolean {
+        val getIndexRequest = GetIndexRequest(stillingAlias)
+        return !esClient.indices().exists(getIndexRequest, RequestOptions.DEFAULT)
+    }
+
+    fun hentVersjonAliasPekerPå(): Int {
+        val indeks = hentIndeksAliasPekerPå()
+        return hentVersjon(indeks)
+    }
+
+    fun hentIndeksAliasPekerPå(): String {
+        val request = GetAliasesRequest(stillingAlias).indices("$stillingAlias*")
+        val response = esClient.indices().getAlias(request, RequestOptions.DEFAULT)
+
+        if (response.aliases.size != 1) {
+            throw Exception(
+                "Klarte ikke hente indeks for alias, fikk noe annet enn én indeks. " +
+                "Antall indekser: ${response.aliases.size}"
+            )
+        }
+
+        val indekser = response.aliases.keys
+        return indekser.first()
+    }
+
+    private fun hentVersjon(indeksNavn: String): Int {
+        return indeksNavn.split("_").last().toInt()
+    }
+
+    fun hentVersjonFraNaisConfig(): Int {
+        return environment().get("INDEKS_VERSJON").toInt()
+    }
+
+    fun hentIndeksNavn(versjon: Int): String {
+        return "${stillingAlias}_$versjon"
+    }
+
     companion object {
         private val INTERNALAD_COMMON_SETTINGS = ElasticSearchService::class.java
                 .getResource("/stilling-common.json").readText()
         private val INTERNALAD_MAPPING = ElasticSearchService::class.java
                 .getResource("/stilling-mapping.json").readText()
     }
-}
-
-fun indeksNavnMedTimestamp(): String {
-    val dateTimeFormat = DateTimeFormatter.ofPattern("_yyyyMMdd_HHmmss")
-    return stillingAlias + LocalDateTime.now().format(dateTimeFormat)
 }
 
