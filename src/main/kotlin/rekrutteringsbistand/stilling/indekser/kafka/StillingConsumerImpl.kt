@@ -3,6 +3,7 @@ package rekrutteringsbistand.stilling.indekser.kafka
 import no.nav.pam.ad.ext.avro.Ad
 import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.clients.consumer.KafkaConsumer
+import org.apache.kafka.common.errors.WakeupException
 import rekrutteringsbistand.stilling.indekser.behandling.StillingMottattService
 import rekrutteringsbistand.stilling.indekser.utils.log
 import java.time.Duration
@@ -13,21 +14,30 @@ class StillingConsumerImpl(
 ): StillingConsumer {
 
     override fun start(indeksNavn: String) {
-        kafkaConsumer.use { consumer ->
-            consumer.subscribe(listOf("StillingEkstern"))
+            try {
+                kafkaConsumer.subscribe(listOf("StillingEkstern"))
 
-            while (true) {
-                val records: ConsumerRecords<String, Ad> = consumer.poll(Duration.ofSeconds(30))
-                failHvisMerEnnEnRecord(records)
-                if (records.count() == 0) continue
-                val melding = records.first()
-                stillingMottattService.behandleStilling(melding.value(), indeksNavn)
-                consumer.commitSync()
-                log.info("Committet offset ${melding.offset()} til Kafka")
+                log.info("Starter å konsumere StillingEkstern-topic med groupId ${kafkaConsumer.groupMetadata().groupId()}")
+                while (true) {
+                    val records: ConsumerRecords<String, Ad> = kafkaConsumer.poll(Duration.ofSeconds(30))
+                    failHvisMerEnnEnRecord(records)
+                    if (records.count() == 0) continue
+                    val melding = records.first()
+                    stillingMottattService.behandleStilling(melding.value(), indeksNavn)
+                    kafkaConsumer.commitSync()
+                    log.info("Committet offset ${melding.offset()} til Kafka")
+                }
+
+                // TODO: Retry-mekanismer
+            } catch (exception: WakeupException) {
+                log.info("Fikk beskjed om å lukke consument med groupId ${kafkaConsumer.groupMetadata().groupId()}")
+            } finally {
+                kafkaConsumer.close()
             }
+    }
 
-            // TODO: Retry-mekanismer
-        }
+    override fun stopp() {
+        kafkaConsumer.wakeup()
     }
 
     private fun failHvisMerEnnEnRecord(records: ConsumerRecords<String, Ad>) {
@@ -42,4 +52,5 @@ class StillingConsumerImpl(
 
 interface StillingConsumer {
     fun start(indeksNavn: String)
+    fun stopp()
 }

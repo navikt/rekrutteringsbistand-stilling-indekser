@@ -26,12 +26,14 @@ class App {
             stillingConsumer: StillingConsumer,
             gammelStillingConsumer: StillingConsumer
         ) {
-            val basePath = "/rekrutteringsbistand-stilling-indekser"
             webServer.routes {
-                get("$basePath/internal/isAlive") { it.status(200) }
-                get("$basePath/internal/isReady") { it.status(200) }
+                get("/internal/isAlive") { it.status(200) }
+                get("/internal/isReady") { it.status(200) }
                 // TODO Not implemented
-                get("$basePath/internal/byttIndeks") { it.status(501) }
+                get("/internal/byttIndeks") {
+                    gammelStillingConsumer.stopp()
+                    it.status(200)
+                }
             }.start(8222)
 
             val skalReindeksere = elasticSearchService.skalReindeksere()

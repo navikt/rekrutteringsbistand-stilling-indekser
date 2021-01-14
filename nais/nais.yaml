@@ -13,9 +13,9 @@ spec:
     - {{url}}
   {{/each}}
   liveness:
-    path: /rekrutteringsbistand-stilling-indekser/internal/isAlive
+    path: /internal/isAlive
   readiness:
-    path: /rekrutteringsbistand-stilling-indekser/internal/isReady
+    path: /internal/isReady
   strategy:
     type: Recreate
   replicas:
