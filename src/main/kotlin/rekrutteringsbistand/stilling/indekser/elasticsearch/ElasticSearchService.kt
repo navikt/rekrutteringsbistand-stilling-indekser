@@ -110,6 +110,10 @@ class ElasticSearchService(private val esClient: RestHighLevelClient) {
         return "${stillingAlias}_$versjon"
     }
 
+    fun byttTilNyIndeks() {
+        oppdaterAlias(hentIndeksNavn(hentVersjonFraNaisConfig()))
+    }
+
     companion object {
         private val INTERNALAD_COMMON_SETTINGS = ElasticSearchService::class.java
                 .getResource("/stilling-common.json").readText()

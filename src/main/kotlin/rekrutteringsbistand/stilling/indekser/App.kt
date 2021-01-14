@@ -32,7 +32,10 @@ class App {
                 // TODO Not implemented
                 get("/internal/byttIndeks") {
                     gammelStillingConsumer.stopp()
-                    it.status(200)
+                    elasticSearchService.byttTilNyIndeks()
+                    val melding = "Reindeksering er ferdig, søk går nå mot ny indeks"
+                    log.info(melding)
+                    it.status(200).result(melding)
                 }
             }.start(8222)
 
