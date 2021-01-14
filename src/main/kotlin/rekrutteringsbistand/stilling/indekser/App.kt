@@ -51,7 +51,7 @@ class App {
                 }
 
                 // Start gammel stillingConsumer med ny config
-                val gammeltIndeksNavn = elasticSearchService.hentIndeksAliasPekerPå()
+                val gammeltIndeksNavn = elasticSearchService.hentIndeksAliasPekerPå() ?: indeksNavn
                 gammelStillingConsumer.start(gammeltIndeksNavn)
 
             } else {
@@ -82,14 +82,16 @@ fun main() {
         val esClient = getEsClient()
         val elasticSearchService = ElasticSearchService(esClient)
 
+        val versjonTilStillingConsumer = elasticSearchService.hentVersjonFraNaisConfig()
         val kafkaConsumer = KafkaConsumer<String, Ad>(
-            consumerConfig(groupId = "rekrutteringsbistand-stilling-indekser-${elasticSearchService.hentVersjonFraNaisConfig()}")
+            consumerConfig(groupId = "rekrutteringsbistand-stilling-indekser-$versjonTilStillingConsumer")
         )
         val stillingMottattService = StillingMottattService(stillingsinfoClient, elasticSearchService)
         val stillingConsumer = StillingConsumerImpl(kafkaConsumer, stillingMottattService)
 
+        val versjonTilGammelConsumer = elasticSearchService.hentVersjonAliasPekerPå() ?: elasticSearchService.hentVersjonFraNaisConfig()
         val gammelKafkaConsumer = KafkaConsumer<String, Ad>(
-            consumerConfig(groupId = "rekrutteringsbistand-stilling-indekser-${elasticSearchService.hentVersjonAliasPekerPå()}")
+            consumerConfig(groupId = "rekrutteringsbistand-stilling-indekser-$versjonTilGammelConsumer")
         )
         val gammelStillingMottattService = StillingMottattService(stillingsinfoClient, elasticSearchService)
         val gammelStillingConsumer = StillingConsumerImpl(gammelKafkaConsumer, gammelStillingMottattService)

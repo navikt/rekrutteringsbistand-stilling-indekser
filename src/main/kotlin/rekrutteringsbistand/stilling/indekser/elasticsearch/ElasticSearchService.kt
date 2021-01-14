@@ -63,7 +63,7 @@ class ElasticSearchService(private val esClient: RestHighLevelClient) {
         if (ingenIndeksFinnes()) return false
 
         val nyIndeksVersjon = hentVersjonFraNaisConfig()
-        val gjeldendeVersjon = hentVersjonAliasPekerPå()
+        val gjeldendeVersjon = hentVersjonAliasPekerPå() ?: return false // indeks finnes ikke enda
         return nyIndeksVersjon > gjeldendeVersjon
     }
 
@@ -78,24 +78,23 @@ class ElasticSearchService(private val esClient: RestHighLevelClient) {
         return !esClient.indices().exists(getIndexRequest, RequestOptions.DEFAULT)
     }
 
-    fun hentVersjonAliasPekerPå(): Int {
-        val indeks = hentIndeksAliasPekerPå()
+    fun hentVersjonAliasPekerPå(): Int? {
+        val indeks = hentIndeksAliasPekerPå() ?: return null
         return hentVersjon(indeks)
     }
 
-    fun hentIndeksAliasPekerPå(): String {
+    fun hentIndeksAliasPekerPå(): String? {
         val request = GetAliasesRequest(stillingAlias).indices("$stillingAlias*")
         val response = esClient.indices().getAlias(request, RequestOptions.DEFAULT)
 
-        if (response.aliases.size != 1) {
-            throw Exception(
-                "Klarte ikke hente indeks for alias, fikk noe annet enn én indeks. " +
-                "Antall indekser: ${response.aliases.size}"
+        return when (response.aliases.size) {
+            0 -> null
+            1 -> response.aliases.keys.first()
+            else -> throw Exception(
+                "Klarte ikke hente indeks for alias, fikk mer enn én indeks. " +
+                        "Antall indekser: ${response.aliases.size}"
             )
         }
-
-        val indekser = response.aliases.keys
-        return indekser.first()
     }
 
     private fun hentVersjon(indeksNavn: String): Int {
