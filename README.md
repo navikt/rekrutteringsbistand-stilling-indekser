@@ -27,9 +27,20 @@ echo $ES_PASSWORD
 ## Spørringer
 Vi har et alias `stilling` som peker på riktig indeks.
 
-Liste indekser: `wget <url>/_cat/indices --user <brukernavn> --password <passord>`
-Slette indeks: `wget --method=DELETE <url>/<indeksnavn> --user <brukernavn> --password <passord>`
-Hente ut dokument med UUID: `wget <url>/stilling/_doc/<uuid på stilling> --user <brukernavn> --password <passord>`
+Liste indekser:
+```sh
+wget <url>/_cat/indices --user <brukernavn> --password <passord>
+```
+
+Slette indeks:
+```sh
+wget --method=DELETE <url>/<indeksnavn> --user <brukernavn> --password <passord>
+```
+
+Hente ut dokument med UUID:
+```sh
+wget <url>/stilling/_doc/<uuid på stilling> --user <brukernavn> --password <passord>
+```
 
 # Henvendelser
 
@@ -44,4 +55,3 @@ Hente ut dokument med UUID: `wget <url>/stilling/_doc/<uuid på stilling> --user
 * Opprett gjerne en issue i Github for alle typer spørsmål
 * IT-utviklerne i Github-teamet https://github.com/orgs/navikt/teams/arbeidsgiver
 * IT-avdelingen i [Arbeids- og velferdsdirektoratet](https://www.nav.no/no/NAV+og+samfunn/Kontakt+NAV/Relatert+informasjon/arbeids-og-velferdsdirektoratet-kontorinformasjon)
-
