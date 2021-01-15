@@ -1,4 +1,4 @@
-package rekrutteringsbistand.stilling.indekser.kafka
+package rekrutteringsbistand.stilling.indekser.behandling
 
 import no.nav.pam.ad.ext.avro.Ad
 import rekrutteringsbistand.stilling.indekser.elasticsearch.*
@@ -48,8 +48,8 @@ fun konverterTilStilling(ad: Ad): Stilling {
                 it.getNavIdent()
             )
         },
-        ad.getProperties().map {
-            Property(it.getKey(), it.getValue())
-        }
+        ad.getProperties()
+            .map { it.getKey() to it.getValue() }
+            .toMap()
     )
 }

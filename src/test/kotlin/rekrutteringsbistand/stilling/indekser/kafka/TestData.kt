@@ -46,7 +46,10 @@ val enAd = Ad(
             "county_code"
         )
     ),
-    listOf(Property("key", "value"))
+    listOf(
+            Property("sector", "Offentlig"),
+            Property("adtext", "<h1>Tittel</h2><p>Den beste stillingen <b>noen sinne</b></p>")
+    )
 )
 
 val enStillingsinfo = Stillingsinfo(

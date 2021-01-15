@@ -25,12 +25,7 @@ data class Stilling(
     val locations: List<Location>,
     val reference: String,
     val administration: Administration?,
-    val properties: List<Property>,
-)
-
-data class Property(
-    val key: String,
-    val value: String
+    val properties: Map<String, String>,
 )
 
 data class Location(
