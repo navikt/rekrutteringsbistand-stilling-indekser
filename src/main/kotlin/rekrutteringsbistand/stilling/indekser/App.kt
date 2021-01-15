@@ -4,6 +4,8 @@ import com.github.kittinunf.fuel.core.FuelManager
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.get
 import io.javalin.http.Context
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import no.nav.pam.ad.ext.avro.Ad
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import rekrutteringsbistand.stilling.indekser.autentisering.AccessTokenClient
@@ -53,8 +55,10 @@ class App(
 
         log.info("Fortsetter samtidig konsumering på gjeldende indeks $gjeldendeIndeks")
 
-        stillingConsumer.start(nyIndeks)
-        gammelStillingConsumer!!.start(gjeldendeIndeks)
+        runBlocking {
+            launch { stillingConsumer.start(nyIndeks) }
+            launch { gammelStillingConsumer!!.start(gjeldendeIndeks) }
+        }
     }
 
     private fun startIndeksering() {
@@ -63,7 +67,11 @@ class App(
         if (indeksBleOpprettet)
             elasticSearchService.oppdaterAlias(indeks)
 
-        stillingConsumer.start(indeks)
+        runBlocking {
+            launch {
+                stillingConsumer.start(indeks)
+            }
+        }
     }
 }
 

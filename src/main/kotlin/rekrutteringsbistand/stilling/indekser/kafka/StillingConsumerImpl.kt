@@ -1,5 +1,7 @@
 package rekrutteringsbistand.stilling.indekser.kafka
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import no.nav.pam.ad.ext.avro.Ad
 import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.clients.consumer.KafkaConsumer
@@ -13,7 +15,7 @@ class StillingConsumerImpl(
     private val stillingMottattService: StillingMottattService
 ): StillingConsumer {
 
-    override fun start(indeksNavn: String) {
+    override suspend fun start(indeksNavn: String) = withContext(Dispatchers.IO) {
             try {
                 kafkaConsumer.subscribe(listOf("StillingEkstern"))
 
@@ -52,6 +54,6 @@ class StillingConsumerImpl(
 }
 
 interface StillingConsumer {
-    fun start(indeksNavn: String)
+    suspend fun start(indeksNavn: String)
     fun stopp()
 }
