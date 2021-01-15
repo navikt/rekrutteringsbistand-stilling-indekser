@@ -18,7 +18,7 @@ class StillingConsumerImpl(
                 kafkaConsumer.subscribe(listOf("StillingEkstern"))
 
                 log.info("Starter å konsumere StillingEkstern-topic med groupId ${kafkaConsumer.groupMetadata().groupId()}, " +
-                        "indekserer på indeks '$indeksNavn")
+                        "indekserer på indeks '$indeksNavn'")
                 while (true) {
                     val records: ConsumerRecords<String, Ad> = kafkaConsumer.poll(Duration.ofSeconds(30))
                     failHvisMerEnnEnRecord(records)

@@ -53,8 +53,8 @@ class App(
 
         log.info("Fortsetter samtidig konsumering på gjeldende indeks $gjeldendeIndeks")
 
-        gammelStillingConsumer!!.start(gjeldendeIndeks)
         stillingConsumer.start(nyIndeks)
+        gammelStillingConsumer!!.start(gjeldendeIndeks)
     }
 
     private fun startIndeksering() {
