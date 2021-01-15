@@ -3,72 +3,67 @@ package rekrutteringsbistand.stilling.indekser
 import com.github.kittinunf.fuel.core.FuelManager
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.get
+import io.javalin.http.Context
 import no.nav.pam.ad.ext.avro.Ad
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import rekrutteringsbistand.stilling.indekser.autentisering.AccessTokenClient
-import rekrutteringsbistand.stilling.indekser.elasticsearch.ElasticSearchService
-import rekrutteringsbistand.stilling.indekser.elasticsearch.getEsClient
 import rekrutteringsbistand.stilling.indekser.kafka.StillingConsumer
 import rekrutteringsbistand.stilling.indekser.kafka.StillingConsumerImpl
 import rekrutteringsbistand.stilling.indekser.behandling.StillingMottattService
+import rekrutteringsbistand.stilling.indekser.elasticsearch.*
 import rekrutteringsbistand.stilling.indekser.kafka.consumerConfig
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClientImpl
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.authenticateWithAccessToken
 import rekrutteringsbistand.stilling.indekser.utils.log
 import kotlin.Exception
-import kotlin.system.exitProcess
 
-class App {
-    companion object {
-        fun start(
-            webServer: Javalin,
-            elasticSearchService: ElasticSearchService,
-            stillingConsumer: StillingConsumer,
-            gammelStillingConsumer: StillingConsumer
-        ) {
-            webServer.routes {
-                get("/internal/isAlive") { it.status(200) }
-                get("/internal/isReady") { it.status(200) }
-                // TODO Not implemented
-                get("/internal/byttIndeks") {
-                    gammelStillingConsumer.stopp()
-                    elasticSearchService.byttTilNyIndeks()
-                    val melding = "Reindeksering er ferdig, søk går nå mot ny indeks"
-                    log.info(melding)
-                    it.status(200).result(melding)
-                }
-            }.start(8222)
-
-            val skalReindeksere = elasticSearchService.skalReindeksere()
-            if (skalReindeksere) {
-
-
-                val indeksNavn = elasticSearchService.hentIndeksNavn(elasticSearchService.hentVersjonFraNaisConfig())
-                log.info("Starter eller fortsetter reindeksering med indeks $indeksNavn")
-                if (elasticSearchService.nyIndeksErIkkeOpprettet()) {
-                    // TODO: Hent indeksNavn fra et sted og refaktorer
-                    elasticSearchService.opprettIndeks(indeksNavn)
-                }
-
-                // Start gammel stillingConsumer med ny config
-                val gammeltIndeksNavn = elasticSearchService.hentIndeksAliasPekerPå() ?: indeksNavn
-                gammelStillingConsumer.start(gammeltIndeksNavn)
-
-            } else {
-
-                val indeksNavn = elasticSearchService.hentIndeksNavn(elasticSearchService.hentVersjonFraNaisConfig())
-                val indeksBleOpprettet = elasticSearchService.opprettIndeksHvisDenIkkeFinnes(indeksNavn)
-                if (indeksBleOpprettet) elasticSearchService.oppdaterAlias(indeksNavn)
+class App(
+        private val webServer: Javalin,
+        private val elasticSearchService: ElasticSearchService,
+        private val stillingConsumer: StillingConsumer,
+        private val gammelStillingConsumer: StillingConsumer?
+) {
+    fun start() {
+        webServer.routes {
+            get("/internal/isAlive") { it.status(200) }
+            get("/internal/isReady") { it.status(200) }
+            get("/internal/byttIndeks") {
+                byttIndeks(it, gammelStillingConsumer, elasticSearchService)
             }
+        }.start(8222)
 
-            try {
-                val indeksNavn = elasticSearchService.hentIndeksNavn(elasticSearchService.hentVersjonFraNaisConfig())
-                stillingConsumer.start(indeksNavn)
-
-            } catch (exception: Exception) {
-                log.error("Midlertidig feilhåndtering for at appen ikke skal kræsje ved exception", exception)
-            }
+        if (elasticSearchService.skalReindeksere()) {
+            startReindeksering()
+        } else {
+            startIndeksering()
         }
+    }
+
+    private fun startReindeksering() {
+        val nyIndeks = hentNyesteIndeks()
+        val gjeldendeIndeks = elasticSearchService.hentGjeldendeIndeks()
+                ?: kanIkkeStarteReindeksering()
+
+        if (elasticSearchService.nyIndeksErIkkeOpprettet()) {
+            elasticSearchService.opprettIndeks(nyIndeks)
+            log.info("Starter reindeksering på ny indeks $nyIndeks")
+        } else {
+            log.info("Gjenopptar reindeksering på ny indeks $nyIndeks")
+        }
+
+        log.info("Fortsetter samtidig konsumering på gjeldende indeks $gjeldendeIndeks")
+
+        gammelStillingConsumer!!.start(gjeldendeIndeks)
+        stillingConsumer.start(nyIndeks)
+    }
+
+    private fun startIndeksering() {
+        val indeks = hentNyesteIndeks()
+        val indeksBleOpprettet = elasticSearchService.opprettIndeksHvisDenIkkeFinnes(indeks)
+        if (indeksBleOpprettet)
+            elasticSearchService.oppdaterAlias(indeks)
+
+        stillingConsumer.start(indeks)
     }
 }
 
@@ -82,31 +77,33 @@ fun main() {
         val esClient = getEsClient()
         val elasticSearchService = ElasticSearchService(esClient)
 
-        val versjonTilStillingConsumer = elasticSearchService.hentVersjonFraNaisConfig()
-        val kafkaConsumer = KafkaConsumer<String, Ad>(
-            consumerConfig(groupId = "rekrutteringsbistand-stilling-indekser-$versjonTilStillingConsumer")
-        )
+        val versjonTilStillingConsumer = hentVersjonFraNaisConfig()
+        val kafkaConsumer = KafkaConsumer<String, Ad>(consumerConfig(versjonTilStillingConsumer))
         val stillingMottattService = StillingMottattService(stillingsinfoClient, elasticSearchService)
         val stillingConsumer = StillingConsumerImpl(kafkaConsumer, stillingMottattService)
 
-        val versjonTilGammelConsumer = elasticSearchService.hentVersjonAliasPekerPå() ?: elasticSearchService.hentVersjonFraNaisConfig()
-        val gammelKafkaConsumer = KafkaConsumer<String, Ad>(
-            consumerConfig(groupId = "rekrutteringsbistand-stilling-indekser-$versjonTilGammelConsumer")
-        )
-        val gammelStillingMottattService = StillingMottattService(stillingsinfoClient, elasticSearchService)
-        val gammelStillingConsumer = StillingConsumerImpl(gammelKafkaConsumer, gammelStillingMottattService)
+        val skalReindeksere = elasticSearchService.skalReindeksere()
+        val gammelStillingConsumer = if (skalReindeksere) {
+            val versjonTilGammelConsumer = elasticSearchService.hentGjeldendeIndeksversjon()
+                    ?: kanIkkeStarteReindeksering()
+            val gammelKafkaConsumer = KafkaConsumer<String, Ad>(consumerConfig(versjonTilGammelConsumer))
 
-        App.start(
+            val gammelStillingMottattService = StillingMottattService(stillingsinfoClient, elasticSearchService)
+            StillingConsumerImpl(gammelKafkaConsumer, gammelStillingMottattService)
+        } else null
+
+        App(
             webServer,
             elasticSearchService,
             stillingConsumer,
             gammelStillingConsumer
-        )
+        ).start()
 
     } catch (exception: Exception) {
-        log("main()").error("Noe galt skjedde, stopper appen", exception)
-        webServer.stop()
-        exitProcess(1)
+        log("main()").error("Noe galt skjedde – indekseringen er stoppet", exception)
     }
 }
 
+private fun kanIkkeStarteReindeksering(): Nothing {
+    throw Exception("Kan ikke starte reindeksering uten noen alias som peker på indeks")
+}

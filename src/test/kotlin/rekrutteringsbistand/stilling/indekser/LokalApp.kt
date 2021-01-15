@@ -9,8 +9,6 @@ import rekrutteringsbistand.stilling.indekser.kafka.getLocalEsClient
 
 fun main() {
     val webServer = Javalin.create()
-
-    // TODO: Bytt ut med WireMock så vi får brukt logikken i klienten også lokalt?
     val stillingsinfoClient = FakeStillingsinfoClient()
 
     val localEsClient = getLocalEsClient()
@@ -22,10 +20,10 @@ fun main() {
     val gammelStillingMottattService = StillingMottattService(stillingsinfoClient, elasticSearchService)
     val gammelFakeStillingConsumer = FakeStillingConsumer(gammelStillingMottattService)
 
-    App.start(
+    App(
         webServer,
         elasticSearchService,
         fakeStillingConsumer,
         gammelFakeStillingConsumer
-    )
+    ).start()
 }

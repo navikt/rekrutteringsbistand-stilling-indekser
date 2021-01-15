@@ -63,13 +63,13 @@ class ElasticSearchService(private val esClient: RestHighLevelClient) {
         if (ingenIndeksFinnes()) return false
 
         val nyIndeksVersjon = hentVersjonFraNaisConfig()
-        val gjeldendeVersjon = hentVersjonAliasPekerPå() ?: return false // indeks finnes ikke enda
+        val gjeldendeVersjon = hentGjeldendeIndeksversjon() ?: return false // indeks finnes ikke enda
         return nyIndeksVersjon > gjeldendeVersjon
     }
 
     fun nyIndeksErIkkeOpprettet(): Boolean {
-        val nyIndeksVersjon = hentVersjonFraNaisConfig()
-        val request = GetIndexRequest(hentIndeksNavn(nyIndeksVersjon))
+        val indeksnavn = hentNyesteIndeks()
+        val request = GetIndexRequest(indeksnavn)
         return !esClient.indices().exists(request, RequestOptions.DEFAULT)
     }
 
@@ -78,12 +78,7 @@ class ElasticSearchService(private val esClient: RestHighLevelClient) {
         return !esClient.indices().exists(getIndexRequest, RequestOptions.DEFAULT)
     }
 
-    fun hentVersjonAliasPekerPå(): Int? {
-        val indeks = hentIndeksAliasPekerPå() ?: return null
-        return hentVersjon(indeks)
-    }
-
-    fun hentIndeksAliasPekerPå(): String? {
+    fun hentGjeldendeIndeks(): String? {
         val request = GetAliasesRequest(stillingAlias).indices("$stillingAlias*")
         val response = esClient.indices().getAlias(request, RequestOptions.DEFAULT)
 
@@ -91,22 +86,15 @@ class ElasticSearchService(private val esClient: RestHighLevelClient) {
             0 -> null
             1 -> response.aliases.keys.first()
             else -> throw Exception(
-                "Klarte ikke hente indeks for alias, fikk mer enn én indeks. " +
-                        "Antall indekser: ${response.aliases.size}"
+                    "Klarte ikke hente indeks for alias, fikk mer enn én indeks. " +
+                            "Antall indekser: ${response.aliases.size}"
             )
         }
     }
 
-    private fun hentVersjon(indeksNavn: String): Int {
-        return indeksNavn.split("_").last().toInt()
-    }
-
-    fun hentVersjonFraNaisConfig(): Int {
-        return environment().get("INDEKS_VERSJON").toInt()
-    }
-
-    fun hentIndeksNavn(versjon: Int): String {
-        return "${stillingAlias}_$versjon"
+    fun hentGjeldendeIndeksversjon(): Int? {
+        val indeks = hentGjeldendeIndeks() ?: return null
+        return hentVersjon(indeks)
     }
 
     fun byttTilNyIndeks() {
