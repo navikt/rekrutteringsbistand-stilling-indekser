@@ -9,7 +9,6 @@ import org.elasticsearch.client.indices.CreateIndexRequest
 import org.elasticsearch.client.indices.GetIndexRequest
 import org.elasticsearch.client.indices.PutMappingRequest
 import org.elasticsearch.common.xcontent.XContentType
-import rekrutteringsbistand.stilling.indekser.utils.environment
 import rekrutteringsbistand.stilling.indekser.utils.log
 import rekrutteringsbistand.stilling.indekser.utils.objectMapper
 

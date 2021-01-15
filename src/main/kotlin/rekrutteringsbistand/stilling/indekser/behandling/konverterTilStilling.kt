@@ -1,5 +1,8 @@
 package rekrutteringsbistand.stilling.indekser.behandling
 
+import com.fasterxml.jackson.core.JsonProcessingException
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.pam.ad.ext.avro.Ad
 import rekrutteringsbistand.stilling.indekser.elasticsearch.*
 
@@ -49,7 +52,16 @@ fun konverterTilStilling(ad: Ad): Stilling {
             )
         },
         ad.getProperties()
-            .map { it.getKey() to it.getValue() }
+            .map { it.getKey() to (tilJson(it.getValue()) ?: it.getValue()) }
             .toMap()
     )
+}
+
+fun tilJson(string: String): JsonNode? {
+    return try {
+        val json = jacksonObjectMapper().readTree(string)
+        json
+    } catch (exception: JsonProcessingException) {
+        null
+    }
 }

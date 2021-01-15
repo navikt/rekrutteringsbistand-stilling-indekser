@@ -22,6 +22,7 @@
     "stilling": {
       "properties": {
         "uuid": { "type": "keyword" },
+        "uuid2": { "type": "keyword" },
         "updated": {
           "type": "date",
           "format": "strict_date_optional_time"
@@ -120,16 +121,6 @@
         "searchtags_no": {
           "type": "text",
           "analyzer": "norwegian"
-        },
-        "searchtags_suggest": {
-          "type": "completion",
-          "contexts": [
-            {
-              "name": "status",
-              "type": "category",
-              "path": "status"
-            }
-          ]
         },
         "searchtags_facet": {
           "type": "keyword"
@@ -296,7 +287,6 @@
                   "type": "text",
                   "copy_to": [
                     "stilling.searchtags_no",
-                    "stilling.searchtags_suggest",
                     "stilling.searchtags_facet"
                   ]
                 },
