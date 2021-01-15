@@ -19,9 +19,13 @@ fun main() {
     val stillingMottattService = StillingMottattService(stillingsinfoClient, elasticSearchService)
     val fakeStillingConsumer = FakeStillingConsumer(stillingMottattService)
 
+    val gammelStillingMottattService = StillingMottattService(stillingsinfoClient, elasticSearchService)
+    val gammelFakeStillingConsumer = FakeStillingConsumer(gammelStillingMottattService)
+
     App.start(
         webServer,
         elasticSearchService,
-        fakeStillingConsumer
+        fakeStillingConsumer,
+        gammelFakeStillingConsumer
     )
 }

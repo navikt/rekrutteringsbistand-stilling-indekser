@@ -28,7 +28,7 @@ jobs:
     deploy-to-dev:
         name: Deploy to dev
         needs: test
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/kafka'
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/reindeksering2'
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2

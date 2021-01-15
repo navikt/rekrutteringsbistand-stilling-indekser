@@ -13,9 +13,9 @@ spec:
     - {{url}}
   {{/each}}
   liveness:
-    path: /rekrutteringsbistand-stilling-indekser/internal/isAlive
+    path: /internal/isAlive
   readiness:
-    path: /rekrutteringsbistand-stilling-indekser/internal/isReady
+    path: /internal/isReady
   strategy:
     type: Recreate
   replicas:
@@ -45,3 +45,5 @@ spec:
       value: https://{{kafka-schema-registry-host}}
     - name: KAFKA_BROKER_URLS
       value: {{kafka-broker-urls}}
+    - name: INDEKS_VERSJON
+      value: "1"

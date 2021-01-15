@@ -3,6 +3,7 @@ package rekrutteringsbistand.stilling.indekser.kafka
 import no.nav.pam.ad.ext.avro.Ad
 import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.clients.consumer.KafkaConsumer
+import org.apache.kafka.common.errors.WakeupException
 import rekrutteringsbistand.stilling.indekser.behandling.StillingMottattService
 import rekrutteringsbistand.stilling.indekser.utils.log
 import java.time.Duration
@@ -12,22 +13,32 @@ class StillingConsumerImpl(
     private val stillingMottattService: StillingMottattService
 ): StillingConsumer {
 
-    override fun start() {
-        kafkaConsumer.use { consumer ->
-            consumer.subscribe(listOf("StillingEkstern"))
+    override fun start(indeksNavn: String) {
+            try {
+                kafkaConsumer.subscribe(listOf("StillingEkstern"))
 
-            while (true) {
-                val records: ConsumerRecords<String, Ad> = consumer.poll(Duration.ofSeconds(30))
-                failHvisMerEnnEnRecord(records)
-                if (records.count() == 0) continue
-                val melding = records.first()
-                stillingMottattService.behandleStilling(melding.value())
-                consumer.commitSync()
-                log.info("Committet offset ${melding.offset()} til Kafka")
+                log.info("Starter å konsumere StillingEkstern-topic med groupId ${kafkaConsumer.groupMetadata().groupId()}, " +
+                        "indekserer på indeks '$indeksNavn")
+                while (true) {
+                    val records: ConsumerRecords<String, Ad> = kafkaConsumer.poll(Duration.ofSeconds(30))
+                    failHvisMerEnnEnRecord(records)
+                    if (records.count() == 0) continue
+                    val melding = records.first()
+                    stillingMottattService.behandleStilling(melding.value(), indeksNavn)
+                    kafkaConsumer.commitSync()
+                    log.info("Committet offset ${melding.offset()} til Kafka")
+                }
+
+                // TODO: Retry-mekanismer
+            } catch (exception: WakeupException) {
+                log.info("Fikk beskjed om å lukke consument med groupId ${kafkaConsumer.groupMetadata().groupId()}")
+            } finally {
+                kafkaConsumer.close()
             }
+    }
 
-            // TODO: Retry-mekanismer
-        }
+    override fun stopp() {
+        kafkaConsumer.wakeup()
     }
 
     private fun failHvisMerEnnEnRecord(records: ConsumerRecords<String, Ad>) {
@@ -38,16 +49,9 @@ class StillingConsumerImpl(
             """.trimIndent())
         }
     }
-
-    // TODO: Trenger ikke denne på "hoved"-consumeren?
-    //  Trenger kun én consumer nr. 2 som alltid leser fra start
-    override fun konsumerTopicFraBegynnelse() {
-        log.info("Spoler Kafka-offset tilbake til begynnelsen")
-        kafkaConsumer.seekToBeginning(kafkaConsumer.assignment())
-    }
 }
 
 interface StillingConsumer {
-    fun start()
-    fun konsumerTopicFraBegynnelse()
+    fun start(indeksNavn: String)
+    fun stopp()
 }
