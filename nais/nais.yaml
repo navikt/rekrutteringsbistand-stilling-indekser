@@ -46,4 +46,4 @@ spec:
     - name: KAFKA_BROKER_URLS
       value: {{kafka-broker-urls}}
     - name: INDEKS_VERSJON
-      value: "2"
+      value: "3"
