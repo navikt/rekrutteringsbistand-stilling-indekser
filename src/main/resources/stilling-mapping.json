@@ -22,7 +22,6 @@
     "stilling": {
       "properties": {
         "uuid": { "type": "keyword" },
-        "uuid2": { "type": "keyword" },
         "updated": {
           "type": "date",
           "format": "strict_date_optional_time"
