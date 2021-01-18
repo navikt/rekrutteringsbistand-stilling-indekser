@@ -24,12 +24,12 @@ class StillingConsumerImpl(
                         "indekserer på indeks '$indeksNavn'")
 
                 var før = LocalDateTime.now()
-
                 while (true) {
                     val records: ConsumerRecords<String, Ad> = kafkaConsumer.poll(Duration.ofSeconds(30))
                     if (records.count() == 0) continue
 
-                    records.forEach { stillingMottattService.behandleStilling(it.value(), indeksNavn) }
+                    val stillinger = records.map { it.value() }
+                    stillingMottattService.behandleStillinger(stillinger, indeksNavn)
                     kafkaConsumer.commitSync()
                     log.info("Committet offset ${records.last().offset()} til Kafka")
 

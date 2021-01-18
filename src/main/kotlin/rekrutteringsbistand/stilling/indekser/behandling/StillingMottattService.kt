@@ -9,11 +9,14 @@ class StillingMottattService(
     private val esService: ElasticSearchService
 ) {
 
-    fun behandleStilling(ad: Ad, indeksNavn: String) {
-        val stilling = konverterTilStilling(ad)
-        val stillingsinfo = stillingsinfoClient.getStillingsinfo(stilling.uuid)
-        val rekrutteringsbistandStilling = RekrutteringsbistandStilling(stilling, stillingsinfo)
-        esService.indekser(rekrutteringsbistandStilling, indeksNavn)
+    fun behandleStillinger(ads: List<Ad>, indeksNavn: String) {
+        val rekrutteringsbistandStillinger = ads.map {
+            val stilling = konverterTilStilling(it)
+            val stillingsinfo = stillingsinfoClient.getStillingsinfo(it.getUuid())
+            RekrutteringsbistandStilling(stilling, stillingsinfo)
+        }
+
+        esService.indekser(rekrutteringsbistandStillinger, indeksNavn)
     }
 }
 

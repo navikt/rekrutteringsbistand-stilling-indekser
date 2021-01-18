@@ -1,7 +1,9 @@
 package rekrutteringsbistand.stilling.indekser.elasticsearch
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest
 import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest
+import org.elasticsearch.action.bulk.BulkRequest
 import org.elasticsearch.action.index.IndexRequest
 import org.elasticsearch.client.RequestOptions
 import org.elasticsearch.client.RestHighLevelClient
@@ -10,18 +12,26 @@ import org.elasticsearch.client.indices.GetIndexRequest
 import org.elasticsearch.client.indices.PutMappingRequest
 import org.elasticsearch.common.xcontent.XContentType
 import rekrutteringsbistand.stilling.indekser.utils.log
-import rekrutteringsbistand.stilling.indekser.utils.objectMapper
 
 const val stillingAlias: String = "stilling"
 
 class ElasticSearchService(private val esClient: RestHighLevelClient) {
 
-    fun indekser(rekrutteringsbistandStilling: RekrutteringsbistandStilling, indeks: String) {
-        val indexRequest = IndexRequest(indeks)
-            .id(rekrutteringsbistandStilling.stilling.uuid)
-            .source(objectMapper.writeValueAsString(rekrutteringsbistandStilling), XContentType.JSON)
-        esClient.index(indexRequest, RequestOptions.DEFAULT)
-        log.info("Indekserte stilling med UUID: ${rekrutteringsbistandStilling.stilling.uuid} i indeks '$indeks'")
+    fun indekser(rekrutteringsbistandStillinger: List<RekrutteringsbistandStilling>, indeks: String) {
+
+        val bulkRequest = BulkRequest()
+        rekrutteringsbistandStillinger.forEach {
+            bulkRequest.add(
+                IndexRequest(indeks)
+                    .id(it.stilling.uuid)
+                    .source(jacksonObjectMapper().writeValueAsString(it), XContentType.JSON)
+            )
+        }
+
+        esClient.bulk(bulkRequest, RequestOptions.DEFAULT)
+
+        val uuider = rekrutteringsbistandStillinger.map { it.stilling.uuid }
+        log.info("Indekserte ${uuider.size} stillinger i indeks '$indeks'. UUIDer: $uuider")
     }
 
     fun opprettIndeksHvisDenIkkeFinnes(indeksNavn: String): Boolean {

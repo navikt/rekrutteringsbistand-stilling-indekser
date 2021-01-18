@@ -11,7 +11,7 @@ class FakeStillingConsumer(private val stillingMottattService: StillingMottattSe
 
     override suspend fun start(indeksNavn: String) = withContext(Dispatchers.IO) {
         while (skalKjøre) {
-            stillingMottattService.behandleStilling(enAd, indeksNavn)
+            stillingMottattService.behandleStillinger(listOf(enAd), indeksNavn)
             delay(10_000)
         }
     }
