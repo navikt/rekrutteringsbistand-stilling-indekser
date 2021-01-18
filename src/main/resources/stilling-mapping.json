@@ -1,11 +1,14 @@
 {
   "date_detection": false,
-
   "properties": {
     "stillingsinfo": {
       "properties": {
-        "eierNavident": { "type": "keyword" },
-        "eierNavn": { "type": "text" },
+        "eierNavident": {
+          "type": "keyword"
+        },
+        "eierNavn": {
+          "type": "text"
+        },
         "notat": {
           "type": "text",
           "copy_to": "stillingsinfo.notat_no"
@@ -14,14 +17,19 @@
           "type": "text",
           "analyzer": "norwegian"
         },
-        "stillingsid": { "type": "keyword" },
-        "stillingsinfoid": { "type": "keyword" }
+        "stillingsid": {
+          "type": "keyword"
+        },
+        "stillingsinfoid": {
+          "type": "keyword"
+        }
       }
     },
-
     "stilling": {
       "properties": {
-        "uuid": { "type": "keyword" },
+        "uuid": {
+          "type": "keyword"
+        },
         "updated": {
           "type": "date",
           "format": "strict_date_optional_time"
@@ -34,19 +42,25 @@
           "type": "date",
           "format": "strict_date_optional_time"
         },
-        "publishedByAdmin": {
-          "type": "date",
-          "format": "strict_date_optional_time"
-        },
         "expires": {
           "type": "date",
           "format": "strict_date_optional_time"
         },
-        "status": { "type": "keyword" },
-        "privacy": { "type": "keyword" },
-        "source": { "type": "keyword" },
-        "reference": { "type": "keyword" },
-        "medium": { "type": "keyword" },
+        "status": {
+          "type": "keyword"
+        },
+        "privacy": {
+          "type": "keyword"
+        },
+        "source": {
+          "type": "keyword"
+        },
+        "reference": {
+          "type": "keyword"
+        },
+        "medium": {
+          "type": "keyword"
+        },
         "title": {
           "type": "text",
           "copy_to": "stilling.title_no"
@@ -67,90 +81,26 @@
           "type": "text",
           "analyzer": "norwegian_html"
         },
-        "employerdescription_no": {
-          "type": "text",
-          "analyzer": "norwegian_html"
-        },
         "geography_all_no": {
           "type": "text",
           "analyzer": "norwegian"
         },
-        "engagementtype_facet": {
-          "type": "keyword"
-        },
-        "extent_facet": {
-          "type": "keyword"
-        },
         "county_facet": {
           "type": "keyword"
-        },
-        "country_facet": {
-          "type": "keyword"
-        },
-        "municipal_facet": {
-          "type": "keyword"
-        },
-        "city_facet": {
-          "type": "keyword"
-        },
-        "geopoint": {
-          "type": "geo_point"
         },
         "category_no": {
           "type": "text",
           "analyzer": "norwegian"
         },
-        "category_description_no": {
-          "type": "text",
-          "analyzer": "norwegian"
-        },
-        "category_suggest": {
-          "type": "completion",
-          "contexts": [
-            {
-              "name": "status",
-              "type": "category",
-              "path": "status"
-            }
-          ]
-        },
-        "category_styrk08_facet": {
-          "type": "keyword"
-        },
         "searchtags_no": {
           "type": "text",
           "analyzer": "norwegian"
         },
-        "searchtags_facet": {
-          "type": "keyword"
-        },
-        "occupationList": {
-          "type": "nested",
-          "properties": {
-            "level1": {
-              "type": "keyword",
-              "copy_to": ["stilling.category_suggest", "stilling.category_no"]
-            },
-            "level2": {
-              "type": "keyword",
-              "copy_to": ["stilling.category_suggest", "stilling.category_no"]
-            }
-          }
-        },
-        "locationList": {
+        "locations": {
           "type": "nested",
           "properties": {
             "address": {
               "type": "text"
-            },
-            "country": {
-              "type": "text",
-              "fields": {
-                "keyword": {
-                  "type": "keyword"
-                }
-              },
-              "copy_to": ["stilling.country_facet", "stilling.geography_all_no"]
             },
             "county": {
               "type": "text",
@@ -159,7 +109,10 @@
                   "type": "keyword"
                 }
               },
-              "copy_to": ["stilling.county_facet", "stilling.geography_all_no"]
+              "copy_to": [
+                "stilling.county_facet",
+                "stilling.geography_all_no"
+              ]
             },
             "municipal": {
               "type": "text",
@@ -168,7 +121,9 @@
                   "type": "keyword"
                 }
               },
-              "copy_to": ["stilling.municipal_facet", "stilling.geography_all_no"]
+              "copy_to": [
+                "stilling.geography_all_no"
+              ]
             },
             "postalCode": {
               "type": "keyword"
@@ -185,7 +140,26 @@
             }
           }
         },
-        "categoryList": {
+        "administration": {
+          "properties": {
+            "status": {
+              "type": "keyword"
+            },
+            "remarks": {
+              "type": "keyword"
+            },
+            "comments": {
+              "type": "text"
+            },
+            "reportee": {
+              "type": "text"
+            },
+            "navIdent": {
+              "type": "keyword"
+            }
+          }
+        },
+        "categories": {
           "properties": {
             "styrkCode": {
               "type": "keyword"
@@ -193,9 +167,7 @@
             "name": {
               "type": "text",
               "copy_to": [
-                "stilling.category_styrk08_facet",
-                "stilling.category_no",
-                "stilling.category_suggest"
+                "stilling.category_no"
               ]
             }
           }
@@ -214,35 +186,16 @@
             },
             "publicName": {
               "type": "text"
-            },
-            "orgform": {
-              "type": "keyword"
             }
           }
         },
         "properties": {
+          "dynamic": false,
           "properties": {
             "adtext": {
               "type": "text",
               "index": false,
               "copy_to": "stilling.adtext_no"
-            },
-            "employerdescription": {
-              "type": "text",
-              "index": false,
-              "copy_to": "stilling.employerdescription_no"
-            },
-            "duration": {
-              "type": "keyword"
-            },
-            "sourceurl": {
-              "type": "keyword"
-            },
-            "sourcecreated": {
-              "type": "keyword"
-            },
-            "sourceupdated": {
-              "type": "keyword"
             },
             "author": {
               "type": "keyword"
@@ -250,9 +203,6 @@
             "employer": {
               "type": "text",
               "copy_to": "stilling.employername"
-            },
-            "industry": {
-              "type": "text"
             },
             "jobtitle": {
               "type": "text",
@@ -268,39 +218,17 @@
             "applicationdue": {
               "type": "keyword"
             },
-            "applicationlabel": {
-              "type": "text"
-            },
             "extent": {
-              "type": "keyword",
-              "copy_to": "stilling.extent_facet"
+              "type": "keyword"
             },
             "engagementtype": {
-              "type": "keyword",
-              "copy_to": "stilling.engagementtype_facet"
+              "type": "keyword"
             },
             "positioncount": {
               "type": "integer",
               "ignore_malformed": true
             },
-            "searchtags": {
-              "properties": {
-                "label": {
-                  "type": "text",
-                  "copy_to": [
-                    "stilling.searchtags_no",
-                    "stilling.searchtags_facet"
-                  ]
-                },
-                "score": {
-                  "type": "float"
-                }
-              }
-            },
-            "classification_styrk08_score": {
-              "type": "float"
-            },
-            "classification_input_source": {
+            "tags": {
               "type": "keyword"
             }
           }

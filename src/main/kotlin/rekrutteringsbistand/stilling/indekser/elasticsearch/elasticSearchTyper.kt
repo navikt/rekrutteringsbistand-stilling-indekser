@@ -8,24 +8,23 @@ data class RekrutteringsbistandStilling(
 )
 
 data class Stilling(
-    val title: String,
-    val uuid: String,
-    val status: String,
-    val privacy: String,
-    val published: String?,
-    val expires: String?,
-    val created: String,
-    val updated: String,
-    val employer: Company?,
-    val categories: List<StyrkCategory>,
-    val source: String,
-    val medium: String,
-    val publishedByAdmin: String?,
-    val businessName: String?,
-    val locations: List<Location>,
-    val reference: String,
-    val administration: Administration?,
-    val properties: Map<String, Any>,
+        val title: String,
+        val uuid: String,
+        val status: String,
+        val privacy: String,
+        val published: String?,
+        val expires: String?,
+        val created: String,
+        val updated: String,
+        val employer: Employer?,
+        val categories: List<StyrkCategory>,
+        val source: String,
+        val medium: String,
+        val businessName: String?,
+        val locations: List<Location>,
+        val reference: String,
+        val administration: Administration?,
+        val properties: Map<String, Any>,
 )
 
 data class Location(
@@ -33,11 +32,8 @@ data class Location(
     val postalCode: String?,
     val county: String?,
     val municipal: String?,
-    val country: String,
     val latitue: String?,
     val longitude: String?,
-    val municipal_code: String?,
-    val county_code: String?
 )
 
 data class StyrkCategory(
@@ -45,7 +41,7 @@ data class StyrkCategory(
     val name: String
 )
 
-data class Company(
+data class Employer(
     val name: String,
     val publicName: String,
     val orgnr: String?,

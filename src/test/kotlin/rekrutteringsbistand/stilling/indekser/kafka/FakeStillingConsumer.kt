@@ -7,9 +7,10 @@ import rekrutteringsbistand.stilling.indekser.behandling.StillingMottattService
 import rekrutteringsbistand.stilling.indekser.utils.log
 
 class FakeStillingConsumer(private val stillingMottattService: StillingMottattService) : StillingConsumer {
+    private var skalKjøre = true
 
     override suspend fun start(indeksNavn: String) = withContext(Dispatchers.IO) {
-        while (true) {
+        while (skalKjøre) {
             stillingMottattService.behandleStilling(enAd, indeksNavn)
             delay(10_000)
         }
@@ -17,5 +18,6 @@ class FakeStillingConsumer(private val stillingMottattService: StillingMottattSe
 
     override fun stopp() {
         log.info("Stopper Kafka-consumer ...")
+        skalKjøre = false
     }
 }

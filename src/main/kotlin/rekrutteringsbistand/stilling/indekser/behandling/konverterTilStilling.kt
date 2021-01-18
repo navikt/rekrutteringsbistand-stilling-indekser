@@ -17,7 +17,7 @@ fun konverterTilStilling(ad: Ad): Stilling {
         ad.getCreated(),
         ad.getUpdated(),
         ad.getEmployer()?.let {
-            Company(
+            Employer(
                 it.getName(),
                 it.getPublicName(),
                 it.getOrgnr(),
@@ -28,18 +28,14 @@ fun konverterTilStilling(ad: Ad): Stilling {
         ad.getCategories().map { StyrkCategory(it.getStyrkCode(), it.getName()) },
         ad.getSource(),
         ad.getMedium(),
-        ad.getPublishedByAdmin(),
         ad.getBusinessName(),
         ad.getLocations().map { Location(
             it.getAddress(),
             it.getPostalCode(),
             it.getCounty(),
             it.getMunicipal(),
-            it.getCountry(),
             it.getLatitude(),
             it.getLongitude(),
-            it.getMunicipal(),
-            it.countyCode
         ) },
         ad.getReference(),
         ad.getAdministration()?.let {
