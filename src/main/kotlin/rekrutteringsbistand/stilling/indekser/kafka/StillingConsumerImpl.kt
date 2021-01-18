@@ -9,6 +9,8 @@ import org.apache.kafka.common.errors.WakeupException
 import rekrutteringsbistand.stilling.indekser.behandling.StillingMottattService
 import rekrutteringsbistand.stilling.indekser.utils.log
 import java.time.Duration
+import java.time.LocalDateTime
+import kotlin.system.measureTimeMillis
 
 class StillingConsumerImpl(
     private val kafkaConsumer: KafkaConsumer<String, Ad>,
@@ -21,6 +23,10 @@ class StillingConsumerImpl(
 
                 log.info("Starter å konsumere StillingEkstern-topic med groupId ${kafkaConsumer.groupMetadata().groupId()}, " +
                         "indekserer på indeks '$indeksNavn'")
+
+                var counter = 0
+                var før = LocalDateTime.now()
+
                 while (true) {
                     val records: ConsumerRecords<String, Ad> = kafkaConsumer.poll(Duration.ofSeconds(30))
                     failHvisMerEnnEnRecord(records)
@@ -29,6 +35,13 @@ class StillingConsumerImpl(
                     stillingMottattService.behandleStilling(melding.value(), indeksNavn)
                     kafkaConsumer.commitSync()
                     log.info("Committet offset ${melding.offset()} til Kafka")
+
+                    if (counter++ % 100 == 0) {
+                        val diff = Duration.between(før, LocalDateTime.now()).toMillis()
+                        før = LocalDateTime.now()
+
+                        log.info("Konsumering av 100 stillinger tok $diff ms. I snitt ${diff / 100} ms per stilling")
+                    }
                 }
 
                 // TODO: Retry-mekanismer
