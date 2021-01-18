@@ -10,10 +10,11 @@ class StillingMottattService(
 ) {
 
     fun behandleStillinger(ads: List<Ad>, indeksNavn: String) {
-        val rekrutteringsbistandStillinger = ads.map {
-            val stilling = konverterTilStilling(it)
-            val stillingsinfo = stillingsinfoClient.getStillingsinfo(it.getUuid())
-            RekrutteringsbistandStilling(stilling, stillingsinfo)
+        val stillinger = ads.map { konverterTilStilling(it) }
+        val stillingsinfo = stillingsinfoClient.getStillingsinfo(stillinger.map { it.uuid })
+
+        val rekrutteringsbistandStillinger = stillinger.map { stilling ->
+            RekrutteringsbistandStilling(stilling, stillingsinfo.find { info -> info.stillingsid == stilling.uuid })
         }
 
         esService.indekser(rekrutteringsbistandStillinger, indeksNavn)
