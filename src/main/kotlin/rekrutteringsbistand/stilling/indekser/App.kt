@@ -18,10 +18,10 @@ import rekrutteringsbistand.stilling.indekser.utils.log
 import kotlin.Exception
 
 class App(
-        private val webServer: Javalin,
-        private val elasticSearchService: ElasticSearchService,
-        private val stillingConsumer: StillingConsumer,
-        private val gammelStillingConsumer: StillingConsumer?
+    private val webServer: Javalin,
+    private val elasticSearchService: ElasticSearchService,
+    private val stillingConsumer: StillingConsumer,
+    private val gammelStillingConsumer: StillingConsumer?
 ) {
     fun start() {
         webServer.routes {
@@ -41,17 +41,8 @@ class App(
 
     private fun startReindeksering() {
         val nyIndeks = hentNyesteIndeks()
-        val gjeldendeIndeks = elasticSearchService.hentGjeldendeIndeks()
-                ?: kanIkkeStarteReindeksering()
-
-        if (elasticSearchService.nyIndeksErIkkeOpprettet()) {
-            elasticSearchService.opprettIndeks(nyIndeks)
-            log.info("Starter reindeksering på ny indeks $nyIndeks")
-        } else {
-            log.info("Gjenopptar reindeksering på ny indeks $nyIndeks")
-        }
-
-        log.info("Fortsetter samtidig konsumering på gjeldende indeks $gjeldendeIndeks")
+        val gjeldendeIndeks = elasticSearchService.hentGjeldendeIndeks() ?: kanIkkeStarteReindeksering()
+        elasticSearchService.initialiserReindeksering(nyIndeks, gjeldendeIndeks)
 
         runBlocking {
             launch { stillingConsumer.start(nyIndeks) }
@@ -61,9 +52,7 @@ class App(
 
     private fun startIndeksering() {
         val indeks = hentNyesteIndeks()
-        val indeksBleOpprettet = elasticSearchService.opprettIndeksHvisDenIkkeFinnes(indeks)
-        if (indeksBleOpprettet)
-            elasticSearchService.oppdaterAlias(indeks)
+        elasticSearchService.initialiserIndeksering(indeks)
 
         runBlocking {
             launch {
@@ -80,7 +69,7 @@ fun main() {
         val httpClientAutentisertMedAccessToken = authenticateWithAccessToken(FuelManager(), accessTokenClient)
         val stillingsinfoClient = StillingsinfoClientImpl(httpClientAutentisertMedAccessToken)
 
-        val esClient = getEsClient()
+        val esClient = ElasticSearchClient(getRestHighLevelClient())
         val elasticSearchService = ElasticSearchService(esClient)
 
         val versjonTilStillingConsumer = hentVersjonFraNaisConfig()

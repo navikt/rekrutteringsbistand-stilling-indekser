@@ -10,6 +10,7 @@ import org.apache.kafka.clients.consumer.OffsetResetStrategy
 import org.apache.kafka.common.TopicPartition
 
 val topic = TopicPartition(stillingEksternTopic, 0)
+
 fun mockConsumer() = MockConsumer<String, Ad>(OffsetResetStrategy.EARLIEST).apply {
     schedulePollTask {
         rebalance(listOf(topic))
@@ -17,7 +18,7 @@ fun mockConsumer() = MockConsumer<String, Ad>(OffsetResetStrategy.EARLIEST).appl
 
         GlobalScope.launch {
             var offset: Long = 0
-            while (true) {
+            while (!closed()) {
                 addRecord(ConsumerRecord(stillingEksternTopic, 0, offset++, enAd.getUuid(), enAd))
                 delay(5_000)
             }

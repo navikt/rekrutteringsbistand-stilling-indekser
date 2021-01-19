@@ -20,4 +20,3 @@ class StillingMottattService(
         esService.indekser(rekrutteringsbistandStillinger, indeksNavn)
     }
 }
-
