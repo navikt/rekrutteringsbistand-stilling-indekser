@@ -1,32 +1,52 @@
 package rekrutteringsbistand.stilling.indekser
 
+import io.javalin.Javalin
+import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.junit.Test
-import rekrutteringsbistand.stilling.indekser.kafka.StillingConsumer
-import rekrutteringsbistand.stilling.indekser.kafka.mockConsumer
+import rekrutteringsbistand.stilling.indekser.elasticsearch.ElasticSearchClient
+import rekrutteringsbistand.stilling.indekser.kafka.stillingEksternTopic
+import rekrutteringsbistand.stilling.indekser.setup.enAd
+import rekrutteringsbistand.stilling.indekser.setup.getLocalRestHighLevelClient
+import rekrutteringsbistand.stilling.indekser.setup.mockConsumer
 
 class IndekseringTest {
 
     @Test
-    fun `Skal legge stilling i ES når vi får melding på Kafka`() {
-//        val elasticSearchServiceMock = mockk<RestHighLevelClient>()
-//        val webServer = Javalin.create()
+    fun `Skal indeksere stillinger i Elastic Search når vi får melding på Kafka-topic`(): Unit = runBlocking {
+        // Start applikasjon
+        val webServer = Javalin.create()
+        val consumer = mockConsumer(periodiskSendMeldinger = false)
+        val esClientMock = mockk<ElasticSearchClient>()
 
-//        val esClientMock = mockk<EsClientMiddleware>()
+        every { esClientMock.indeksFinnes(any()) } returns false
+        every { esClientMock.opprettIndeks(any()) } returns Unit
+        every { esClientMock.oppdaterAlias(any()) } returns Unit
+        every { esClientMock.indekser(any(), any()) } returns Unit
 
-//        every { esClientMock.indices().exists(any(), any()) } returns true
-//        every { esClientMock.indices().getAlias(any(), any()) } returns "enindeks"
+        val app = lagLokalApp(webServer, consumer, esClientMock)
+        launch {
+            app.start()
+        }
 
+        // Send melding på Kafka
+        consumer.schedulePollTask {
+            consumer.addRecord(ConsumerRecord(stillingEksternTopic, 0, 0, enAd.getUuid(), enAd))
+        }
 
-//        startLokalApp(esClient = esClientMock)
+        // TODO: Blæh
+        delay(1_000)
 
-        // "send" melding på kafka
+        // Verify at indekser()-metode er kjørt med riktige parametre
+        verify { esClientMock.indekser(any(), any()) }
 
-        // verifiser at stilling ligger i ES
-
-//        verify { elasticSearchServiceMock.indekser(any(), any()) }
-//        webServer.stop()
+        app.stop()
     }
 
     @Test

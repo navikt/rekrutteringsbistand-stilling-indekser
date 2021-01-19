@@ -1,4 +1,4 @@
-package rekrutteringsbistand.stilling.indekser.kafka
+package rekrutteringsbistand.stilling.indekser.setup
 
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.Stillingsinfo
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClient

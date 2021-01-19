@@ -1,4 +1,4 @@
-package rekrutteringsbistand.stilling.indekser.kafka
+package rekrutteringsbistand.stilling.indekser.setup
 
 import no.nav.pam.ad.ext.avro.*
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.Stillingsinfo

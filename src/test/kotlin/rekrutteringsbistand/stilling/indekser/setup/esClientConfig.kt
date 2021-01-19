@@ -1,7 +1,6 @@
-package rekrutteringsbistand.stilling.indekser.kafka
+package rekrutteringsbistand.stilling.indekser.setup
 
 import org.apache.http.HttpHost
-import org.apache.http.client.config.RequestConfig
 import org.elasticsearch.client.RestClient
 import org.elasticsearch.client.RestHighLevelClient
 import rekrutteringsbistand.stilling.indekser.utils.environment

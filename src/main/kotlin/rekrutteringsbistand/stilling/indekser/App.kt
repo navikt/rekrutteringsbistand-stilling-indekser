@@ -3,6 +3,7 @@ package rekrutteringsbistand.stilling.indekser
 import com.github.kittinunf.fuel.core.FuelManager
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.get
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import no.nav.pam.ad.ext.avro.Ad
@@ -59,6 +60,12 @@ class App(
                 stillingConsumer.start(indeks)
             }
         }
+    }
+
+    fun stop() {
+        webServer.stop()
+        stillingConsumer.stopp()
+        gammelStillingConsumer?.stopp()
     }
 }
 

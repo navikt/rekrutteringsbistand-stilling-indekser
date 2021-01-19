@@ -17,34 +17,34 @@ class StillingConsumer(
 ) {
 
     suspend fun start(indeksNavn: String) = withContext(Dispatchers.IO) {
-            try {
-                consumer.subscribe(listOf(stillingEksternTopic))
+        try {
+            consumer.subscribe(listOf(stillingEksternTopic))
 
-                log.info("Starter å konsumere StillingEkstern-topic med groupId ${consumer.groupMetadata().groupId()}, " +
-                        "indekserer på indeks '$indeksNavn'")
+            log.info("Starter å konsumere StillingEkstern-topic med groupId ${consumer.groupMetadata().groupId()}, " +
+                    "indekserer på indeks '$indeksNavn'")
 
-                var før = LocalDateTime.now()
-                while (true) {
-                    val records: ConsumerRecords<String, Ad> = consumer.poll(Duration.ofSeconds(30))
-                    if (records.count() == 0) continue
+            var før = LocalDateTime.now()
+            while (true) {
+                val records: ConsumerRecords<String, Ad> = consumer.poll(Duration.ofSeconds(30))
+                if (records.count() == 0) continue
 
-                    val stillinger = records.map { it.value() }
-                    stillingMottattService.behandleStillinger(stillinger, indeksNavn)
-                    consumer.commitSync()
-                    log.info("Committet offset ${records.last().offset()} til Kafka")
+                val stillinger = records.map { it.value() }
+                stillingMottattService.behandleStillinger(stillinger, indeksNavn)
+                consumer.commitSync()
+                log.info("Committet offset ${records.last().offset()} til Kafka")
 
-                    val diff = Duration.between(før, LocalDateTime.now()).toMillis()
-                    før = LocalDateTime.now()
-                    log.info("Konsumering av ${records.count()} stillinger tok $diff ms. I snitt ${diff / records.count()} ms per stilling")
-                }
-
-                // TODO: Retry-mekanismer
-
-            } catch (exception: WakeupException) {
-                log.info("Fikk beskjed om å lukke consument med groupId ${consumer.groupMetadata().groupId()}")
-            } finally {
-                consumer.close()
+                val diff = Duration.between(før, LocalDateTime.now()).toMillis()
+                før = LocalDateTime.now()
+                log.info("Konsumering av ${records.count()} stillinger tok $diff ms. I snitt ${diff / records.count()} ms per stilling")
             }
+
+            // TODO: Retry-mekanismer
+
+        } catch (exception: WakeupException) {
+            log.info("Fikk beskjed om å lukke consument med groupId ${consumer.groupMetadata().groupId()}")
+        } finally {
+            consumer.close()
+        }
     }
 
     fun stopp() {
