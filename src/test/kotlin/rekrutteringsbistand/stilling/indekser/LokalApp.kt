@@ -2,28 +2,26 @@ package rekrutteringsbistand.stilling.indekser
 
 import io.javalin.Javalin
 import rekrutteringsbistand.stilling.indekser.elasticsearch.ElasticSearchService
-import rekrutteringsbistand.stilling.indekser.kafka.FakeStillingConsumer
 import rekrutteringsbistand.stilling.indekser.behandling.StillingMottattService
-import rekrutteringsbistand.stilling.indekser.kafka.FakeStillingsinfoClient
-import rekrutteringsbistand.stilling.indekser.kafka.getLocalEsClient
+import rekrutteringsbistand.stilling.indekser.kafka.*
 
 fun main() {
     val webServer = Javalin.create()
     val stillingsinfoClient = FakeStillingsinfoClient()
 
-    val localEsClient = getLocalEsClient()
-    val elasticSearchService = ElasticSearchService(localEsClient)
+    val elasticSearchService = ElasticSearchService(getLocalEsClient())
 
     val stillingMottattService = StillingMottattService(stillingsinfoClient, elasticSearchService)
-    val fakeStillingConsumer = FakeStillingConsumer(stillingMottattService)
+    val stillingConsumer = StillingConsumer(mockConsumer(), stillingMottattService)
 
     val gammelStillingMottattService = StillingMottattService(stillingsinfoClient, elasticSearchService)
-    val gammelFakeStillingConsumer = FakeStillingConsumer(gammelStillingMottattService)
+    val gammelStillingConsumer = StillingConsumer(mockConsumer(), gammelStillingMottattService)
 
     App(
         webServer,
         elasticSearchService,
-        fakeStillingConsumer,
-        gammelFakeStillingConsumer
+        stillingConsumer,
+        gammelStillingConsumer
     ).start()
 }
+

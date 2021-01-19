@@ -3,14 +3,12 @@ package rekrutteringsbistand.stilling.indekser
 import com.github.kittinunf.fuel.core.FuelManager
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.get
-import io.javalin.http.Context
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import no.nav.pam.ad.ext.avro.Ad
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import rekrutteringsbistand.stilling.indekser.autentisering.AccessTokenClient
 import rekrutteringsbistand.stilling.indekser.kafka.StillingConsumer
-import rekrutteringsbistand.stilling.indekser.kafka.StillingConsumerImpl
 import rekrutteringsbistand.stilling.indekser.behandling.StillingMottattService
 import rekrutteringsbistand.stilling.indekser.elasticsearch.*
 import rekrutteringsbistand.stilling.indekser.kafka.consumerConfig
@@ -88,7 +86,7 @@ fun main() {
         val versjonTilStillingConsumer = hentVersjonFraNaisConfig()
         val kafkaConsumer = KafkaConsumer<String, Ad>(consumerConfig(versjonTilStillingConsumer))
         val stillingMottattService = StillingMottattService(stillingsinfoClient, elasticSearchService)
-        val stillingConsumer = StillingConsumerImpl(kafkaConsumer, stillingMottattService)
+        val stillingConsumer = StillingConsumer(kafkaConsumer, stillingMottattService)
 
         val skalReindeksere = elasticSearchService.skalReindeksere()
         val gammelStillingConsumer = if (skalReindeksere) {
@@ -97,7 +95,7 @@ fun main() {
             val gammelKafkaConsumer = KafkaConsumer<String, Ad>(consumerConfig(versjonTilGammelConsumer))
 
             val gammelStillingMottattService = StillingMottattService(stillingsinfoClient, elasticSearchService)
-            StillingConsumerImpl(gammelKafkaConsumer, gammelStillingMottattService)
+            StillingConsumer(gammelKafkaConsumer, gammelStillingMottattService)
         } else null
 
         App(
