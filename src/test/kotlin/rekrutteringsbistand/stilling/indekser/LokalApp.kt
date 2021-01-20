@@ -14,6 +14,9 @@ import rekrutteringsbistand.stilling.indekser.utils.Environment
 import rekrutteringsbistand.stilling.indekser.utils.Environment.Keys.indeksVersjon
 
 fun main() {
+    Environment.set("REKRUTTERINGSBISTAND_API", "http://localhost:9501/rekrutteringsbistand-api")
+    Environment.set("ELASTIC_SEARCH_API", "http://localhost:9200")
+    Environment.set(indeksVersjon, "1")
     startLokalApp()
 }
 
@@ -22,9 +25,6 @@ fun startLokalApp(
     gammelMockConsumer: Consumer<String, Ad> = mockConsumer(periodiskSendMeldinger = true),
     esClient: ElasticSearchClient = ElasticSearchClient(getLocalRestHighLevelClient()),
 ): App {
-    Environment.set("REKRUTTERINGSBISTAND_API", "http://localhost:9501/rekrutteringsbistand-api")
-    Environment.set("ELASTIC_SEARCH_API", "http://localhost:9200")
-
     val webServer: Javalin = Javalin.create()
     val stillingsinfoClient = FakeStillingsinfoClient()
 
@@ -41,6 +41,11 @@ fun startLokalApp(
         stillingConsumer,
         gammelStillingConsumer
     )
-    app.start()
+    try {
+        app.start()
+    } catch (e: Exception) {
+        app.close() // Nødvendig for tester, for at webserveren skal frigjøre portnummeret for neste testemetode.
+        throw e
+    }
     return app
 }

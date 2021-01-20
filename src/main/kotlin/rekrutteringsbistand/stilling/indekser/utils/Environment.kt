@@ -11,6 +11,9 @@ object Environment {
         return miljøvariabler[s] ?: System.getenv(s)
     }
 
+    /**
+     * For testkode: Bør brukes kun før startLokalApp(...) for å unngå forvirring om hvilken konfig som gjelder
+     */
     fun set(s: String, value: String) {
         miljøvariabler[s] = value
     }

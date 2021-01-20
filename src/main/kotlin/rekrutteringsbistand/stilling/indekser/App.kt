@@ -92,6 +92,7 @@ fun main() {
             stillingConsumer,
             gammelStillingConsumer
         ).start()
+        // TODO Are: Trenger vi å kjøre App.close() e.l. for å stoppe Javalin sin webserver hvos noe av det andre kræsjer? HVis noe annet kræsjer, vil Javalin fortsette å returnere HTTP 200 på isALive og isReady? Se kode for oppstart av LokalApp.
 
     } catch (exception: Exception) {
         log("main()").error("Noe galt skjedde – indekseringen er stoppet", exception)
