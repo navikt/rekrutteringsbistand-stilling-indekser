@@ -12,16 +12,14 @@ import rekrutteringsbistand.stilling.indekser.setup.getLocalRestHighLevelClient
 import rekrutteringsbistand.stilling.indekser.setup.mockConsumer
 
 fun main() {
-    val app = lagLokalApp()
-    app.start()
+    startLokalApp()
 }
 
-fun lagLokalApp(
-    webServer: Javalin = Javalin.create(),
+fun startLokalApp(
     mockConsumer: Consumer<String, Ad> = mockConsumer(periodiskSendMeldinger = true),
-    esClient: ElasticSearchClient = ElasticSearchClient(getLocalRestHighLevelClient())
-): App {
-
+    esClient: ElasticSearchClient = ElasticSearchClient(getLocalRestHighLevelClient()),
+) {
+    val webServer: Javalin = Javalin.create()
     val stillingsinfoClient = FakeStillingsinfoClient()
 
     val elasticSearchService = ElasticSearchService(esClient)
@@ -31,10 +29,10 @@ fun lagLokalApp(
     val gammelStillingMottattService = StillingMottattService(stillingsinfoClient, elasticSearchService)
     val gammelStillingConsumer = StillingConsumer(mockConsumer(), gammelStillingMottattService)
 
-    return App(
+    App(
         webServer,
         elasticSearchService,
         stillingConsumer,
         gammelStillingConsumer
-    )
+    ).start()
 }

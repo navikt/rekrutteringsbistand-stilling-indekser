@@ -3,9 +3,6 @@ package rekrutteringsbistand.stilling.indekser
 import com.github.kittinunf.fuel.core.FuelManager
 import io.javalin.Javalin
 import io.javalin.apibuilder.ApiBuilder.get
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import no.nav.pam.ad.ext.avro.Ad
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import rekrutteringsbistand.stilling.indekser.autentisering.AccessTokenClient
@@ -17,6 +14,7 @@ import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClientI
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.authenticateWithAccessToken
 import rekrutteringsbistand.stilling.indekser.utils.log
 import kotlin.Exception
+import kotlin.concurrent.thread
 
 class App(
     private val webServer: Javalin,
@@ -45,27 +43,15 @@ class App(
         val gjeldendeIndeks = elasticSearchService.hentGjeldendeIndeks() ?: kanIkkeStarteReindeksering()
         elasticSearchService.initialiserReindeksering(nyIndeks, gjeldendeIndeks)
 
-        runBlocking {
-            launch { stillingConsumer.start(nyIndeks) }
-            launch { gammelStillingConsumer!!.start(gjeldendeIndeks) }
-        }
+        thread { stillingConsumer.start(nyIndeks) }
+        thread { gammelStillingConsumer!!.start(gjeldendeIndeks) }
     }
 
     private fun startIndeksering() {
         val indeks = hentNyesteIndeks()
         elasticSearchService.initialiserIndeksering(indeks)
 
-        runBlocking {
-            launch {
-                stillingConsumer.start(indeks)
-            }
-        }
-    }
-
-    fun stop() {
-        webServer.stop()
-        stillingConsumer.stopp()
-        gammelStillingConsumer?.stopp()
+        thread { stillingConsumer.start(indeks) }
     }
 }
 
