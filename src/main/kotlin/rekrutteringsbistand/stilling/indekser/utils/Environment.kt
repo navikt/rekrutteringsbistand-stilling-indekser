@@ -1,6 +1,10 @@
 package rekrutteringsbistand.stilling.indekser.utils
 
 object Environment {
+    object Keys {
+        val indeksVersjon = "INDEKS_VERSJON"
+    }
+
     private val miljøvariabler: MutableMap<String, String> = HashMap()
 
     fun get(s: String): String? {

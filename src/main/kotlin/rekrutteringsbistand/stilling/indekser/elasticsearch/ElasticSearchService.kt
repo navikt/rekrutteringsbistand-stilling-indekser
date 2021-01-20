@@ -37,9 +37,8 @@ class ElasticSearchService(private val esClient: ElasticSearchClient) {
 
     fun skalReindeksere(): Boolean {
         if (!esClient.indeksFinnes(stillingAlias)) return false
-
-        val nyIndeksVersjon = hentVersjonFraNaisConfig()
         val gjeldendeVersjon = hentGjeldendeIndeksversjon() ?: return false // indeks finnes ikke enda
+        val nyIndeksVersjon = hentVersjonFraNaisConfig()
         return nyIndeksVersjon > gjeldendeVersjon
     }
 

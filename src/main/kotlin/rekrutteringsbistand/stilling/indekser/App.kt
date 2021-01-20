@@ -6,14 +6,14 @@ import io.javalin.apibuilder.ApiBuilder.get
 import no.nav.pam.ad.ext.avro.Ad
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import rekrutteringsbistand.stilling.indekser.autentisering.AccessTokenClient
-import rekrutteringsbistand.stilling.indekser.kafka.StillingConsumer
 import rekrutteringsbistand.stilling.indekser.behandling.StillingMottattService
 import rekrutteringsbistand.stilling.indekser.elasticsearch.*
+import rekrutteringsbistand.stilling.indekser.kafka.StillingConsumer
 import rekrutteringsbistand.stilling.indekser.kafka.consumerConfig
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClientImpl
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.authenticateWithAccessToken
 import rekrutteringsbistand.stilling.indekser.utils.log
-import kotlin.Exception
+import java.io.Closeable
 import kotlin.concurrent.thread
 
 class App(
@@ -21,7 +21,7 @@ class App(
     private val elasticSearchService: ElasticSearchService,
     private val stillingConsumer: StillingConsumer,
     private val gammelStillingConsumer: StillingConsumer?
-) {
+) : Closeable {
     fun start() {
         webServer.routes {
             get("/internal/isAlive") { it.status(200) }
@@ -53,6 +53,12 @@ class App(
 
         thread { stillingConsumer.start(indeks) }
     }
+
+    override fun close() {
+        stillingConsumer.close()
+        gammelStillingConsumer?.close()
+        webServer.stop()
+    }
 }
 
 fun main() {
@@ -73,7 +79,7 @@ fun main() {
         val skalReindeksere = elasticSearchService.skalReindeksere()
         val gammelStillingConsumer = if (skalReindeksere) {
             val versjonTilGammelConsumer = elasticSearchService.hentGjeldendeIndeksversjon()
-                    ?: kanIkkeStarteReindeksering()
+                ?: kanIkkeStarteReindeksering()
             val gammelKafkaConsumer = KafkaConsumer<String, Ad>(consumerConfig(versjonTilGammelConsumer))
 
             val gammelStillingMottattService = StillingMottattService(stillingsinfoClient, elasticSearchService)
