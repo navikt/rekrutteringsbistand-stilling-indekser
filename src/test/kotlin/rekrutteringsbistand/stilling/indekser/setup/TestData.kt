@@ -58,6 +58,6 @@ val enStillingsinfo = Stillingsinfo(
     "eierNavIdent",
     "eierNavn",
     "notat",
-    "stillingsid",
+    "uuid",
     "stillingsinfoid"
 )

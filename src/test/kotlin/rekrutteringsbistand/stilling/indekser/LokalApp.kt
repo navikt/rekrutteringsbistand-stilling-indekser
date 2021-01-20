@@ -19,7 +19,7 @@ fun main() {
 fun lagLokalApp(
     webServer: Javalin = Javalin.create(),
     mockConsumer: Consumer<String, Ad> = mockConsumer(periodiskSendMeldinger = true),
-    esClient: ElasticSearchClient = ElasticSearchClient(getLocalRestHighLevelClient())
+    esClient: ElasticSearchClient = ElasticSearchClient(getLocalRestHighLevelClient()),
 ): App {
 
     val stillingsinfoClient = FakeStillingsinfoClient()
@@ -35,6 +35,6 @@ fun lagLokalApp(
         webServer,
         elasticSearchService,
         stillingConsumer,
-        gammelStillingConsumer
+        gammelStillingConsumer,
     )
 }

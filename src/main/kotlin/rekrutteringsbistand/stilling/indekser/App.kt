@@ -22,9 +22,14 @@ class App(
     private val webServer: Javalin,
     private val elasticSearchService: ElasticSearchService,
     private val stillingConsumer: StillingConsumer,
-    private val gammelStillingConsumer: StillingConsumer?
+    private val gammelStillingConsumer: StillingConsumer?,
+
 ) {
-    fun start() {
+    private lateinit var onStillingerBehandlet: () -> Unit
+
+    fun start(onStillingerBehandlet: () -> Unit = {}) {
+        this.onStillingerBehandlet = onStillingerBehandlet
+
         webServer.routes {
             get("/internal/isAlive") { it.status(200) }
             get("/internal/isReady") { it.status(200) }
@@ -46,8 +51,8 @@ class App(
         elasticSearchService.initialiserReindeksering(nyIndeks, gjeldendeIndeks)
 
         runBlocking {
-            launch { stillingConsumer.start(nyIndeks) }
-            launch { gammelStillingConsumer!!.start(gjeldendeIndeks) }
+            launch { stillingConsumer.start(nyIndeks, onStillingerBehandlet) }
+            launch { gammelStillingConsumer!!.start(gjeldendeIndeks, onStillingerBehandlet) }
         }
     }
 
@@ -57,7 +62,7 @@ class App(
 
         runBlocking {
             launch {
-                stillingConsumer.start(indeks)
+                stillingConsumer.start(indeks, onStillingerBehandlet)
             }
         }
     }

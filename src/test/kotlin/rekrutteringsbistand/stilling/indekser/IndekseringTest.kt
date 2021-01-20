@@ -10,11 +10,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.junit.Test
+import rekrutteringsbistand.stilling.indekser.behandling.konverterTilStilling
 import rekrutteringsbistand.stilling.indekser.elasticsearch.ElasticSearchClient
+import rekrutteringsbistand.stilling.indekser.elasticsearch.RekrutteringsbistandStilling
 import rekrutteringsbistand.stilling.indekser.kafka.stillingEksternTopic
 import rekrutteringsbistand.stilling.indekser.setup.enAd
+import rekrutteringsbistand.stilling.indekser.setup.enStillingsinfo
 import rekrutteringsbistand.stilling.indekser.setup.getLocalRestHighLevelClient
 import rekrutteringsbistand.stilling.indekser.setup.mockConsumer
+import rekrutteringsbistand.stilling.indekser.utils.log
 
 class IndekseringTest {
 
@@ -31,22 +35,22 @@ class IndekseringTest {
         every { esClientMock.indekser(any(), any()) } returns Unit
 
         val app = lagLokalApp(webServer, consumer, esClientMock)
+
         launch {
-            app.start()
+            app.start {
+                val forventetArgument = listOf(RekrutteringsbistandStilling(
+                        stilling = konverterTilStilling(enAd),
+                        stillingsinfo = enStillingsinfo
+                ))
+
+                verify { esClientMock.indekser(forventetArgument, "stilling_1") }
+                app.stop()
+            }
         }
 
-        // Send melding på Kafka
         consumer.schedulePollTask {
             consumer.addRecord(ConsumerRecord(stillingEksternTopic, 0, 0, enAd.getUuid(), enAd))
         }
-
-        // TODO: Blæh
-        delay(1_000)
-
-        // Verify at indekser()-metode er kjørt med riktige parametre
-        verify { esClientMock.indekser(any(), any()) }
-
-        app.stop()
     }
 
     @Test

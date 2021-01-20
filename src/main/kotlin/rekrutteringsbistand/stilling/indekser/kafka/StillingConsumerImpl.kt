@@ -16,10 +16,9 @@ class StillingConsumer(
     private val stillingMottattService: StillingMottattService
 ) {
 
-    suspend fun start(indeksNavn: String) = withContext(Dispatchers.IO) {
+    suspend fun start(indeksNavn: String, onStillingerBehandlet: () -> Unit) = withContext(Dispatchers.IO) {
         try {
             consumer.subscribe(listOf(stillingEksternTopic))
-
             log.info("Starter å konsumere StillingEkstern-topic med groupId ${consumer.groupMetadata().groupId()}, " +
                     "indekserer på indeks '$indeksNavn'")
 
@@ -32,6 +31,8 @@ class StillingConsumer(
                 stillingMottattService.behandleStillinger(stillinger, indeksNavn)
                 consumer.commitSync()
                 log.info("Committet offset ${records.last().offset()} til Kafka")
+
+                onStillingerBehandlet()
 
                 val diff = Duration.between(før, LocalDateTime.now()).toMillis()
                 før = LocalDateTime.now()
