@@ -1,10 +1,13 @@
 package rekrutteringsbistand.stilling.indekser.utils
 
-import io.github.cdimascio.dotenv.Dotenv
-import io.github.cdimascio.dotenv.dotenv
+object Environment {
+    private val miljøvariabler: MutableMap<String, String> = HashMap()
 
-fun environment(): Dotenv {
-    return dotenv {
-        ignoreIfMissing = true
+    fun get(s: String): String? {
+        return miljøvariabler[s] ?: System.getenv(s)
+    }
+
+    fun set(s: String, value: String) {
+        miljøvariabler[s] = value
     }
 }

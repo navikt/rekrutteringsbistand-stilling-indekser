@@ -1,13 +1,13 @@
 package rekrutteringsbistand.stilling.indekser.elasticsearch
 
-import rekrutteringsbistand.stilling.indekser.utils.environment
+import rekrutteringsbistand.stilling.indekser.utils.Environment
 
 fun hentNyesteIndeks(): String {
     return hentIndeksNavn(hentVersjonFraNaisConfig())
 }
 
 fun hentVersjonFraNaisConfig(): Int {
-    return environment().get("INDEKS_VERSJON").toInt()
+    return Environment.get("INDEKS_VERSJON")?.toInt() ?: throw Exception("INDEKS_VERSJON er ikke definert")
 }
 
 fun hentVersjon(indeksNavn: String): Int {

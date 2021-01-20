@@ -14,6 +14,8 @@ import rekrutteringsbistand.stilling.indekser.kafka.stillingEksternTopic
 import rekrutteringsbistand.stilling.indekser.setup.enAd
 import rekrutteringsbistand.stilling.indekser.setup.enStillingsinfo
 import rekrutteringsbistand.stilling.indekser.setup.mockConsumer
+import rekrutteringsbistand.stilling.indekser.utils.Environment
+import rekrutteringsbistand.stilling.indekser.utils.log
 
 class IndekseringTest {
 
@@ -27,8 +29,8 @@ class IndekseringTest {
         every { esClientMock.oppdaterAlias(any()) } returns Unit
         every { esClientMock.indekser(any(), any()) } returns Unit
 
-        startLokalApp(consumer, esClientMock)
-        sendKafkamelding(consumer, enAd, offset = 0)
+        startLokalApp(consumer, esClient = esClientMock)
+        mottaKafkamelding(consumer, enAd, offset = 0)
 
         val listeMedStillinger = listOf(RekrutteringsbistandStilling(
                 stilling = konverterTilStilling(enAd),
@@ -40,7 +42,33 @@ class IndekseringTest {
         }
     }
 
-    private fun sendKafkamelding(consumer: MockConsumer<String, Ad>, ad: Ad, offset: Long) {
+    @Test
+    fun `Skal indeksere mot to ulike indekser i Elastic Search under reindeksering`() {
+        val consumer = mockConsumer(periodiskSendMeldinger = false)
+        val gammelConsumer = mockConsumer(periodiskSendMeldinger = false)
+        val esClientMock = mockk<ElasticSearchClient>()
+
+        Environment.set("NAIS_VERSJON", "2");
+
+        every { esClientMock.hentIndeksAliasPekerPå() } returns "1"
+        every { esClientMock.indeksFinnes(any()) } returns true
+        every { esClientMock.opprettIndeks(any()) } returns Unit
+        every { esClientMock.indekser(any(), any()) } returns Unit
+
+        startLokalApp(consumer, gammelConsumer, esClientMock)
+
+        mottaKafkamelding(gammelConsumer, enAd, offset = 0)
+        verify(timeout = 3000) {
+            esClientMock.indekser(any(), any())
+        }
+
+        mottaKafkamelding(consumer, enAd, offset = 0)
+        verify(timeout = 3000) {
+            esClientMock.indekser(any(), any())
+        }
+    }
+
+    private fun mottaKafkamelding(consumer: MockConsumer<String, Ad>, ad: Ad, offset: Long) {
         val melding = ConsumerRecord(stillingEksternTopic, 0, offset, ad.getUuid(), ad)
         consumer.schedulePollTask {
             consumer.addRecord(melding)

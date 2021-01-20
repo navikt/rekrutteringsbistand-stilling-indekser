@@ -5,10 +5,10 @@ import com.github.kittinunf.fuel.jackson.objectBody
 import com.github.kittinunf.fuel.jackson.responseObject
 import com.github.kittinunf.result.Result
 import org.eclipse.jetty.http.HttpStatus
-import rekrutteringsbistand.stilling.indekser.utils.environment
+import rekrutteringsbistand.stilling.indekser.utils.Environment
 
 class StillingsinfoClientImpl(private val httpClient: FuelManager): StillingsinfoClient {
-    private val stillingsinfoUrl: String = "${environment().get("REKRUTTERINGSBISTAND_API_URL")}/indekser/stillingsinfo"
+    private val stillingsinfoUrl: String = "${Environment.get("REKRUTTERINGSBISTAND_API")}/indekser/stillingsinfo"
 
     override fun getStillingsinfo(stillingsId: String): Stillingsinfo? {
         val (_, response, result) = httpClient
