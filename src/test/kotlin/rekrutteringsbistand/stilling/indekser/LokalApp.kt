@@ -43,6 +43,11 @@ fun startLokalApp(
         gammelStillingConsumer
     )
 
-    app.start()
+    try {
+        app.start()
+    } catch (exception: Exception) {
+        app.close()
+    }
+
     return app
 }

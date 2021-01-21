@@ -19,7 +19,6 @@ import rekrutteringsbistand.stilling.indekser.utils.Environment
 import rekrutteringsbistand.stilling.indekser.utils.Environment.indeksversjonKey
 
 class IndekseringTest {
-
     @Test
     fun `Skal indeksere stillinger i Elastic Search når vi får melding på Kafka-topic`() {
         val consumer = mockConsumer(periodiskSendMeldinger = false)
