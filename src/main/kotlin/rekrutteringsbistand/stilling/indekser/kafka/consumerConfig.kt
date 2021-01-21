@@ -37,5 +37,4 @@ fun consumerConfig(versjon: Int) = Properties().apply {
         put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, File(it).absolutePath)
         put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, System.getenv("NAV_TRUSTSTORE_PASSWORD"))
     }
-
 }

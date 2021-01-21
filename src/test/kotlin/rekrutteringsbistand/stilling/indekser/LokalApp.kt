@@ -11,12 +11,12 @@ import rekrutteringsbistand.stilling.indekser.setup.FakeStillingsinfoClient
 import rekrutteringsbistand.stilling.indekser.setup.getLocalRestHighLevelClient
 import rekrutteringsbistand.stilling.indekser.setup.mockConsumer
 import rekrutteringsbistand.stilling.indekser.utils.Environment
-import rekrutteringsbistand.stilling.indekser.utils.Environment.Keys.indeksVersjon
+import rekrutteringsbistand.stilling.indekser.utils.Environment.indeksversjonKey
 
 fun main() {
     Environment.set("REKRUTTERINGSBISTAND_API", "http://localhost:9501/rekrutteringsbistand-api")
     Environment.set("ELASTIC_SEARCH_API", "http://localhost:9200")
-    Environment.set(indeksVersjon, "1")
+    Environment.set(indeksversjonKey, "1")
     startLokalApp()
 }
 

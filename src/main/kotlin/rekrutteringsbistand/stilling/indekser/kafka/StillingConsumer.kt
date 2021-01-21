@@ -42,10 +42,7 @@ class StillingConsumer(
     }
 
     override fun close() {
-        try {
-            consumer.wakeup()
-        } finally {
-            consumer.close()
-        }
+        // Vil kaste WakeupException i konsument slik at den stopper, thread-safe.
+        consumer.wakeup()
     }
 }

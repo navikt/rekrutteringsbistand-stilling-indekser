@@ -1,14 +1,14 @@
 package rekrutteringsbistand.stilling.indekser.elasticsearch
 
 import rekrutteringsbistand.stilling.indekser.utils.Environment
-import rekrutteringsbistand.stilling.indekser.utils.Environment.Keys.indeksVersjon
+import rekrutteringsbistand.stilling.indekser.utils.Environment.indeksversjonKey
 
 fun hentNyesteIndeks(): String {
     return hentIndeksNavn(hentVersjonFraNaisConfig())
 }
 
 fun hentVersjonFraNaisConfig(): Int {
-    return Environment.get(indeksVersjon)?.toInt() ?: throw NullPointerException("Miljøvariabel $indeksVersjon")
+    return Environment.get(indeksversjonKey)?.toInt() ?: throw NullPointerException("Miljøvariabel $indeksversjonKey")
 }
 
 fun hentVersjon(indeksNavn: String): Int {
