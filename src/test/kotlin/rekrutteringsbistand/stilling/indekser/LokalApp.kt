@@ -17,6 +17,7 @@ fun main() {
     Environment.set("REKRUTTERINGSBISTAND_API", "http://localhost:9501/rekrutteringsbistand-api")
     Environment.set("ELASTIC_SEARCH_API", "http://localhost:9200")
     Environment.set(indeksversjonKey, "1")
+
     startLokalApp()
 }
 
@@ -41,11 +42,7 @@ fun startLokalApp(
         stillingConsumer,
         gammelStillingConsumer
     )
-    try {
-        app.start()
-    } catch (e: Exception) {
-        app.close() // Nødvendig for tester, for at webserveren skal frigjøre portnummeret for neste testemetode.
-        throw e
-    }
+
+    app.start()
     return app
 }
