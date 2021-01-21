@@ -15,6 +15,7 @@ import rekrutteringsbistand.stilling.indekser.kafka.stillingEksternTopic
 import rekrutteringsbistand.stilling.indekser.setup.enAd
 import rekrutteringsbistand.stilling.indekser.setup.enStillingsinfo
 import rekrutteringsbistand.stilling.indekser.setup.mockConsumer
+import rekrutteringsbistand.stilling.indekser.setup.mottaKafkamelding
 import rekrutteringsbistand.stilling.indekser.utils.Environment
 import rekrutteringsbistand.stilling.indekser.utils.Environment.indeksversjonKey
 
@@ -79,13 +80,6 @@ class IndekseringTest {
                 esClientMock.indekser(forventedeStillinger, indeksAliasPekerPå)
                 esClientMock.indekser(forventedeStillinger, hentIndeksNavn(nyIndeksversjon))
             }
-        }
-    }
-
-    private fun mottaKafkamelding(consumer: MockConsumer<String, Ad>, ad: Ad, offset: Long = 0) {
-        val melding = ConsumerRecord(stillingEksternTopic, 0, offset, ad.getUuid(), ad)
-        consumer.schedulePollTask {
-            consumer.addRecord(melding)
         }
     }
 }

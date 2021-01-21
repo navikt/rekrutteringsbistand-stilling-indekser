@@ -10,6 +10,7 @@ import rekrutteringsbistand.stilling.indekser.kafka.StillingConsumer
 import rekrutteringsbistand.stilling.indekser.setup.FakeStillingsinfoClient
 import rekrutteringsbistand.stilling.indekser.setup.getLocalRestHighLevelClient
 import rekrutteringsbistand.stilling.indekser.setup.mockConsumer
+import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClient
 import rekrutteringsbistand.stilling.indekser.utils.Environment
 import rekrutteringsbistand.stilling.indekser.utils.Environment.indeksversjonKey
 
@@ -25,9 +26,10 @@ fun startLokalApp(
     mockConsumer: Consumer<String, Ad> = mockConsumer(periodiskSendMeldinger = true),
     gammelMockConsumer: Consumer<String, Ad> = mockConsumer(periodiskSendMeldinger = true),
     esClient: ElasticSearchClient = ElasticSearchClient(getLocalRestHighLevelClient()),
+    stillingsinfoClient: StillingsinfoClient = FakeStillingsinfoClient()
 ): App {
+
     val webServer: Javalin = Javalin.create()
-    val stillingsinfoClient = FakeStillingsinfoClient()
 
     val elasticSearchService = ElasticSearchService(esClient)
     val stillingMottattService = StillingMottattService(stillingsinfoClient, elasticSearchService)
@@ -43,11 +45,7 @@ fun startLokalApp(
         gammelStillingConsumer
     )
 
-    try {
-        app.start()
-    } catch (exception: Exception) {
-        app.close()
-    }
+    app.start()
 
     return app
 }

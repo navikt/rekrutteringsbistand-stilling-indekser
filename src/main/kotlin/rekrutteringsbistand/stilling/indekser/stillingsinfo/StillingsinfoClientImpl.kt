@@ -4,32 +4,10 @@ import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.jackson.objectBody
 import com.github.kittinunf.fuel.jackson.responseObject
 import com.github.kittinunf.result.Result
-import org.eclipse.jetty.http.HttpStatus
 import rekrutteringsbistand.stilling.indekser.utils.Environment
 
 class StillingsinfoClientImpl(private val httpClient: FuelManager): StillingsinfoClient {
     private val stillingsinfoUrl: String = "${Environment.get("REKRUTTERINGSBISTAND_API_URL")}/indekser/stillingsinfo"
-
-    override fun getStillingsinfo(stillingsId: String): Stillingsinfo? {
-        val (_, response, result) = httpClient
-            .get(path = "$stillingsinfoUrl/$stillingsId")
-            .responseObject<Stillingsinfo>()
-
-        when (result) {
-            is Result.Success -> { return result.get() }
-            is Result.Failure -> {
-                if (response.statusCode == HttpStatus.NOT_FOUND_404) {
-                    return null
-                }
-
-                // TODO: Ikke kaste exception her?
-                throw Exception(
-                    "Kunne ikke hente stillingsinfo for stilling $stillingsId." +
-                    "HTTP-status: ${response.statusCode}, responseMessage: ${response.responseMessage}"
-                )
-            }
-        }
-    }
 
     override fun getStillingsinfo(stillingsIder: List<String>): List<Stillingsinfo> {
         val body = BulkStillingsinfoOutboundDto(stillingsIder)
@@ -63,6 +41,5 @@ data class BulkStillingsinfoOutboundDto(
 )
 
 interface StillingsinfoClient {
-    fun getStillingsinfo(stillingsId: String): Stillingsinfo?
     fun getStillingsinfo(stillingsIder: List<String>): List<Stillingsinfo>
 }

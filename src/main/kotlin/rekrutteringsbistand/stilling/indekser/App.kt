@@ -12,6 +12,7 @@ import rekrutteringsbistand.stilling.indekser.kafka.StillingConsumer
 import rekrutteringsbistand.stilling.indekser.kafka.consumerConfig
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClientImpl
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.authenticateWithAccessToken
+import rekrutteringsbistand.stilling.indekser.utils.Liveness
 import rekrutteringsbistand.stilling.indekser.utils.log
 import java.io.Closeable
 import kotlin.concurrent.thread
@@ -22,9 +23,10 @@ class App(
     private val stillingConsumer: StillingConsumer,
     private val gammelStillingConsumer: StillingConsumer?
 ) : Closeable {
-    fun start() {
+
+    fun start() = try {
         webServer.routes {
-            get("/internal/isAlive") { it.status(200) }
+            get("/internal/isAlive") { if (Liveness.isAlive) it.status(200) else it.status(500) }
             get("/internal/isReady") { it.status(200) }
             get("/internal/byttIndeks") {
                 byttIndeks(it, gammelStillingConsumer, elasticSearchService)
@@ -36,6 +38,10 @@ class App(
         } else {
             startIndeksering()
         }
+
+    } catch (exception: Exception) {
+        close()
+        throw exception
     }
 
     private fun startReindeksering() {
@@ -92,7 +98,6 @@ fun main() {
             stillingConsumer,
             gammelStillingConsumer
         ).start()
-        // TODO Are: Trenger vi å kjøre App.close() e.l. for å stoppe Javalin sin webserver hvos noe av det andre kræsjer? HVis noe annet kræsjer, vil Javalin fortsette å returnere HTTP 200 på isALive og isReady? Se kode for oppstart av LokalApp.
 
     } catch (exception: Exception) {
         log("main()").error("Noe galt skjedde – indekseringen er stoppet", exception)
