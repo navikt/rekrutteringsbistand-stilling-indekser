@@ -6,18 +6,21 @@ import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.common.errors.WakeupException
 import rekrutteringsbistand.stilling.indekser.behandling.StillingMottattService
 import rekrutteringsbistand.stilling.indekser.utils.log
+import java.io.Closeable
 import java.time.Duration
 
 class StillingConsumer(
     private val consumer: Consumer<String, Ad>,
     private val stillingMottattService: StillingMottattService
-) {
+) : Closeable {
 
     fun start(indeksNavn: String) {
         try {
             consumer.subscribe(listOf(stillingEksternTopic))
-            log.info("Starter å konsumere StillingEkstern-topic med groupId ${consumer.groupMetadata().groupId()}, " +
-                    "indekserer på indeks '$indeksNavn'")
+            log.info(
+                "Starter å konsumere StillingEkstern-topic med groupId ${consumer.groupMetadata().groupId()}, " +
+                        "indekserer på indeks '$indeksNavn'"
+            )
 
             while (true) {
                 val records: ConsumerRecords<String, Ad> = consumer.poll(Duration.ofSeconds(5))
@@ -38,7 +41,8 @@ class StillingConsumer(
         }
     }
 
-    fun stopp() {
+    override fun close() {
+        // Vil kaste WakeupException i konsument slik at den stopper, thread-safe.
         consumer.wakeup()
     }
 }

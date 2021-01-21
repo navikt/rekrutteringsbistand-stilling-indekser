@@ -5,14 +5,14 @@ import com.github.benmanes.caffeine.cache.LoadingCache
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.jackson.responseObject
 import com.github.kittinunf.result.Result
-import rekrutteringsbistand.stilling.indekser.utils.environment
+import rekrutteringsbistand.stilling.indekser.utils.Environment
 import java.lang.RuntimeException
 import java.util.concurrent.TimeUnit
 
 class AccessTokenClient(private val httpClient: FuelManager) {
-    private val azureClientSecret: String = environment().get("AZURE_APP_CLIENT_SECRET")
-    private val azureClientId: String = environment().get("AZURE_APP_CLIENT_ID")
-    private val azureTenantId: String = environment().get("AZURE_APP_TENANT_ID")
+    private val azureClientSecret: String? = Environment.get("AZURE_APP_CLIENT_SECRET")
+    private val azureClientId: String? = Environment.get("AZURE_APP_CLIENT_ID")
+    private val azureTenantId: String? = Environment.get("AZURE_APP_TENANT_ID")
     private val tokenCache: LoadingCache<String, AccessToken>
 
     init {

@@ -9,12 +9,12 @@ import org.apache.http.impl.client.BasicCredentialsProvider
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder
 import org.elasticsearch.client.RestClient
 import org.elasticsearch.client.RestHighLevelClient
-import rekrutteringsbistand.stilling.indekser.utils.environment
+import rekrutteringsbistand.stilling.indekser.utils.Environment
 
 fun getRestHighLevelClient(): RestHighLevelClient {
-    val url = environment().get("ELASTIC_SEARCH_API")
-    val username = environment().get("ES_USERNAME")
-    val password = environment().get("ES_PASSWORD")
+    val url = Environment.get("ELASTIC_SEARCH_API")
+    val username = Environment.get("ES_USERNAME")
+    val password = Environment.get("ES_PASSWORD")
 
     val credentialsProvider: CredentialsProvider = BasicCredentialsProvider()
     credentialsProvider.setCredentials(AuthScope.ANY,
