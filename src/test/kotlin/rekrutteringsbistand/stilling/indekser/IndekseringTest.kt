@@ -132,6 +132,7 @@ class IndekseringTest {
         startLokalApp(gammelMockConsumer = gammelMockConsumer, esClient = esClientMock).use {
             val (_, response, _) = Fuel.get("http://localhost:8222/internal/byttIndeks").response()
             assertEquals(200, response.statusCode)
+            Thread.sleep(1000)
             assertTrue(gammelMockConsumer.closed())
         }
     }
