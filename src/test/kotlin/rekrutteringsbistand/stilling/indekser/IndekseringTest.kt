@@ -20,6 +20,7 @@ import rekrutteringsbistand.stilling.indekser.setup.mottaKafkamelding
 import rekrutteringsbistand.stilling.indekser.utils.Environment
 import rekrutteringsbistand.stilling.indekser.utils.Environment.indeksversjonKey
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class IndekseringTest {
@@ -88,7 +89,7 @@ class IndekseringTest {
     }
 
     @Test
-    fun `Kall mot byttIndeks skal bytte indeks alias peker på og stoppe gammel StilligConsumer`() {
+    fun `Kall mot byttIndeks skal bytte indeks alias peker på`() {
         val gammelMockConsumer = mockConsumer(periodiskSendMeldinger = false)
         val esClientMock = mockk<ElasticSearchClient>()
 
@@ -109,12 +110,52 @@ class IndekseringTest {
 
             val forventaIndeksNavn = hentIndeksNavn(nyIndeksversjon)
             verify { esClientMock.oppdaterAlias(forventaIndeksNavn) }
+        }
+    }
+
+    @Test
+    fun `Kall mot byttIndeks skal stoppe gammel StilligConsumer`() {
+        val gammelMockConsumer = mockConsumer(periodiskSendMeldinger = false)
+        val esClientMock = mockk<ElasticSearchClient>()
+
+        val indeksAliasPekerPå = hentIndeksNavn(1)
+        val nyIndeksversjon = 2
+
+        Environment.set(indeksversjonKey, nyIndeksversjon.toString())
+
+        every { esClientMock.hentIndeksAliasPekerPå() } returns indeksAliasPekerPå
+        every { esClientMock.indeksFinnes(any()) } returns true
+        every { esClientMock.opprettIndeks(any()) } returns Unit
+        every { esClientMock.indekser(any(), any()) } returns Unit
+        every { esClientMock.oppdaterAlias(any()) } returns Unit
+
+        startLokalApp(gammelMockConsumer = gammelMockConsumer, esClient = esClientMock).use {
+            val (_, response, _) = Fuel.get("http://localhost:8222/internal/byttIndeks").response()
+            assertEquals(200, response.statusCode)
             assertTrue(gammelMockConsumer.closed())
         }
     }
 
     @Test
-    fun `Ny StillingConsumer skal fortsette etter at gammel har stoppet`() {
+    fun `Ny StillingConsumer skal fortsette konsumering etter kall mot byttIndeks`() {
+        val mockConsumer = mockConsumer(periodiskSendMeldinger = false)
+        val esClientMock = mockk<ElasticSearchClient>()
 
+        val indeksAliasPekerPå = hentIndeksNavn(1)
+        val nyIndeksversjon = 2
+
+        Environment.set(indeksversjonKey, nyIndeksversjon.toString())
+
+        every { esClientMock.hentIndeksAliasPekerPå() } returns indeksAliasPekerPå
+        every { esClientMock.indeksFinnes(any()) } returns true
+        every { esClientMock.opprettIndeks(any()) } returns Unit
+        every { esClientMock.indekser(any(), any()) } returns Unit
+        every { esClientMock.oppdaterAlias(any()) } returns Unit
+
+        startLokalApp(mockConsumer = mockConsumer, esClient = esClientMock).use {
+            val (_, response, _) = Fuel.get("http://localhost:8222/internal/byttIndeks").response()
+            assertEquals(200, response.statusCode)
+            assertFalse(mockConsumer.closed())
+        }
     }
 }
