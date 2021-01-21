@@ -23,18 +23,22 @@ class App(
     private val gammelStillingConsumer: StillingConsumer?
 ) : Closeable {
     fun start() {
-        webServer.routes {
-            get("/internal/isAlive") { it.status(200) }
-            get("/internal/isReady") { it.status(200) }
-            get("/internal/byttIndeks") {
-                byttIndeks(it, gammelStillingConsumer, elasticSearchService)
+        try {
+            if (elasticSearchService.skalReindeksere()) {
+                startReindeksering()
+            } else {
+                startIndeksering()
             }
-        }.start(8222)
-
-        if (elasticSearchService.skalReindeksere()) {
-            startReindeksering()
-        } else {
-            startIndeksering()
+            webServer.routes {
+                get("/internal/isAlive") { it.status(200) }
+                get("/internal/isReady") { it.status(200) }
+                get("/internal/byttIndeks") {
+                    byttIndeks(it, gammelStillingConsumer, elasticSearchService)
+                }
+            }.start(8222)
+        } catch (e: Exception) {
+            close()
+            throw e
         }
     }
 
