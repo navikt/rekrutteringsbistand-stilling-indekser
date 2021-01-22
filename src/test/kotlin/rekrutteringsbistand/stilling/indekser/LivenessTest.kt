@@ -31,7 +31,7 @@ class LivenessTest {
 
         startLokalApp(mockConsumer = consumer, esClient = esClientMock, stillingsinfoClient = stillingsinfoClient).use {
             mottaKafkamelding(consumer, enAd, 0)
-            Thread.sleep(1000)
+            Thread.sleep(500)
 
             val (_, response, _) = Fuel.get("http://localhost:8222/internal/isAlive").response()
             assertEquals(500, response.statusCode)
