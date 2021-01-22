@@ -1,27 +1,19 @@
 package rekrutteringsbistand.stilling.indekser
 
-import com.github.kittinunf.fuel.Fuel
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import no.nav.pam.ad.ext.avro.Ad
-import org.apache.kafka.clients.consumer.ConsumerRecord
-import org.apache.kafka.clients.consumer.MockConsumer
 import org.junit.Test
 import rekrutteringsbistand.stilling.indekser.behandling.konverterTilStilling
 import rekrutteringsbistand.stilling.indekser.elasticsearch.ElasticSearchClient
 import rekrutteringsbistand.stilling.indekser.elasticsearch.RekrutteringsbistandStilling
 import rekrutteringsbistand.stilling.indekser.elasticsearch.hentIndeksNavn
-import rekrutteringsbistand.stilling.indekser.kafka.stillingEksternTopic
 import rekrutteringsbistand.stilling.indekser.setup.enAd
 import rekrutteringsbistand.stilling.indekser.setup.enStillingsinfo
 import rekrutteringsbistand.stilling.indekser.setup.mockConsumer
 import rekrutteringsbistand.stilling.indekser.setup.mottaKafkamelding
 import rekrutteringsbistand.stilling.indekser.utils.Environment
 import rekrutteringsbistand.stilling.indekser.utils.Environment.indeksversjonKey
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 class IndekseringTest {
 

@@ -50,6 +50,7 @@ class ByttIndeksTest {
         startLokalApp(gammelMockConsumer = gammelMockConsumer, esClient = esClient).use {
             val (_, response, _) = Fuel.get("http://localhost:8222/internal/byttIndeks").response()
             assertEquals(200, response.statusCode)
+            Thread.sleep(500)
             assertTrue(gammelMockConsumer.closed())
         }
     }
