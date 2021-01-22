@@ -6,7 +6,7 @@ plugins {
 }
 
 application {
-    mainClassName = "rekrutteringsbistand.stilling.indekser.AppKt"
+    mainClass.set("rekrutteringsbistand.stilling.indekser.AppKt")
 }
 
 repositories {
