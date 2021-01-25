@@ -1,13 +1,30 @@
-## rekrutteringsbistand-kandidat-indekser
+# rekrutteringsbistand-kandidat-indekser
 
-Henter stillinger fra Kafka og indekserer dem i ElasticSearch.
+Applikasjon i GCP som henter stillinger fra Kafka og indekserer dem i ElasticSearch.
 
+## Kjøre lokalt
 Start Elastic Search i Docker:
 ```shell
 chmod +x start-elastic-search.sh
 ./start-elastic-search.sh
 ```
 Kjør prosjekt lokalt: Høyreklikk på `LokalApp.kt` og vel `Run`
+
+
+# Hvordan fungerer appen
+
+Applikasjonen lytter på endringer på stillinger fra Arbeidsplassen via en Kafka-topic. For hver stilling hentes ekstra stillingsinfo via et API-kall til rekrutteringsbistand-api. Til slutt indekseres stillingen i Elastic Search.
+
+## Reindeksering
+Ved å inkrementere miljøvariabelen `INDEKS_VERSJON` i `nais.yaml` og redeploye applikasjonen vil man hente alle stillinger fra start (1. januar 2020) og legge dem inn på nytt i en ny Elastic Search-indeks. Dette vil man typisk gjøre hvis man har endra hvordan stillingene lagres i indeksen.
+
+Når applikasjonen starter opp ved en reindeksering vil to Kafka-konsumenter starte opp. Den ene vil fortsette å indeksere indeksen som er i bruk i produksjon, slik at dataen der er oppdatert til enhver tid.
+Den andre Kafka-konsumenten vil hente alle stillinger fra start, og indeksere disse stillingene i en ny indeks på nytt format.
+
+Når ny indeks er populert med nyeste stillinger og inneholder samme stillinger som den gamle indeksen, så kan man gjøre et GET-kall til `/internal/byttIndeks`-endepunktet til appen. Da vil aliaset som peker på indeksen som skal brukes i produksjon byttes over til ny indeks, og brukerne vil kunne hente data på nytt format.
+
+## Slette gamle indekser
+Det er ingen automatikk for sletting av gamle indekser som ikke er i bruk lengre. Man må da manuelt gjøre REST-kall direkte mot Elastic Search for å liste opp og slette gamle indekser.
 
 
 # Spørringer mot Elastic Search
