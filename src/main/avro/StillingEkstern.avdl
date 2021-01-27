@@ -85,6 +85,11 @@ protocol StillingEkstern {
   record Ad {
     // uuid er den unike id'en til annonsen. Dette er også key på topicet.
     string uuid;
+    // adnr er et unikt annonsenummer. Det kan inneholde bokstaver og tall
+    // adnr er ment å være en kort id på en annonse som er egnet til muntlig bruk
+    // For maskinell og varig identifisering av en annonse bør uuid brukes.
+    union {null, string} adnr = null;
+
     string title;
     AdStatus status;
     PrivacyChannel privacy;

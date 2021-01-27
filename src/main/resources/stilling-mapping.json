@@ -30,6 +30,9 @@
         "uuid": {
           "type": "keyword"
         },
+        "annonsenr": {
+          "type": "keyword"
+        },
         "updated": {
           "type": "date",
           "format": "strict_date_optional_time"
