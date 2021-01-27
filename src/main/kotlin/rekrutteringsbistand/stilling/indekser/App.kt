@@ -68,7 +68,9 @@ class App(
 }
 
 fun main() {
-    val webServer = Javalin.create()
+    val webServer = Javalin.create().apply {
+        config.defaultContentType = "application/json"
+    }
     try {
         val accessTokenClient = AccessTokenClient(FuelManager())
         val httpClientAutentisertMedAccessToken = authenticateWithAccessToken(FuelManager(), accessTokenClient)

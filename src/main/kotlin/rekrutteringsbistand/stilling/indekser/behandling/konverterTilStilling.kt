@@ -10,6 +10,7 @@ fun konverterTilStilling(ad: Ad): Stilling {
     return Stilling(
         ad.getTitle(),
         ad.getUuid(),
+        ad.getAdnr(),
         ad.getStatus().name,
         ad.getPrivacy().name,
         ad.getPublished(),

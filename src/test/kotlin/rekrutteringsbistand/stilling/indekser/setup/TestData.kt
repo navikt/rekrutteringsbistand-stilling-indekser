@@ -6,6 +6,7 @@ import java.time.LocalDateTime
 
 val enAd = Ad(
     "uuid",
+    "annonsenr",
     "tittel",
     AdStatus.ACTIVE,
     PrivacyChannel.INTERNAL_NOT_SHOWN,
