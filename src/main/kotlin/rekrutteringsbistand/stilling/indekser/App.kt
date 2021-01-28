@@ -2,7 +2,6 @@ package rekrutteringsbistand.stilling.indekser
 
 import com.github.kittinunf.fuel.core.FuelManager
 import io.javalin.Javalin
-import io.javalin.apibuilder.ApiBuilder.get
 import no.nav.pam.ad.ext.avro.Ad
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import rekrutteringsbistand.stilling.indekser.autentisering.AccessTokenClient
@@ -18,20 +17,24 @@ import java.io.Closeable
 import kotlin.concurrent.thread
 
 class App(
-    private val webServer: Javalin,
     private val elasticSearchService: ElasticSearchService,
     private val stillingConsumer: StillingConsumer,
     private val gammelStillingConsumer: StillingConsumer?
 ) : Closeable {
 
-    fun start() = try {
-        webServer.routes {
+    private val webServer = Javalin.create().apply {
+        config.defaultContentType = "application/json"
+        routes {
             get("/internal/isAlive") { if (Liveness.isAlive) it.status(200) else it.status(500) }
             get("/internal/isReady") { it.status(200) }
             get("/internal/byttIndeks") {
                 byttIndeks(it, gammelStillingConsumer, elasticSearchService)
             }
-        }.start(8222)
+        }
+    }
+
+    fun start() = try {
+        webServer.start(8222)
 
         if (elasticSearchService.skalReindeksere()) {
             startReindeksering()
@@ -68,9 +71,6 @@ class App(
 }
 
 fun main() {
-    val webServer = Javalin.create().apply {
-        config.defaultContentType = "application/json"
-    }
     try {
         val accessTokenClient = AccessTokenClient(FuelManager())
         val httpClientAutentisertMedAccessToken = authenticateWithAccessToken(FuelManager(), accessTokenClient)
@@ -95,7 +95,6 @@ fun main() {
         } else null
 
         App(
-            webServer,
             elasticSearchService,
             stillingConsumer,
             gammelStillingConsumer

@@ -29,10 +29,6 @@ fun startLokalApp(
     stillingsinfoClient: StillingsinfoClient = FakeStillingsinfoClient()
 ): App {
 
-    val webServer = Javalin.create().apply {
-        config.defaultContentType = "application/json"
-    }
-
     val elasticSearchService = ElasticSearchService(esClient)
     val stillingMottattService = StillingMottattService(stillingsinfoClient, elasticSearchService)
     val stillingConsumer = StillingConsumer(mockConsumer, stillingMottattService)
@@ -41,7 +37,6 @@ fun startLokalApp(
     val gammelStillingConsumer = StillingConsumer(gammelMockConsumer, gammelStillingMottattService)
 
     val app = App(
-        webServer,
         elasticSearchService,
         stillingConsumer,
         gammelStillingConsumer
