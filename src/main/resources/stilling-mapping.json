@@ -117,6 +117,9 @@
                 "stilling.geography_all_no"
               ]
             },
+            "countyCode": {
+              "type": "keyword"
+            },
             "municipal": {
               "type": "text",
               "fields": {
@@ -127,6 +130,9 @@
               "copy_to": [
                 "stilling.geography_all_no"
               ]
+            },
+            "municipalCode": {
+              "type": "keyword"
             },
             "postalCode": {
               "type": "keyword"
@@ -140,6 +146,17 @@
               "type": "keyword",
               "index": false,
               "doc_values": false
+            },
+            "country": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword"
+                }
+              },
+              "copy_to": [
+                "stilling.geography_all_no"
+              ]
             }
           }
         },

@@ -34,9 +34,12 @@ fun konverterTilStilling(ad: Ad): Stilling {
             it.getAddress(),
             it.getPostalCode(),
             it.getCounty(),
+            it.countyCode,
             it.getMunicipal(),
+            it.municipalCode,
             it.getLatitude(),
             it.getLongitude(),
+            it.getCountry()
         ) },
         ad.getReference(),
         ad.getAdministration()?.let {

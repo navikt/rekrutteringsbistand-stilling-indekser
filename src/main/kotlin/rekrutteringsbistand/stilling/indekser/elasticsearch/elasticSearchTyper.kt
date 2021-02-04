@@ -32,9 +32,12 @@ data class Location(
     val address: String?,
     val postalCode: String?,
     val county: String?,
+    val countyCode: String?,
     val municipal: String?,
+    val municipalCode: String?,
     val latitue: String?,
     val longitude: String?,
+    val country: String,
 )
 
 data class StyrkCategory(
