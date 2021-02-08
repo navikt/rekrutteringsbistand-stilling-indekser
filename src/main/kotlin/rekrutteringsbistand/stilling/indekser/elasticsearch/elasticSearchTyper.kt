@@ -14,6 +14,7 @@ data class Stilling(
     val status: String,
     val privacy: String,
     val published: String?,
+    val publishedByAdmin: String?,
     val expires: String?,
     val created: String,
     val updated: String,

@@ -14,6 +14,7 @@ fun konverterTilStilling(ad: Ad): Stilling {
         ad.getStatus().name,
         ad.getPrivacy().name,
         ad.getPublished(),
+        ad.getPublishedByAdmin(),
         ad.getExpires(),
         ad.getCreated(),
         ad.getUpdated(),
