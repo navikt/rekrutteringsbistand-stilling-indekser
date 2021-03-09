@@ -19,7 +19,7 @@ class StillingsinfoClientImpl(private val httpClient: FuelManager): Stillingsinf
         when (result) {
             is Result.Success -> { return result.get() }
             is Result.Failure -> {
-                throw Exception(
+                throw KunneIkkeHenteStillingsinsinfoException(
                     "Kunne ikke hente stillingsinfo for stillinger." +
                     "HTTP-status: ${response.statusCode}, responseMessage: ${response.responseMessage}"
                 )
@@ -43,3 +43,5 @@ data class BulkStillingsinfoOutboundDto(
 interface StillingsinfoClient {
     fun getStillingsinfo(stillingsIder: List<String>): List<Stillingsinfo>
 }
+
+class KunneIkkeHenteStillingsinsinfoException(melding: String) : Exception(melding)

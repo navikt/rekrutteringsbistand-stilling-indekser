@@ -12,7 +12,7 @@ import java.time.Duration
 
 class StillingConsumer(
     private val consumer: Consumer<String, Ad>,
-    private val stillingMottattService: StillingMottattService
+    private val stillingMottattService: StillingMottattService,
 ) : Closeable {
 
     fun start(indeksNavn: String) {
@@ -28,7 +28,7 @@ class StillingConsumer(
                 if (records.count() == 0) continue
 
                 val stillinger = records.map { it.value() }
-                stillingMottattService.behandleStillinger(stillinger, indeksNavn)
+                stillingMottattService.behandleStillingerMedRetry(stillinger, indeksNavn)
                 consumer.commitSync()
 
                 log.info("Committet offset ${records.last().offset()} til Kafka")
@@ -36,8 +36,7 @@ class StillingConsumer(
         } catch (exception: WakeupException) {
             log.info("Fikk beskjed om å lukke consument med groupId ${consumer.groupMetadata().groupId()}")
         } catch (exception: Exception) {
-            log.error("Noe galt skjedde i konsument", exception)
-            Liveness.isAlive = false
+            Liveness.kill("Noe galt skjedde i konsument", exception)
         } finally {
             consumer.close()
         }
