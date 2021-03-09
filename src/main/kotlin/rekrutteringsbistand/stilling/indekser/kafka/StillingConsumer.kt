@@ -28,7 +28,7 @@ class StillingConsumer(
                 if (records.count() == 0) continue
 
                 val stillinger = records.map { it.value() }
-                stillingMottattService.behandleStillinger(stillinger, indeksNavn)
+                stillingMottattService.behandleStillingerMedRetry(stillinger, indeksNavn)
                 consumer.commitSync()
 
                 log.info("Committet offset ${records.last().offset()} til Kafka")
