@@ -13,8 +13,10 @@ import rekrutteringsbistand.stilling.indekser.setup.enAd
 import rekrutteringsbistand.stilling.indekser.setup.enStillingsinfo
 import rekrutteringsbistand.stilling.indekser.setup.mockConsumer
 import rekrutteringsbistand.stilling.indekser.setup.mottaKafkamelding
+import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClient
 import rekrutteringsbistand.stilling.indekser.utils.Environment
 import rekrutteringsbistand.stilling.indekser.utils.Environment.indeksversjonKey
+import java.lang.RuntimeException
 
 class IndekseringTest {
 
@@ -82,8 +84,7 @@ class IndekseringTest {
     }
 
     @Test
-    fun `Skal prøve å indeksere på ny hvis kall mot Elastic Search feiler`() {
-
+    fun `Skal indeksere på ny hvis kall mot Elastic Search feiler`() {
         val indeksversjon = 1
         Environment.set(indeksversjonKey, indeksversjon.toString())
 
@@ -114,6 +115,34 @@ class IndekseringTest {
     }
 
     @Test
-    fun `Skal prøve å indeksere på ny hvis kall mot rekrutteringsbistand-api feiler`() {
+    fun `Skal indeksere selv om kall mot rekrutteringsbistand-api feiler én gang`() {
+        val indeksversjon = 1
+        Environment.set(indeksversjonKey, indeksversjon.toString())
+
+        val esClientMock = mockk<ElasticSearchClient>()
+        every { esClientMock.indeksFinnes(any()) } returns false
+        every { esClientMock.opprettIndeks(any()) } returns Unit
+        every { esClientMock.oppdaterAlias(any()) } returns Unit
+        every { esClientMock.indekser(any(), any()) } returns Unit
+
+        val stillingsinfoClientMock = mockk<StillingsinfoClient>()
+        every { stillingsinfoClientMock.getStillingsinfo(any()) } throws RuntimeException()
+
+        val consumer = mockConsumer(periodiskSendMeldinger = false)
+
+        startLokalApp(consumer, esClient = esClientMock, stillingsinfoClient = stillingsinfoClientMock).use {
+            mottaKafkamelding(consumer, enAd)
+
+            val forventedeStillinger = listOf(
+                RekrutteringsbistandStilling(
+                    stilling = konverterTilStilling(enAd),
+                    stillingsinfo = enStillingsinfo
+                )
+            )
+
+            verify(timeout = 3000) {
+                esClientMock.indekser(forventedeStillinger, hentIndeksNavn(indeksversjon))
+            }
+        }
     }
 }
