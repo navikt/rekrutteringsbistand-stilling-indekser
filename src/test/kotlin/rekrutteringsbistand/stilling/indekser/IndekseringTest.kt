@@ -13,10 +13,10 @@ import rekrutteringsbistand.stilling.indekser.setup.enAd
 import rekrutteringsbistand.stilling.indekser.setup.enStillingsinfo
 import rekrutteringsbistand.stilling.indekser.setup.mockConsumer
 import rekrutteringsbistand.stilling.indekser.setup.mottaKafkamelding
+import rekrutteringsbistand.stilling.indekser.stillingsinfo.KunneIkkeHenteStillingsinsinfoException
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClient
 import rekrutteringsbistand.stilling.indekser.utils.Environment
 import rekrutteringsbistand.stilling.indekser.utils.Environment.indeksversjonKey
-import java.lang.RuntimeException
 
 class IndekseringTest {
 
@@ -126,7 +126,10 @@ class IndekseringTest {
         every { esClientMock.indekser(any(), any()) } returns Unit
 
         val stillingsinfoClientMock = mockk<StillingsinfoClient>()
-        every { stillingsinfoClientMock.getStillingsinfo(any()) } throws RuntimeException()
+        // Feiler første gang, OK neste gang
+        every {
+            stillingsinfoClientMock.getStillingsinfo(any())
+        } throws KunneIkkeHenteStillingsinsinfoException("") andThen listOf(enStillingsinfo)
 
         val consumer = mockConsumer(periodiskSendMeldinger = false)
 

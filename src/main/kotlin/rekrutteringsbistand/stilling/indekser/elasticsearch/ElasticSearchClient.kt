@@ -70,7 +70,7 @@ class ElasticSearchClient(private val restHighLevelClient: RestHighLevelClient) 
             1 -> response.aliases.keys.first()
             else -> throw Exception(
                 "Klarte ikke hente indeks for alias, fikk mer enn én indeks. " +
-                        "Antall indekser: ${response.aliases.size}"
+                "Antall indekser: ${response.aliases.size}"
             )
         }
     }

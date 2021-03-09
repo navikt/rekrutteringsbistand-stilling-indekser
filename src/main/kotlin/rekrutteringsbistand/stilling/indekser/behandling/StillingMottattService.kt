@@ -3,6 +3,7 @@ package rekrutteringsbistand.stilling.indekser.behandling
 import no.nav.pam.ad.ext.avro.Ad
 import org.apache.http.ConnectionClosedException
 import rekrutteringsbistand.stilling.indekser.elasticsearch.*
+import rekrutteringsbistand.stilling.indekser.stillingsinfo.KunneIkkeHenteStillingsinsinfoException
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClient
 import rekrutteringsbistand.stilling.indekser.utils.log
 
@@ -16,6 +17,9 @@ class StillingMottattService(
             behandleStillinger(ads, indeksNavn)
         } catch (exception: ConnectionClosedException) {
             log.warn("Feil ved kall mot Elastic Search, prøver igjen", exception)
+            behandleStillinger(ads, indeksNavn)
+        } catch (exception: KunneIkkeHenteStillingsinsinfoException) {
+            log.warn("Feil ved henting av stillingsinfo, prøver igjen", exception)
             behandleStillinger(ads, indeksNavn)
         }
     }
