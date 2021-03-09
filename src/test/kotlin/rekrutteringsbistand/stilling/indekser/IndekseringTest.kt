@@ -17,6 +17,9 @@ import rekrutteringsbistand.stilling.indekser.stillingsinfo.KunneIkkeHenteStilli
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClient
 import rekrutteringsbistand.stilling.indekser.utils.Environment
 import rekrutteringsbistand.stilling.indekser.utils.Environment.indeksversjonKey
+import rekrutteringsbistand.stilling.indekser.utils.Liveness
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class IndekseringTest {
 
@@ -146,6 +149,29 @@ class IndekseringTest {
             verify(timeout = 3000) {
                 esClientMock.indekser(forventedeStillinger, hentIndeksNavn(indeksversjon))
             }
+        }
+    }
+
+    @Test
+    fun `Appen skal stoppes hvis indeksering feiler to ganger`() {
+        val indeksversjon = 1
+        Environment.set(indeksversjonKey, indeksversjon.toString())
+
+        val esClientMock = mockk<ElasticSearchClient>()
+        every { esClientMock.indeksFinnes(any()) } returns false
+        every { esClientMock.opprettIndeks(any()) } returns Unit
+        every { esClientMock.oppdaterAlias(any()) } returns Unit
+        every {
+            esClientMock.indekser(any(), any())
+        } throws ConnectionClosedException() andThenThrows  ConnectionClosedException()
+
+        val consumer = mockConsumer(periodiskSendMeldinger = false)
+
+        startLokalApp(esClient = esClientMock).use {
+            mottaKafkamelding(consumer, enAd)
+
+            Thread.sleep(500)
+            assertFalse(Liveness.isAlive)
         }
     }
 }
