@@ -6,6 +6,7 @@ import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.jackson.responseObject
 import com.github.kittinunf.result.Result
 import rekrutteringsbistand.stilling.indekser.utils.Environment
+import rekrutteringsbistand.stilling.indekser.utils.log
 import java.lang.RuntimeException
 import java.util.concurrent.TimeUnit
 
@@ -16,6 +17,7 @@ class AccessTokenClient(private val httpClient: FuelManager) {
     private val tokenCache: LoadingCache<String, AccessToken>
 
     init {
+        log.info("Client ID is $azureClientId");
         tokenCache = Caffeine.newBuilder()
                 .expireAfterWrite(59, TimeUnit.MINUTES)
                 .build { scope ->
