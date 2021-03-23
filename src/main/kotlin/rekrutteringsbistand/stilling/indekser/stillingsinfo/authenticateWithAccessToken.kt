@@ -6,11 +6,10 @@ import rekrutteringsbistand.stilling.indekser.autentisering.addBearerToken
 import rekrutteringsbistand.stilling.indekser.utils.Environment
 
 fun authenticateWithAccessToken(httpClient: FuelManager, accessTokenClient: AccessTokenClient): FuelManager {
-    val cluster = Environment.get("NAIS_CLUSTER_NAME")
-    val clusterTilRekrutteringsbistandApi = if (cluster === "prod-gcp") "prod-fss" else "dev-fss"
+    val rekrutteringsbistandApiClientId = Environment.get("REKRUTTERINGSBISTAND_API_CLIENT_ID")
 
     addBearerToken(httpClient) {
-        accessTokenClient.getAccessToken(scope = "api://$clusterTilRekrutteringsbistandApi.arbeidsgiver.rekrutteringsbistand-api/.default")
+        accessTokenClient.getAccessToken(scope = "api://$rekrutteringsbistandApiClientId/.default")
     }
 
     return httpClient

@@ -3,6 +3,7 @@
     "https://rekrutteringsbistand-stilling-indekser.dev.intern.nav.no"
   ],
   "rekrutteringsbistand-api-host": "rekrutteringsbistand-api.dev-fss-pub.nais.io",
+  "rekrutteringsbistand-api-client-id": "09e65bcf-fabc-4f49-8ba1-d807e2df09be",
   "elastic-search-api": "https://elastic-arbeidsgiver-rekrutteringsbistand-stilling-nav-dev.aivencloud.com:26482",
   "kafka-schema-registry-host": "kafka-schema-registry.nais-q.adeo.no",
   "kafka-broker-urls": "b27apvl00045.preprod.local:8443, b27apvl00046.preprod.local:8443, b27apvl00047.preprod.local:8443"
