@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
 class AccessTokenClient(private val httpClient: FuelManager) {
     private val azureClientSecret: String? = Environment.get("AZURE_APP_CLIENT_SECRET")
     private val azureClientId: String? = Environment.get("AZURE_APP_CLIENT_ID")
-    private val azureTokenEndpoint: String? = Environment.get("AZURE_OPENID_CONFIG_TOKEN_ENDPOINT")
+    private val azureTenantId: String? = Environment.get("AZURE_APP_TENANT_ID")
     private val tokenCache: LoadingCache<String, AccessToken>
 
     init {
@@ -36,7 +36,7 @@ class AccessTokenClient(private val httpClient: FuelManager) {
         )
 
         val (_, _, result) = httpClient
-                .post(azureTokenEndpoint!!, formData)
+                .post("https://login.microsoftonline.com/$azureTenantId/oauth2/v2.0/token", formData)
                 .responseObject<AccessToken>()
 
         when (result) {
