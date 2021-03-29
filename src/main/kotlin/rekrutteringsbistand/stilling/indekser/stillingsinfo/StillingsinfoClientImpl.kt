@@ -7,7 +7,7 @@ import com.github.kittinunf.result.Result
 import rekrutteringsbistand.stilling.indekser.utils.Environment
 
 class StillingsinfoClientImpl(private val httpClient: FuelManager): StillingsinfoClient {
-    private val stillingsinfoUrl: String = "${Environment.get("REKRUTTERINGSBISTAND_API_URL")}/indekser/stillingsinfo"
+    private val stillingsinfoUrl: String = "${Environment.get("REKRUTTERINGSBISTAND_STILLING_API_URL")}/indekser/stillingsinfo"
 
     override fun getStillingsinfo(stillingsIder: List<String>): List<Stillingsinfo> {
         val body = BulkStillingsinfoOutboundDto(stillingsIder)

@@ -15,7 +15,7 @@ import rekrutteringsbistand.stilling.indekser.utils.Environment
 import rekrutteringsbistand.stilling.indekser.utils.Environment.indeksversjonKey
 
 fun main() {
-    Environment.set("REKRUTTERINGSBISTAND_API", "http://localhost:9501/rekrutteringsbistand-api")
+    Environment.set("REKRUTTERINGSBISTAND_STILLING_API_URL", "http://localhost:9501")
     Environment.set("ELASTIC_SEARCH_API", "http://localhost:9200")
     Environment.set(indeksversjonKey, "1")
 
