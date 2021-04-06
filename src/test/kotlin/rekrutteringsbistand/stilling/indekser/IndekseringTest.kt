@@ -118,7 +118,7 @@ class IndekseringTest {
     }
 
     @Test
-    fun `Skal indeksere selv om kall mot rekrutteringsbistand-api feiler én gang`() {
+    fun `Skal indeksere selv om kall mot rekrutteringsbistand-stilling-api feiler én gang`() {
         val indeksversjon = 1
         Environment.set(indeksversjonKey, indeksversjon.toString())
 

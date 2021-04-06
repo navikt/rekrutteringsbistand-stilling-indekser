@@ -13,7 +13,7 @@ Kjør prosjekt lokalt: Høyreklikk på `LokalApp.kt` og vel `Run`
 
 # Hvordan fungerer appen
 
-Applikasjonen lytter på endringer på stillinger fra Arbeidsplassen via en Kafka-topic. For hver stilling hentes ekstra stillingsinfo via et API-kall til rekrutteringsbistand-api. Til slutt indekseres stillingen i Elastic Search.
+Applikasjonen lytter på endringer på stillinger fra Arbeidsplassen via en Kafka-topic. For hver stilling hentes ekstra stillingsinfo via et API-kall til rekrutteringsbistand-stilling-api. Til slutt indekseres stillingen i Elastic Search.
 
 ## Reindeksering
 Ved å inkrementere miljøvariabelen `INDEKS_VERSJON` i `nais.yaml` og redeploye applikasjonen vil man hente alle stillinger fra start (1. januar 2020) og legge dem inn på nytt i en ny Elastic Search-indeks. Dette vil man typisk gjøre hvis man har endra hvordan stillingene lagres i indeksen.

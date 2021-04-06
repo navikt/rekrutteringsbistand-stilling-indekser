@@ -27,7 +27,7 @@ spec:
   accessPolicy:
     outbound:
       external:
-        - host: {{rekrutteringsbistand-api-host}}
+        - host: {{rekrutteringsbistand-stilling-api-host}}
         - host: {{kafka-schema-registry-host}}
   elastic:
     instance: rekrutteringsbistand-stilling
@@ -35,10 +35,10 @@ spec:
     - secret: rekrutteringsbistand-stilling-indekser-es-credentials
     - secret: rekrutteringsbistand-stilling-indekser-servicebruker
   env:
-    - name: REKRUTTERINGSBISTAND_API_URL
-      value: https://{{rekrutteringsbistand-api-host}}/rekrutteringsbistand-api
-    - name: REKRUTTERINGSBISTAND_API_CLIENT_ID
-      value: {{rekrutteringsbistand-api-client-id}}
+    - name: REKRUTTERINGSBISTAND_STILLING_API_URL
+      value: https://{{rekrutteringsbistand-stilling-api-host}}
+    - name: REKRUTTERINGSBISTAND_STILLING_API_CLIENT_ID
+      value: {{rekrutteringsbistand-stilling-api-client-id}}
     - name: ELASTIC_SEARCH_API
       value: {{elastic-search-api}}
     - name: KAFKA_SCHEMA_REGISTRY_URL

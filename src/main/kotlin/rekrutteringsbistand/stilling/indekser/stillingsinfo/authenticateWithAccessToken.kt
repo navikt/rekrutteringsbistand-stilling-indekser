@@ -6,10 +6,10 @@ import rekrutteringsbistand.stilling.indekser.autentisering.addBearerToken
 import rekrutteringsbistand.stilling.indekser.utils.Environment
 
 fun authenticateWithAccessToken(httpClient: FuelManager, accessTokenClient: AccessTokenClient): FuelManager {
-    val rekrutteringsbistandApiClientId = Environment.get("REKRUTTERINGSBISTAND_API_CLIENT_ID")
+    val rekrutteringsbistandStillingApiClientId = Environment.get("REKRUTTERINGSBISTAND_STILLING_API_CLIENT_ID")
 
     addBearerToken(httpClient) {
-        accessTokenClient.getAccessToken(scope = "api://$rekrutteringsbistandApiClientId/.default")
+        accessTokenClient.getAccessToken(scope = "api://$rekrutteringsbistandStillingApiClientId/.default")
     }
 
     return httpClient
