@@ -3,7 +3,5 @@
     "https://rekrutteringsbistand-stilling-indekser.intern.nav.no"
   ],
   "rekrutteringsbistand-stilling-api-host": "rekrutteringsbistand-stilling-api.prod-fss-pub.nais.io",
-  "elastic-search-api": "https://elastic-arbeidsgiver-rekrutteringsbistand-stilling-nav-prod.aivencloud.com:26482",
-  "kafka-schema-registry-host": "kafka-schema-registry.nais.adeo.no",
-  "kafka-broker-urls": "a01apvl00145.adeo.no:8443, a01apvl00146.adeo.no:8443, a01apvl00147.adeo.no:8443, a01apvl00148.adeo.no:8443, a01apvl00149.adeo.no:8443, a01apvl00150.adeo.no:8443"
+  "elastic-search-api": "https://elastic-arbeidsgiver-rekrutteringsbistand-stilling-nav-prod.aivencloud.com:26482"
 }

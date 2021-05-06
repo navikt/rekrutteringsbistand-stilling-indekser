@@ -4,7 +4,7 @@ metadata:
   name: rekrutteringsbistand-stilling-indekser
   namespace: arbeidsgiver
   labels:
-    team: arbeidsgiver
+    team:
 spec:
   image: {{image}}
   port: 8222
@@ -41,7 +41,5 @@ spec:
       value: {{elastic-search-api}}
     - name: KAFKA_SCHEMA_REGISTRY_URL
       value: https://{{kafka-schema-registry-host}}
-    - name: KAFKA_BROKER_URLS
-      value: {{kafka-broker-urls}}
     - name: INDEKS_VERSJON
       value: "10"
