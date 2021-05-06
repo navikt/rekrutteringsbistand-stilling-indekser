@@ -11,7 +11,7 @@ import rekrutteringsbistand.stilling.indekser.utils.Environment
 import java.io.File
 import java.util.*
 
-const val stillingEksternTopic = "StillingEkstern"
+const val stillingEksternTopic = "rekrutteringsbistand-stilling-1"
 
 fun consumerConfig(versjon: Int) = Properties().apply {
     put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 100)
