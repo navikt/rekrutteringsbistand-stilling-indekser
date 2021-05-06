@@ -42,4 +42,4 @@ spec:
     - name: KAFKA_SCHEMA_REGISTRY_URL
       value: https://{{kafka-schema-registry-host}}
     - name: INDEKS_VERSJON
-      value: "10"
+      value: "10b"
