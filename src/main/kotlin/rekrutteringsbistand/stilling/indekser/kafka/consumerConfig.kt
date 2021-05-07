@@ -4,11 +4,9 @@ import io.confluent.kafka.serializers.KafkaAvroDeserializer
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.consumer.ConsumerConfig
-import org.apache.kafka.common.config.SaslConfigs
 import org.apache.kafka.common.config.SslConfigs
 import org.apache.kafka.common.serialization.StringDeserializer
 import rekrutteringsbistand.stilling.indekser.utils.Environment
-import java.io.File
 import java.util.*
 
 const val stillingEksternTopic = "rekrutteringsbistand-stilling-1"
