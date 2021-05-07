@@ -4,7 +4,7 @@ metadata:
   name: rekrutteringsbistand-stilling-indekser
   namespace: arbeidsgiver
   labels:
-    team:
+    team: arbeidsgiver
 spec:
   image: {{image}}
   port: 8222
@@ -42,6 +42,6 @@ spec:
     - name: KAFKA_SCHEMA_REGISTRY_URL
       value: https://{{kafka-schema-registry-host}}
     - name: INDEKS_VERSJON
-      value: "10b"
+      value: "11"
   kafka:
     pool: {{kafka_pool}}

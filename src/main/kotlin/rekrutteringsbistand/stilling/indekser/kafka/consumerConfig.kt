@@ -9,7 +9,7 @@ import org.apache.kafka.common.serialization.StringDeserializer
 import rekrutteringsbistand.stilling.indekser.utils.Environment
 import java.util.*
 
-const val stillingEksternTopic = "rekrutteringsbistand-stilling-1"
+const val stillingsTopic = "rekrutteringsbistand-stilling-1"
 
 fun consumerConfig(versjon: Int) = Properties().apply {
     put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 100)
