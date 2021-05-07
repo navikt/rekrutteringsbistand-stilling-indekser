@@ -17,7 +17,7 @@ class StillingConsumer(
 
     fun start(indeksNavn: String) {
         try {
-            consumer.subscribe(listOf(stillingsTopic))
+            consumer.subscribe(listOf(stillingstopic))
             log.info(
                 "Starter å konsumere StillingEkstern-topic med groupId ${consumer.groupMetadata().groupId()}, " +
                         "indekserer på indeks '$indeksNavn'"

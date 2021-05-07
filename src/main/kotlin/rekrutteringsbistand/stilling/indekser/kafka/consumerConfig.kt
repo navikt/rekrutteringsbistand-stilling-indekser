@@ -9,7 +9,7 @@ import org.apache.kafka.common.serialization.StringDeserializer
 import rekrutteringsbistand.stilling.indekser.utils.Environment
 import java.util.*
 
-const val stillingsTopic = "rekrutteringsbistand-stilling-1"
+const val stillingstopic = "rekrutteringsbistand-stilling-1"
 
 fun consumerConfig(versjon: Int) = Properties().apply {
     put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 100)
@@ -23,11 +23,11 @@ fun consumerConfig(versjon: Int) = Properties().apply {
     put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, Environment.get("KAFKA_SCHEMA_REGISTRY"))
     put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true)
 
-    put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SSL");
-    put(SslConfigs.SSL_ENDPOINT_IDENTIFICATION_ALGORITHM_CONFIG, "");
-    put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, Environment.get("KAFKA_TRUSTSTORE_PATH"));
-    put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, Environment.get("KAFKA_CREDSTORE_PASSWORD"));
+    put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SSL")
+    put(SslConfigs.SSL_ENDPOINT_IDENTIFICATION_ALGORITHM_CONFIG, "")
+    put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, Environment.get("KAFKA_TRUSTSTORE_PATH"))
+    put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, Environment.get("KAFKA_CREDSTORE_PASSWORD"))
     put(SslConfigs.SSL_KEYSTORE_TYPE_CONFIG, "PKCS12")
-    put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, Environment.get("KAFKA_KEYSTORE_PATH"));
-    put(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, Environment.get("KAFKA_CREDSTORE_PASSWORD"));
+    put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, Environment.get("KAFKA_KEYSTORE_PATH"))
+    put(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, Environment.get("KAFKA_CREDSTORE_PASSWORD"))
 }
