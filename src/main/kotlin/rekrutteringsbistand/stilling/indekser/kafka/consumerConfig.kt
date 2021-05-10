@@ -21,6 +21,8 @@ fun consumerConfig(versjon: Int) = Properties().apply {
 
     put(CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG, Environment.get("KAFKA_BROKERS"))
     put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, Environment.get("KAFKA_SCHEMA_REGISTRY"))
+    put(KafkaAvroDeserializerConfig.USER_INFO_CONFIG, "${Environment.get("KAFKA_SCHEMA_REGISTRY_USER")}:${Environment.get("KAFKA_SCHEMA_REGISTRY_PASSWORD")}")
+
     put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true)
 
     put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SSL")
