@@ -1,6 +1,6 @@
 package rekrutteringsbistand.stilling.indekser.behandling
 
-import no.nav.pam.ad.ext.avro.Ad
+import no.nav.pam.stilling.ext.avro.Ad
 import org.apache.http.ConnectionClosedException
 import rekrutteringsbistand.stilling.indekser.elasticsearch.*
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.KunneIkkeHenteStillingsinsinfoException

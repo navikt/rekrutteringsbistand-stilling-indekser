@@ -1,6 +1,6 @@
 package rekrutteringsbistand.stilling.indekser.kafka
 
-import no.nav.pam.ad.ext.avro.Ad
+import no.nav.pam.stilling.ext.avro.Ad
 import org.apache.kafka.clients.consumer.Consumer
 import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.common.errors.WakeupException
@@ -11,8 +11,8 @@ import java.io.Closeable
 import java.time.Duration
 
 class StillingConsumer(
-    private val consumer: Consumer<String, Ad>,
-    private val stillingMottattService: StillingMottattService,
+        private val consumer: Consumer<String, Ad>,
+        private val stillingMottattService: StillingMottattService,
 ) : Closeable {
 
     fun start(indeksNavn: String) {

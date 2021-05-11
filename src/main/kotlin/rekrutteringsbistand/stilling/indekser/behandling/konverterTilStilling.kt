@@ -3,7 +3,7 @@ package rekrutteringsbistand.stilling.indekser.behandling
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import no.nav.pam.ad.ext.avro.Ad
+import no.nav.pam.stilling.ext.avro.Ad
 import rekrutteringsbistand.stilling.indekser.elasticsearch.*
 
 fun konverterTilStilling(ad: Ad): Stilling {

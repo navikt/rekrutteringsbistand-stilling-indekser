@@ -3,7 +3,7 @@ package rekrutteringsbistand.stilling.indekser.setup
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import no.nav.pam.ad.ext.avro.Ad
+import no.nav.pam.stilling.ext.avro.Ad
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.clients.consumer.MockConsumer
 import org.apache.kafka.clients.consumer.OffsetResetStrategy
