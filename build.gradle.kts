@@ -1,7 +1,7 @@
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.4.21"
     id("com.github.johnrengelman.shadow") version "6.1.0"
-    id("com.commercehub.gradle.plugin.avro") version "0.21.0"
+    id("com.github.davidmc24.gradle.plugin.avro") version "1.2.0"
     application
 }
 
@@ -18,6 +18,7 @@ repositories {
 }
 
 dependencies {
+    implementation("org.apache.avro:avro:1.10.1")
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")

@@ -28,7 +28,6 @@ spec:
     outbound:
       external:
         - host: {{rekrutteringsbistand-stilling-api-host}}
-        - host: {{kafka-schema-registry-host}}
   elastic:
     instance: rekrutteringsbistand-stilling
   envFrom:
@@ -39,9 +38,7 @@ spec:
       value: https://{{rekrutteringsbistand-stilling-api-host}}
     - name: ELASTIC_SEARCH_API
       value: {{elastic-search-api}}
-    - name: KAFKA_SCHEMA_REGISTRY_URL
-      value: https://{{kafka-schema-registry-host}}
-    - name: KAFKA_BROKER_URLS
-      value: {{kafka-broker-urls}}
     - name: INDEKS_VERSJON
-      value: "10"
+      value: "11"
+  kafka:
+    pool: {{kafka_pool}}

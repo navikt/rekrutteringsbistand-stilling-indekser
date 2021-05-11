@@ -1,4 +1,4 @@
-@namespace("no.nav.pam.ad.ext.avro")
+@namespace("no.nav.pam.stilling.ext.avro")
 protocol StillingEkstern {
   enum AdStatus {
     ACTIVE,

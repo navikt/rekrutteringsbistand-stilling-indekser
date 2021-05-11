@@ -2,7 +2,7 @@ package rekrutteringsbistand.stilling.indekser
 
 import com.github.kittinunf.fuel.core.FuelManager
 import io.javalin.Javalin
-import no.nav.pam.ad.ext.avro.Ad
+import no.nav.pam.stilling.ext.avro.Ad
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import rekrutteringsbistand.stilling.indekser.autentisering.AccessTokenClient
 import rekrutteringsbistand.stilling.indekser.behandling.StillingMottattService

@@ -1,6 +1,6 @@
 package rekrutteringsbistand.stilling.indekser.setup
 
-import no.nav.pam.ad.ext.avro.*
+import no.nav.pam.stilling.ext.avro.*
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.Stillingsinfo
 import java.time.LocalDateTime
 

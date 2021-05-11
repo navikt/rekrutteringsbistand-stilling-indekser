@@ -1,6 +1,6 @@
 package rekrutteringsbistand.stilling.indekser.kafka
 
-import no.nav.pam.ad.ext.avro.Ad
+import no.nav.pam.stilling.ext.avro.Ad
 import org.apache.kafka.clients.consumer.Consumer
 import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.common.errors.WakeupException
@@ -11,15 +11,15 @@ import java.io.Closeable
 import java.time.Duration
 
 class StillingConsumer(
-    private val consumer: Consumer<String, Ad>,
-    private val stillingMottattService: StillingMottattService,
+        private val consumer: Consumer<String, Ad>,
+        private val stillingMottattService: StillingMottattService,
 ) : Closeable {
 
     fun start(indeksNavn: String) {
         try {
-            consumer.subscribe(listOf(stillingEksternTopic))
+            consumer.subscribe(listOf(stillingstopic))
             log.info(
-                "Starter å konsumere StillingEkstern-topic med groupId ${consumer.groupMetadata().groupId()}, " +
+                "Starter å konsumere topic ${stillingstopic} med groupId ${consumer.groupMetadata().groupId()}, " +
                         "indekserer på indeks '$indeksNavn'"
             )
 

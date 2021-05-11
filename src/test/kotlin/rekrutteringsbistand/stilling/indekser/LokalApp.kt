@@ -1,7 +1,6 @@
 package rekrutteringsbistand.stilling.indekser
 
-import io.javalin.Javalin
-import no.nav.pam.ad.ext.avro.Ad
+import no.nav.pam.stilling.ext.avro.Ad
 import org.apache.kafka.clients.consumer.Consumer
 import rekrutteringsbistand.stilling.indekser.behandling.StillingMottattService
 import rekrutteringsbistand.stilling.indekser.elasticsearch.ElasticSearchClient
@@ -23,10 +22,10 @@ fun main() {
 }
 
 fun startLokalApp(
-    mockConsumer: Consumer<String, Ad> = mockConsumer(periodiskSendMeldinger = true),
-    gammelMockConsumer: Consumer<String, Ad> = mockConsumer(periodiskSendMeldinger = true),
-    esClient: ElasticSearchClient = ElasticSearchClient(getLocalRestHighLevelClient()),
-    stillingsinfoClient: StillingsinfoClient = FakeStillingsinfoClient()
+        mockConsumer: Consumer<String, Ad> = mockConsumer(periodiskSendMeldinger = true),
+        gammelMockConsumer: Consumer<String, Ad> = mockConsumer(periodiskSendMeldinger = true),
+        esClient: ElasticSearchClient = ElasticSearchClient(getLocalRestHighLevelClient()),
+        stillingsinfoClient: StillingsinfoClient = FakeStillingsinfoClient()
 ): App {
 
     val elasticSearchService = ElasticSearchService(esClient)
