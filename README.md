@@ -22,6 +22,8 @@ Når applikasjonen starter opp ved en reindeksering vil to Kafka-konsumenter sta
 Den andre Kafka-konsumenten vil hente alle stillinger fra start, og indeksere disse stillingene i en ny indeks på nytt format.
 
 Når ny indeks er populert med nyeste stillinger og inneholder samme stillinger som den gamle indeksen, så kan man gjøre et GET-kall til `/internal/byttIndeks`-endepunktet til appen. Da vil aliaset som peker på indeksen som skal brukes i produksjon byttes over til ny indeks, og brukerne vil kunne hente data på nytt format.
+I dev: https://rekrutteringsbistand-stilling-indekser.dev.intern.nav.no/internal/byttIndeks
+I prod: https://rekrutteringsbistand-stilling-indekser.intern.nav.no/internal/byttIndeks
 
 ## Slette gamle indekser
 Det er ingen automatikk for sletting av gamle indekser som ikke er i bruk lengre. Man må da manuelt gjøre REST-kall direkte mot Elastic Search for å liste opp og slette gamle indekser.
