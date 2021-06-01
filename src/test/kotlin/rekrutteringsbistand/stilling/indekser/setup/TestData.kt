@@ -40,6 +40,7 @@ val enAd = Ad(
             "postalCode",
             "county",
             "municipal",
+            "city",
             "country",
             "latitue",
             "longitude",

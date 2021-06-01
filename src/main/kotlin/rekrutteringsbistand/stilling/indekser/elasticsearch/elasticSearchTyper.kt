@@ -32,6 +32,7 @@ data class Stilling(
 data class Location(
     val address: String?,
     val postalCode: String?,
+    val city: String?,
     val county: String?,
     val countyCode: String?,
     val municipal: String?,

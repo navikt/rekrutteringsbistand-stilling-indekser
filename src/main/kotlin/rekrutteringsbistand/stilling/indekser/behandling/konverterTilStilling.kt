@@ -34,6 +34,7 @@ fun konverterTilStilling(ad: Ad): Stilling {
         ad.getLocations().map { Location(
             it.getAddress(),
             it.getPostalCode(),
+            it.getCity(),
             it.getCounty(),
             it.countyCode,
             it.getMunicipal(),
