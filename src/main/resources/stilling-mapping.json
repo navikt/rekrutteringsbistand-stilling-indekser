@@ -109,6 +109,9 @@
             "address": {
               "type": "text"
             },
+            "city": {
+              "type": "text"
+            },
             "county": {
               "type": "text",
               "fields": {
