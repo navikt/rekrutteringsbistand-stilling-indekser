@@ -67,6 +67,7 @@ protocol StillingEkstern {
     union {null, string} postalCode = null;
     union {null, string} county = null;
     union {null, string} municipal = null;
+    union {null, string} city = null;
     string country;
     // lat/long er på desimalnotasjon med . som desimalskille (f.eks 62.4976581)
     // Hvis DVH ikke trenger lat/long så fjerner vi det.
