@@ -10,7 +10,9 @@ application {
 }
 
 repositories {
-    jcenter()
+    maven {
+        url = uri("https://jcenter.bintray.com/") // tilsvarer jcenter(), som ble deprecated
+    }
 
     maven {
         url = uri("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
@@ -42,4 +44,3 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
 }
-
