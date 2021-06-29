@@ -48,7 +48,7 @@ class App(
         rapidsConnection.apply {
             EierOppdatert(this)
             register(StansApplikasjonOmRapidApplikasjonSlåsAv)
-        }
+        }.start()
     } catch (exception: Exception) {
         close()
         throw exception
