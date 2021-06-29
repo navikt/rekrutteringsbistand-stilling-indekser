@@ -21,7 +21,8 @@ import kotlin.concurrent.thread
 class App(
     private val elasticSearchService: ElasticSearchService,
     private val stillingConsumer: StillingConsumer,
-    private val gammelStillingConsumer: StillingConsumer?
+    private val gammelStillingConsumer: StillingConsumer?,
+    private val rapidsConnection: RapidsConnection
 ) : Closeable {
 
     private val webServer = Javalin.create().apply {
@@ -44,7 +45,7 @@ class App(
             startIndeksering()
         }
 
-        RapidApplication.create(System.getenv()).apply {
+        rapidsConnection.apply {
             EierOppdatert(this)
             register(StansApplikasjonOmRapidApplikasjonSlåsAv)
         }
@@ -52,6 +53,7 @@ class App(
         close()
         throw exception
     }
+
 
     private object StansApplikasjonOmRapidApplikasjonSlåsAv : RapidsConnection.StatusListener {
         override fun onShutdown(rapidsConnection: RapidsConnection) {
@@ -81,6 +83,7 @@ class App(
     override fun close() {
         stillingConsumer.close()
         gammelStillingConsumer?.close()
+        rapidsConnection.stop()
         webServer.stop()
     }
 }
@@ -108,11 +111,13 @@ fun main() {
             val gammelStillingMottattService = StillingMottattService(stillingsinfoClient, elasticSearchService)
             StillingConsumer(gammelKafkaConsumer, gammelStillingMottattService)
         } else null
+        val rapidsConnection = RapidApplication.create(System.getenv())
 
         App(
             elasticSearchService,
             stillingConsumer,
-            gammelStillingConsumer
+            gammelStillingConsumer,
+            rapidsConnection
         ).start()
 
     } catch (exception: Exception) {

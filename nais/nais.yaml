@@ -40,5 +40,9 @@ spec:
       value: {{elastic-search-api}}
     - name: INDEKS_VERSJON
       value: "11"
+    - name: KAFKA_RAPID_TOPIC
+      value: arbeidsgiver-inkludering.rapid
+    - name: KAFKA_CONSUMER_GROUP_ID
+      value: arbeidsgiver-inkludering.rapid.stillingsindekser-v1
   kafka:
     pool: {{kafka_pool}}

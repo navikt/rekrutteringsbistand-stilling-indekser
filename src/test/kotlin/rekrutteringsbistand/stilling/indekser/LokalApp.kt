@@ -35,10 +35,12 @@ fun startLokalApp(
     val gammelStillingMottattService = StillingMottattService(stillingsinfoClient, elasticSearchService)
     val gammelStillingConsumer = StillingConsumer(gammelMockConsumer, gammelStillingMottattService)
 
+
     val app = App(
         elasticSearchService,
         stillingConsumer,
-        gammelStillingConsumer
+        gammelStillingConsumer,
+
     )
 
     app.start()
