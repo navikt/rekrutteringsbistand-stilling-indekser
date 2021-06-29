@@ -1,5 +1,6 @@
 package rekrutteringsbistand.stilling.indekser
 
+import no.nav.helse.rapids_rivers.testsupport.TestRapid
 import no.nav.pam.stilling.ext.avro.Ad
 import org.apache.kafka.clients.consumer.Consumer
 import rekrutteringsbistand.stilling.indekser.behandling.StillingMottattService
@@ -40,7 +41,7 @@ fun startLokalApp(
         elasticSearchService,
         stillingConsumer,
         gammelStillingConsumer,
-
+        TestRapid()
     )
 
     app.start()
