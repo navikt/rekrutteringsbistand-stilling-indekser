@@ -43,7 +43,7 @@ spec:
     - name: KAFKA_RAPID_TOPIC
       value: arbeidsgiver-inkludering.rapid
     - name: KAFKA_CONSUMER_GROUP_ID
-      value: arbeidsgiver-inkludering.rapid.stillingsindekser-v2
+      value: arbeidsgiver-inkludering.rapid.stillingsindekser-v3
     - name: KAFKA_RESET_POLICY
       value: earliest
   kafka:
