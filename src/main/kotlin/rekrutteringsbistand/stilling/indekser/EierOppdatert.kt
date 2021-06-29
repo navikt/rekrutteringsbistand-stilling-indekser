@@ -7,10 +7,10 @@ class EierOppdatert(rapidsConnection: RapidsConnection): River.PacketListener {
 
     init {
         River(rapidsConnection).apply {
-            validate { it.requireValue("@event_name", "stilling_eier_oppdatert") }
-            validate { it.demandKey("eier.eierNavident") }
-            validate { it.demandKey("eier.eierNavn") }
-            validate { it.demandKey("stillingsid") }
+            validate { it.demandValue("@event_name", "stilling_eier_oppdatert") }
+            validate { it.requireKey("eier.eierNavident") }
+            validate { it.requireKey("eier.eierNavn") }
+            validate { it.requireKey("stillingsid") }
         }.register(this)
     }
 
@@ -19,11 +19,10 @@ class EierOppdatert(rapidsConnection: RapidsConnection): River.PacketListener {
     }
 
     override fun onError(problems: MessageProblems, context: MessageContext) {
-        log.warn("Eierevent.onError mottat: ${problems.toExtendedReport()}")
+        log.error("Eierevent.onError mottat: ${problems.toExtendedReport()}")
     }
 
-
     override fun onSevere(error: MessageProblems.MessageException, context: MessageContext) {
-        log.error("Eierevent.onSevere mottat: ${error.problems.toExtendedReport()}",error)
+        log.info("Ignorerer melding: ${error.problems.toExtendedReport()}",error)
     }
 }
