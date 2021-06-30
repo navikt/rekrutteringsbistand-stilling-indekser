@@ -1,5 +1,6 @@
 package rekrutteringsbistand.stilling.indekser
 
+import no.nav.helse.rapids_rivers.testsupport.TestRapid
 import no.nav.pam.stilling.ext.avro.Ad
 import org.apache.kafka.clients.consumer.Consumer
 import rekrutteringsbistand.stilling.indekser.behandling.StillingMottattService
@@ -35,10 +36,12 @@ fun startLokalApp(
     val gammelStillingMottattService = StillingMottattService(stillingsinfoClient, elasticSearchService)
     val gammelStillingConsumer = StillingConsumer(gammelMockConsumer, gammelStillingMottattService)
 
+
     val app = App(
         elasticSearchService,
         stillingConsumer,
-        gammelStillingConsumer
+        gammelStillingConsumer,
+        TestRapid()
     )
 
     app.start()

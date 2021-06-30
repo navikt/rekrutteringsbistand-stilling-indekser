@@ -2,6 +2,8 @@ package rekrutteringsbistand.stilling.indekser
 
 import com.github.kittinunf.fuel.core.FuelManager
 import io.javalin.Javalin
+import no.nav.helse.rapids_rivers.RapidApplication
+import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.pam.stilling.ext.avro.Ad
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import rekrutteringsbistand.stilling.indekser.autentisering.AccessTokenClient
@@ -19,7 +21,8 @@ import kotlin.concurrent.thread
 class App(
     private val elasticSearchService: ElasticSearchService,
     private val stillingConsumer: StillingConsumer,
-    private val gammelStillingConsumer: StillingConsumer?
+    private val gammelStillingConsumer: StillingConsumer?,
+    private val rapidsConnection: RapidsConnection
 ) : Closeable {
 
     private val webServer = Javalin.create().apply {
@@ -42,9 +45,23 @@ class App(
             startIndeksering()
         }
 
+        rapidsConnection.apply {
+            EierOppdatert(this)
+            register(StansApplikasjonOmRapidApplikasjonSlåsAv)
+        }.start()
     } catch (exception: Exception) {
         close()
         throw exception
+    }
+
+
+    private object StansApplikasjonOmRapidApplikasjonSlåsAv : RapidsConnection.StatusListener {
+        override fun onShutdown(rapidsConnection: RapidsConnection) {
+            Liveness.kill(
+                "Rapidapplikasjonen stenges ned.",
+                RuntimeException("Rapidapplikasjonen stenges ned.")
+            )
+        }
     }
 
     private fun startReindeksering() {
@@ -66,6 +83,7 @@ class App(
     override fun close() {
         stillingConsumer.close()
         gammelStillingConsumer?.close()
+        rapidsConnection.stop()
         webServer.stop()
     }
 }
@@ -93,11 +111,13 @@ fun main() {
             val gammelStillingMottattService = StillingMottattService(stillingsinfoClient, elasticSearchService)
             StillingConsumer(gammelKafkaConsumer, gammelStillingMottattService)
         } else null
+        val rapidsConnection = RapidApplication.create(System.getenv())
 
         App(
             elasticSearchService,
             stillingConsumer,
-            gammelStillingConsumer
+            gammelStillingConsumer,
+            rapidsConnection
         ).start()
 
     } catch (exception: Exception) {
