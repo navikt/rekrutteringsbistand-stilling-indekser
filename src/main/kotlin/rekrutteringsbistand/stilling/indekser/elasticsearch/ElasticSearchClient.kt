@@ -5,12 +5,15 @@ import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest
 import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest
 import org.elasticsearch.action.bulk.BulkRequest
 import org.elasticsearch.action.index.IndexRequest
+import org.elasticsearch.action.update.UpdateRequest
 import org.elasticsearch.client.RequestOptions
 import org.elasticsearch.client.RestHighLevelClient
 import org.elasticsearch.client.indices.CreateIndexRequest
 import org.elasticsearch.client.indices.GetIndexRequest
 import org.elasticsearch.client.indices.PutMappingRequest
 import org.elasticsearch.common.xcontent.XContentType
+import rekrutteringsbistand.stilling.indekser.EierOppdatert
+import rekrutteringsbistand.stilling.indekser.stillingsinfo.Stillingsinfo
 import rekrutteringsbistand.stilling.indekser.utils.log
 
 class ElasticSearchClient(private val restHighLevelClient: RestHighLevelClient) {
@@ -29,6 +32,13 @@ class ElasticSearchClient(private val restHighLevelClient: RestHighLevelClient) 
 
         val uuider = rekrutteringsbistandStillinger.map { it.stilling.uuid }
         log.info("Indekserte ${uuider.size} stillinger i indeks '$indeks'. UUIDer: $uuider")
+    }
+
+    fun oppdaterEier(eier: Eier, indeks: String) {
+        val request = UpdateRequest(indeks, eier.stillingsid)
+        val source: Map<String, String> = mapOf("stillingsinfo.eierNavident" to eier.ident, "stillingsinfo.eierNavn" to eier.navn)
+        request.doc(source)
+        restHighLevelClient.update(request, RequestOptions.DEFAULT)
     }
 
     fun opprettIndeks(indeksNavn: String) {
@@ -81,5 +91,8 @@ class ElasticSearchClient(private val restHighLevelClient: RestHighLevelClient) 
         private val stillingMappig = ElasticSearchService::class.java
             .getResource("/stilling-mapping.json").readText()
     }
+
+
+    data class Eier(val stillingsid: String, val ident: String, val navn: String)
 }
 

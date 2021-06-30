@@ -16,6 +16,7 @@ class EierOppdatert(rapidsConnection: RapidsConnection): River.PacketListener {
 
     override fun onPacket(packet: JsonMessage, context: MessageContext) {
         log.info("Eierevent mottat: ${packet.toJson()}")
+        // kall oppdaterEier
     }
 
     override fun onError(problems: MessageProblems, context: MessageContext) {
