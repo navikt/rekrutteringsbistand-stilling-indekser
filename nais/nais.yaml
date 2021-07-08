@@ -38,7 +38,7 @@ spec:
     - name: REKRUTTERINGSBISTAND_STILLING_API_URL
       value: https://{{rekrutteringsbistand-stilling-api-host}}
     - name: ELASTIC_SEARCH_API
-      value: https://{{elasticsearch-host}}:{{elsticsearch-port}}
+      value: https://{{elasticsearch-api}}
     - name: INDEKS_VERSJON
       value: "11"
   kafka:

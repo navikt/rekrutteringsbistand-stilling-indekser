@@ -4,6 +4,6 @@
   ],
   "rekrutteringsbistand-stilling-api-host": "rekrutteringsbistand-stilling-api.dev-fss-pub.nais.io",
   "elasticsearch-host": "elastic-arbeidsgiver-rekrutteringsbistand-stilling-nav-dev.aivencloud.com",
-  "elasticsearch-port": "26482",
+  "elasticsearch-api": "elastic-arbeidsgiver-rekrutteringsbistand-stilling-nav-dev.aivencloud.com:26482",
   "kafka_pool": "nav-dev"
 }
