@@ -9,8 +9,8 @@ spec:
   image: {{image}}
   port: 8222
   ingresses:
-  {{#each ingress as |url|}}
-    - {{url}}
+  { { #each ingress as |url|}}
+      - {{url } }
   {{/each}}
   liveness:
     path: /internal/isAlive
@@ -28,6 +28,7 @@ spec:
     outbound:
       external:
         - host: {{rekrutteringsbistand-stilling-api-host}}
+        - host: {{elasticsearch-host}}
   elastic:
     instance: rekrutteringsbistand-stilling
   envFrom:
@@ -37,7 +38,7 @@ spec:
     - name: REKRUTTERINGSBISTAND_STILLING_API_URL
       value: https://{{rekrutteringsbistand-stilling-api-host}}
     - name: ELASTIC_SEARCH_API
-      value: {{elastic-search-api}}
+      value: https://{{elasticsearch-host}}:{{elsticsearch-port}}
     - name: INDEKS_VERSJON
       value: "11"
   kafka:
