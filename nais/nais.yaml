@@ -9,7 +9,7 @@ spec:
   image: {{image}}
   port: 8222
   ingresses:
-  {{ #each ingress as |url|}}
+  {{#each ingress as |url|}}
       - {{url}}
   {{/each}}
   liveness:
