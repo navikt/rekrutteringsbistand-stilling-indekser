@@ -103,6 +103,23 @@
           "type": "text",
           "analyzer": "norwegian"
         },
+        "contactList": {
+          "type": "nested",
+          "properties": {
+            "contactPerson": {
+              "type": "text"
+            },
+            "contactPersonTitle": {
+              "type": "text"
+            },
+            "contactPersonEmail": {
+              "type": "text"
+            },
+            "contactPersonPhone": {
+              "type": "text"
+            }
+          }
+        },
         "locations": {
           "type": "nested",
           "properties": {

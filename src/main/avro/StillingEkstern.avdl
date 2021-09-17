@@ -82,6 +82,14 @@ protocol StillingEkstern {
     string value;
   }
 
+  // Hva hvis null, blir det tom streng?
+  record Contact {
+    string contactperson;
+    string contactpersontitle;
+    string contactpersonemail;
+    string contactpersonphone;
+  }
+
   // Dette er hovedrecorden som beskriver en stillingsannonse.
   record Ad {
     // uuid er den unike id'en til annonsen. Dette er også key på topicet.
@@ -128,6 +136,8 @@ protocol StillingEkstern {
     array<Location> locations;
 
     array<Property> properties;
+    array<Contact> contactList;
+
     /*
     Veldig mye av det som ligger i annonser ligger i properties. De mest interessante er:
     * adtext (utlysningstekst i HTML)
@@ -182,10 +192,6 @@ protocol StillingEkstern {
     workhours(PropertyType.TEXT),
     workday(PropertyType.TEXT),
     facebookpage(PropertyType.URL),
-    contactperson(PropertyType.TEXT),
-    contactpersontitle(PropertyType.TEXT),
-    contactpersonemail(PropertyType.TEXT),
-    contactpersonphone(PropertyType.TEXT),
     linkedinpage(PropertyType.URL),
     jobpercentage(PropertyType.TEXT),
     jobarrangement(PropertyType.TEXT),

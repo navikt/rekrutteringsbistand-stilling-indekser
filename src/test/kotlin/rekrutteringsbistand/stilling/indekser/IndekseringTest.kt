@@ -3,6 +3,7 @@ package rekrutteringsbistand.stilling.indekser
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import no.nav.pam.stilling.ext.avro.Contact
 import org.apache.http.ConnectionClosedException
 import org.junit.Test
 import rekrutteringsbistand.stilling.indekser.behandling.konverterTilStilling
@@ -18,6 +19,7 @@ import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClient
 import rekrutteringsbistand.stilling.indekser.utils.Environment
 import rekrutteringsbistand.stilling.indekser.utils.Environment.indeksversjonKey
 import rekrutteringsbistand.stilling.indekser.utils.Liveness
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -172,6 +174,48 @@ class IndekseringTest {
 
             Thread.sleep(500)
             assertFalse(Liveness.isAlive)
+        }
+    }
+
+    @Test
+    fun `Kontaktinformasjon på Kafka-melding skal indekseres`() {
+        val consumer = mockConsumer(periodiskSendMeldinger = false)
+        val esClientMock = mockk<ElasticSearchClient>()
+
+        val indeksversjon = 1
+        Environment.set(indeksversjonKey, indeksversjon.toString())
+
+        every { esClientMock.indeksFinnes(any()) } returns false
+        every { esClientMock.opprettIndeks(any()) } returns Unit
+        every { esClientMock.oppdaterAlias(any()) } returns Unit
+        every { esClientMock.indekser(any(), any()) } returns Unit
+
+        startLokalApp(consumer, esClient = esClientMock).use {
+            mottaKafkamelding(consumer, enAd)
+
+            val forventedeStillinger = listOf(
+                RekrutteringsbistandStilling(
+                    stilling = konverterTilStilling(enAd),
+                    stillingsinfo = enStillingsinfo
+                )
+            )
+
+            verify(timeout = 3000) {
+                esClientMock.indekser(forventedeStillinger, hentIndeksNavn(indeksversjon))
+            }
+
+            assertEqualContactLists(enAd.getContactList(), forventedeStillinger.first().stilling.contactList)
+        }
+    }
+
+    // TODO: Finne en bedre løsning
+    private fun assertEqualContactLists(adContactList: List<Contact>, stillingContactList: List<rekrutteringsbistand.stilling.indekser.elasticsearch.Contact>) {
+        assertEquals(adContactList.size, stillingContactList.size)
+        adContactList.forEachIndexed { index, adContact ->
+            assertEquals(adContact.getContactperson(), stillingContactList[index].contactPersonName)
+            assertEquals(adContact.getContactpersontitle(), stillingContactList[index].contactPersonTitle)
+            assertEquals(adContact.getContactpersonemail(), stillingContactList[index].contactPersonEmail)
+            assertEquals(adContact.getContactpersonphone(), stillingContactList[index].contactPersonPhone)
         }
     }
 }

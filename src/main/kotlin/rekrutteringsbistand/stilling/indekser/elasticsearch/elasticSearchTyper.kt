@@ -27,6 +27,7 @@ data class Stilling(
     val reference: String,
     val administration: Administration?,
     val properties: Map<String, Any>,
+    val contactList: List<Contact>
 )
 
 data class Location(
@@ -61,4 +62,11 @@ data class Administration(
     val comments: String,
     val reportee: String,
     val navIdent: String
+)
+
+data class Contact(
+    val contactPersonName: String,
+    val contactPersonTitle: String,
+    val contactPersonEmail: String,
+    val contactPersonPhone: String
 )

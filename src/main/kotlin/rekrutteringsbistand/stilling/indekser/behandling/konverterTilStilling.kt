@@ -55,7 +55,14 @@ fun konverterTilStilling(ad: Ad): Stilling {
         },
         ad.getProperties()
             .map { it.getKey() to (tilJson(it.getValue()) ?: it.getValue()) }
-            .toMap()
+            .toMap(),
+        ad.getContactList()
+            .map { Contact(
+                it.getContactperson(),
+                it.getContactpersontitle(),
+                it.getContactpersonemail(),
+                it.getContactpersonphone())
+            }
     )
 }
 
