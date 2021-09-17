@@ -82,12 +82,12 @@ protocol StillingEkstern {
     string value;
   }
 
-  // Hva hvis null, blir det tom streng?
+  // Kan navn på kontaktperson være null? Vil det alltid være tom streng?
   record Contact {
     string contactperson;
-    string contactpersontitle;
-    string contactpersonemail;
-    string contactpersonphone;
+    union {null, string} contactpersontitle;
+    union {null, string} contactpersonemail;
+    union {null, string} contactpersonphone;
   }
 
   // Dette er hovedrecorden som beskriver en stillingsannonse.
