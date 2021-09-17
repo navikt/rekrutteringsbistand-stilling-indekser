@@ -136,7 +136,7 @@ protocol StillingEkstern {
     array<Location> locations;
 
     array<Property> properties;
-    array<Contact> contactList;
+    array<Contact> contactList = [];
 
     /*
     Veldig mye av det som ligger i annonser ligger i properties. De mest interessante er:
