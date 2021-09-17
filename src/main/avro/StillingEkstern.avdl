@@ -85,7 +85,7 @@ protocol StillingEkstern {
   // Kan navn på kontaktperson være null? Vil det alltid være tom streng?
   record Contact {
     string contactperson;
-    union {null, string} contactpersontitle;
+    string contactpersontitle;
     union {null, string} contactpersonemail;
     union {null, string} contactpersonphone;
   }

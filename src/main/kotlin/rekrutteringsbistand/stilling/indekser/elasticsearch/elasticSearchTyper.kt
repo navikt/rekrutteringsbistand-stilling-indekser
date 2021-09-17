@@ -66,7 +66,7 @@ data class Administration(
 
 data class Contact(
     val contactPersonName: String,
-    val contactPersonTitle: String?,
+    val contactPersonTitle: String,
     val contactPersonEmail: String?,
     val contactPersonPhone: String?
 )
