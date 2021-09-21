@@ -103,6 +103,26 @@
           "type": "text",
           "analyzer": "norwegian"
         },
+        "contacts": {
+          "type": "nested",
+          "properties": {
+            "name": {
+              "type": "text"
+            },
+            "title": {
+              "type": "text"
+            },
+            "email": {
+              "type": "text"
+            },
+            "phone": {
+              "type": "text"
+            },
+            "role": {
+              "type": "text"
+            }
+          }
+        },
         "locations": {
           "type": "nested",
           "properties": {
