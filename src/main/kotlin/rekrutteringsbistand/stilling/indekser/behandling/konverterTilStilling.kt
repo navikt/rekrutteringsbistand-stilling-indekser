@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.pam.stilling.ext.avro.Ad
+import no.nav.pam.stilling.ext.avro.RemarkType
 import rekrutteringsbistand.stilling.indekser.elasticsearch.*
 
 fun konverterTilStilling(ad: Ad): Stilling {
@@ -47,21 +48,20 @@ fun konverterTilStilling(ad: Ad): Stilling {
         ad.getAdministration()?.let {
             Administration(
                 it.getStatus().name,
-                it.getRemarks().map { remark -> remark.name },
+                it.getRemarks().map(RemarkType::name),
                 it.getComments(),
                 it.getReportee(),
                 it.getNavIdent()
             )
         },
-        ad.getProperties()
-            .map { it.getKey() to (tilJson(it.getValue()) ?: it.getValue()) }
-            .toMap(),
-        ad.getContactList()
+        ad.getProperties().associate { it.getKey() to (tilJson(it.getValue()) ?: it.getValue()) },
+        ad.getContacts()
             .map { Contact(
-                it.getContactperson(),
-                it.getContactpersontitle(),
-                it.getContactpersonemail(),
-                it.getContactpersonphone())
+                it.getName(),
+                it.getRole(),
+                it.getTitle(),
+                it.getEmail(),
+                it.getPhone())
             }
     )
 }

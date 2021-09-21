@@ -6,6 +6,7 @@ import io.mockk.verify
 import no.nav.pam.stilling.ext.avro.Contact
 import org.apache.http.ConnectionClosedException
 import org.junit.Test
+import rekrutteringsbistand.stilling.indekser.behandling.assertEqualContactLists
 import rekrutteringsbistand.stilling.indekser.behandling.konverterTilStilling
 import rekrutteringsbistand.stilling.indekser.elasticsearch.ElasticSearchClient
 import rekrutteringsbistand.stilling.indekser.elasticsearch.RekrutteringsbistandStilling
@@ -21,7 +22,6 @@ import rekrutteringsbistand.stilling.indekser.utils.Environment.indeksversjonKey
 import rekrutteringsbistand.stilling.indekser.utils.Liveness
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 class IndekseringTest {
 
@@ -204,18 +204,7 @@ class IndekseringTest {
                 esClientMock.indekser(forventedeStillinger, hentIndeksNavn(indeksversjon))
             }
 
-            assertEqualContactLists(enAd.getContactList(), forventedeStillinger.first().stilling.contactList)
-        }
-    }
-
-    // TODO: Finne en bedre løsning
-    private fun assertEqualContactLists(adContactList: List<Contact>, stillingContactList: List<rekrutteringsbistand.stilling.indekser.elasticsearch.Contact>) {
-        assertEquals(adContactList.size, stillingContactList.size)
-        adContactList.forEachIndexed { index, adContact ->
-            assertEquals(adContact.getContactperson(), stillingContactList[index].contactPersonName)
-            assertEquals(adContact.getContactpersontitle(), stillingContactList[index].contactPersonTitle)
-            assertEquals(adContact.getContactpersonemail(), stillingContactList[index].contactPersonEmail)
-            assertEquals(adContact.getContactpersonphone(), stillingContactList[index].contactPersonPhone)
+            assertEqualContactLists(enAd.getContacts(), forventedeStillinger.first().stilling.contacts)
         }
     }
 }

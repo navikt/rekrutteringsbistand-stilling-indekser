@@ -19,17 +19,17 @@ class KonverterTilStillingTest {
             resultat.properties["tags"],
             jacksonObjectMapper().readTree("[\"INKLUDERING__ARBEIDSTID\", \"TILTAK_ELLER_VIRKEMIDDEL__LÆRLINGPLASS\"]")
         )
-        assertEqualContactLists(enAd.getContactList(), resultat.contactList)
+        assertEqualContactLists(enAd.getContacts(), resultat.contacts)
     }
+}
 
-    // TODO: Nødvendig? Denne er duplisert
-    private fun assertEqualContactLists(adContactList: List<Contact>, stillingContactList: List<rekrutteringsbistand.stilling.indekser.elasticsearch.Contact>) {
-        assertEquals(adContactList.size, stillingContactList.size)
-        adContactList.forEachIndexed { index, adContact ->
-            assertEquals(adContact.getContactperson(), stillingContactList[index].contactPersonName)
-            assertEquals(adContact.getContactpersontitle(), stillingContactList[index].contactPersonTitle)
-            assertEquals(adContact.getContactpersonemail(), stillingContactList[index].contactPersonEmail)
-            assertEquals(adContact.getContactpersonphone(), stillingContactList[index].contactPersonPhone)
-        }
+fun assertEqualContactLists(adContactList: List<Contact>, stillingContactList: List<rekrutteringsbistand.stilling.indekser.elasticsearch.Contact>) {
+    assertEquals(adContactList.size, stillingContactList.size)
+    adContactList.forEachIndexed { index, adContact ->
+        assertEquals(adContact.getName(), stillingContactList[index].name)
+        assertEquals(adContact.getRole(), stillingContactList[index].role)
+        assertEquals(adContact.getTitle(), stillingContactList[index].title)
+        assertEquals(adContact.getEmail(), stillingContactList[index].email)
+        assertEquals(adContact.getPhone(), stillingContactList[index].phone)
     }
 }

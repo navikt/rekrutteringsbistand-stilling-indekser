@@ -55,7 +55,7 @@ val enAd = Ad(
             Property("tags", "[\"INKLUDERING__ARBEIDSTID\", \"TILTAK_ELLER_VIRKEMIDDEL__LÆRLINGPLASS\"]")
     ),
     listOf(
-        Contact("Vegard Veiledersen", "Veileder", "veileder@nav.no", null)
+        Contact("Vegard Veiledersen", "veileder@nav.no", "", "Veileder","Markedskontakt")
     )
 )
 
