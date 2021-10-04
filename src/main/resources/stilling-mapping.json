@@ -22,6 +22,9 @@
         },
         "stillingsinfoid": {
           "type": "keyword"
+        },
+        "oppdragKategori": {
+          "type": "keyword"
         }
       }
     },

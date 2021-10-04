@@ -34,6 +34,7 @@ data class Stillingsinfo(
     val notat: String?,
     val stillingsid: String,
     val stillingsinfoid: String,
+    val oppdragKategori: String?
 )
 
 data class BulkStillingsinfoOutboundDto(
