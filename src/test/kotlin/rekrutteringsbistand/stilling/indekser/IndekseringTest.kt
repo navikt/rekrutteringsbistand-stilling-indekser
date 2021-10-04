@@ -209,7 +209,7 @@ class IndekseringTest {
     }
 
     @Test
-    fun `Oppdragskategori på Kafka-melding skal indekseres`() {
+    fun `Stillingskategori på Kafka-melding skal indekseres`() {
         val consumer = mockConsumer(periodiskSendMeldinger = false)
         val esClientMock = mockk<ElasticSearchClient>()
 

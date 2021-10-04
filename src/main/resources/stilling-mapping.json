@@ -23,7 +23,7 @@
         "stillingsinfoid": {
           "type": "keyword"
         },
-        "oppdragKategori": {
+        "stillingskategori": {
           "type": "keyword"
         }
       }
