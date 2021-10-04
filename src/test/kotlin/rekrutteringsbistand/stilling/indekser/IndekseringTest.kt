@@ -235,7 +235,7 @@ class IndekseringTest {
                 esClientMock.indekser(forventedeStillinger, hentIndeksNavn(indeksversjon))
             }
 
-            assertEquals("STILLING", forventedeStillinger.first().stillingsinfo?.oppdragKategori)
+            assertEquals("STILLING", forventedeStillinger.first().stillingsinfo?.stillingskategori)
         }
     }
 }
