@@ -118,5 +118,6 @@ val enStillingsinfo = Stillingsinfo(
     "eierNavn",
     "notat",
     enAd.getUuid(),
-    "stillingsinfoid"
+    "stillingsinfoid",
+    "STILLING"
 )
