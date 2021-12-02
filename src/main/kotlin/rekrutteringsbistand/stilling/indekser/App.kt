@@ -22,8 +22,9 @@ class App(
     private val gammelStillingConsumer: StillingConsumer?
 ) : Closeable {
 
-    private val webServer = Javalin.create().apply {
+    private val webServer = Javalin.create { config ->
         config.defaultContentType = "application/json"
+    }.apply {
         routes {
             get("/internal/isAlive") { if (Liveness.isAlive) it.status(200) else it.status(500) }
             get("/internal/isReady") { it.status(200) }
