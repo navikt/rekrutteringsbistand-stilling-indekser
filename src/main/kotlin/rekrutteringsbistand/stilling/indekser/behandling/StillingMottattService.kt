@@ -36,13 +36,6 @@ class StillingMottattService(
         esService.indekser(rekrutteringsbistandStillinger, indeksNavn)
     }
 
-    private fun beholdSisteMeldingPerStilling(stillinger: List<Stilling>): List<Stilling> {
-        val sisteStillinger = hashMapOf<String, Stilling>()
-
-        stillinger.forEach { stilling ->
-            sisteStillinger[stilling.uuid] = stilling
-        }
-
-        return sisteStillinger.values.toList()
-    }
+    private fun beholdSisteMeldingPerStilling(stillinger: List<Stilling>) =
+        stillinger.associateBy { it.uuid }.values.toList()
 }
