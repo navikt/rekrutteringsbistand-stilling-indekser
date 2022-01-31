@@ -25,8 +25,8 @@ class StillingMottattService(
     }
 
     private fun behandleStillinger(ads: List<Ad>, indeksNavn: String) {
-        val stillingerTilBehandling = ads.map { konverterTilStilling(it) }
-        val stillinger = beholdSisteMeldingPerStilling(stillingerTilBehandling)
+        val alleMeldinger = ads.map { konverterTilStilling(it) }
+        val stillinger = beholdSisteMeldingPerStilling(alleMeldinger)
         val stillingsinfo = stillingsinfoClient.getStillingsinfo(stillinger.map { it.uuid })
 
         val rekrutteringsbistandStillinger = stillinger.map { stilling ->
