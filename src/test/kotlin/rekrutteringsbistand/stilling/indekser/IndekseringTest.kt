@@ -54,6 +54,42 @@ class IndekseringTest {
         }
     }
 
+
+    @Test
+    fun `Skal kun indeksere siste melding per stilling`() {
+        val consumer = mockConsumer(periodiskSendMeldinger = false)
+        val esClientMock = mockk<ElasticSearchClient>()
+
+        val indeksversjon = 1
+        Environment.set(indeksversjonKey, indeksversjon.toString())
+
+        every { esClientMock.indeksFinnes(any()) } returns false
+        every { esClientMock.opprettIndeks(any()) } returns Unit
+        every { esClientMock.oppdaterAlias(any()) } returns Unit
+        every { esClientMock.indekser(any(), any()) } returns Unit
+
+        startLokalApp(consumer, esClient = esClientMock).use {
+            val melding = enAd
+            val sisteMelding = enAd
+
+            sisteMelding.setTitle("oppdatertTittel")
+
+            mottaKafkamelding(consumer, melding)
+            mottaKafkamelding(consumer, sisteMelding)
+
+            val forventedeStillinger = listOf(
+                RekrutteringsbistandStilling(
+                    stilling = konverterTilStilling(sisteMelding),
+                    stillingsinfo = enStillingsinfo
+                )
+            )
+
+            verify(timeout = 3000) {
+                esClientMock.indekser(forventedeStillinger, hentIndeksNavn(indeksversjon))
+            }
+        }
+    }
+
     @Test
     fun `Skal indeksere mot to ulike indekser i Elastic Search under reindeksering`() {
         val consumer = mockConsumer(periodiskSendMeldinger = false)

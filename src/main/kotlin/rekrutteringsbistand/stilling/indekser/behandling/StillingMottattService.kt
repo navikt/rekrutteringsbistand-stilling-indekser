@@ -25,7 +25,8 @@ class StillingMottattService(
     }
 
     private fun behandleStillinger(ads: List<Ad>, indeksNavn: String) {
-        val stillinger = ads.map { konverterTilStilling(it) }
+        val stillingerTilBehandling = ads.map { konverterTilStilling(it) }
+        val stillinger = beholdSisteMeldingPerStilling(stillingerTilBehandling)
         val stillingsinfo = stillingsinfoClient.getStillingsinfo(stillinger.map { it.uuid })
 
         val rekrutteringsbistandStillinger = stillinger.map { stilling ->
@@ -33,5 +34,15 @@ class StillingMottattService(
         }
 
         esService.indekser(rekrutteringsbistandStillinger, indeksNavn)
+    }
+
+    private fun beholdSisteMeldingPerStilling(stillinger: List<Stilling>): List<Stilling> {
+        val sisteStillinger = hashMapOf<String, Stilling>()
+
+        stillinger.forEach { stilling ->
+            sisteStillinger[stilling.uuid] = stilling
+        }
+
+        return sisteStillinger.values.toList()
     }
 }
