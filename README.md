@@ -1,4 +1,4 @@
-# rekrutteringsbistand-kandidat-indekser
+# rekrutteringsbistand-stilling-indekser
 
 Applikasjon i GCP som henter stillinger fra Kafka og indekserer dem i ElasticSearch.
 
@@ -62,13 +62,17 @@ wget <url>/stilling/_doc/<uuid på stilling> --user <brukernavn> --password <pas
 # Henvendelser
 
 ## For Nav-ansatte
-* Dette Git-repositoriet eies av [Team inkludering i Produktområde arbeidsgiver](https://navno.sharepoint.com/sites/intranett-prosjekter-og-utvikling/SitePages/Produktomr%C3%A5de-arbeidsgiver.aspx).
+
+* Dette Git-repositoriet eies
+  av [Team tiltak og inkludering (TOI) i Produktområde arbeidsgiver](https://teamkatalog.nais.adeo.no/team/0150fd7c-df30-43ee-944e-b152d74c64d6)
+  .
 * Slack-kanaler:
-  * [#inkludering-utvikling](https://nav-it.slack.com/archives/CQZU35J6A)
+  * [#arbeidsgiver-toi-dev](https://nav-it.slack.com/archives/C02HTU8DBSR)
   * [#arbeidsgiver-utvikling](https://nav-it.slack.com/archives/CD4MES6BB)
-  * [#arbeidsgiver-general](https://nav-it.slack.com/archives/CCM649PDH)
 
 ## For folk utenfor Nav
+
 * Opprett gjerne en issue i Github for alle typer spørsmål
-* IT-utviklerne i Github-teamet https://github.com/orgs/navikt/teams/arbeidsgiver
-* IT-avdelingen i [Arbeids- og velferdsdirektoratet](https://www.nav.no/no/NAV+og+samfunn/Kontakt+NAV/Relatert+informasjon/arbeids-og-velferdsdirektoratet-kontorinformasjon)
+* IT-utviklerne i Github-teamet https://github.com/orgs/navikt/teams/toi
+* IT-avdelingen
+  i [Arbeids- og velferdsdirektoratet](https://www.nav.no/no/NAV+og+samfunn/Kontakt+NAV/Relatert+informasjon/arbeids-og-velferdsdirektoratet-kontorinformasjon)
