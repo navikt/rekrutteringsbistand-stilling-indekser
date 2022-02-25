@@ -29,16 +29,14 @@ spec:
       external:
         - host: {{rekrutteringsbistand-stilling-api-host}}
         - host: {{elasticsearch-host}}
-  elastic:
+  openSearch:
+    access: admin
     instance: rekrutteringsbistand-stilling
   envFrom:
-    - secret: rekrutteringsbistand-stilling-indekser-es-credentials
     - secret: rekrutteringsbistand-stilling-indekser-servicebruker
   env:
     - name: REKRUTTERINGSBISTAND_STILLING_API_URL
       value: https://{{rekrutteringsbistand-stilling-api-host}}
-    - name: ELASTIC_SEARCH_API
-      value: https://{{elasticsearch-api}}
     - name: INDEKS_VERSJON
       value: "16"
   kafka:
