@@ -10,9 +10,9 @@ import org.elasticsearch.client.RestHighLevelClient
 import rekrutteringsbistand.stilling.indekser.utils.Environment
 
 fun getRestHighLevelClient(): RestHighLevelClient {
-    val url = Environment.get("ELASTIC_SEARCH_API")
-    val username = Environment.get("ES_USERNAME")
-    val password = Environment.get("ES_PASSWORD")
+    val url = Environment.get("OPEN_SEARCH_URI")
+    val username = Environment.get("OPEN_SEARCH_USERNAME")
+    val password = Environment.get("OPEN_SEARCH_PASSWORD")
 
     val credentialsProvider: CredentialsProvider = BasicCredentialsProvider()
     credentialsProvider.setCredentials(

@@ -28,7 +28,7 @@ jobs:
     deploy-to-dev:
         name: Deploy to dev
         needs: test
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/med_stillingskategori'
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/bytt-til-opensearch'
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
