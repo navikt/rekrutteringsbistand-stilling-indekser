@@ -28,7 +28,6 @@ spec:
     outbound:
       external:
         - host: {{rekrutteringsbistand-stilling-api-host}}
-        - host: {{elasticsearch-host}}
   openSearch:
     access: admin
     instance: rekrutteringsbistand-stilling
@@ -38,6 +37,6 @@ spec:
     - name: REKRUTTERINGSBISTAND_STILLING_API_URL
       value: https://{{rekrutteringsbistand-stilling-api-host}}
     - name: INDEKS_VERSJON
-      value: "16"
+      value: "1"
   kafka:
     pool: {{kafka_pool}}
