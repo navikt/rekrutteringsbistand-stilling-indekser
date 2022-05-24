@@ -26,7 +26,6 @@ Hvordan vet den koden som leser fra Elasticsearch sin indeks at den skal lese fr
 ## Slette gamle indekser
 Det er ingen automatikk for sletting av gamle indekser som ikke er i bruk lengre. Man må da manuelt gjøre REST-kall direkte mot Elastic Search for å liste opp og slette gamle indekser.
 
-
 # Spørringer mot Elastic Search
 
 ## Koble til
