@@ -24,6 +24,10 @@ spec:
   azure:
     application:
       enabled: true
+  accessPolicy:
+    outbound:
+      rules:
+        - application: rekrutteringsbistand-stilling-api
   openSearch:
     access: admin
     instance: rekrutteringsbistand-stilling
