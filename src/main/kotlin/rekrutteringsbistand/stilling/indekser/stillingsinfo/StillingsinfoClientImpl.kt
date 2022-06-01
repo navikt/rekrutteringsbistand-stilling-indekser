@@ -5,9 +5,13 @@ import com.github.kittinunf.fuel.jackson.objectBody
 import com.github.kittinunf.fuel.jackson.responseObject
 import com.github.kittinunf.result.Result
 import rekrutteringsbistand.stilling.indekser.utils.Environment
+import rekrutteringsbistand.stilling.indekser.utils.log
 
 class StillingsinfoClientImpl(private val httpClient: FuelManager): StillingsinfoClient {
     private val stillingsinfoUrl: String = "${Environment.get("REKRUTTERINGSBISTAND_STILLING_API_URL")}/indekser/stillingsinfo"
+    init {
+        log.info("Setter opp stillinginfo-klient til å gå mot $stillingsinfoUrl")
+    }
 
     override fun getStillingsinfo(stillingsIder: List<String>): List<Stillingsinfo> {
         val body = BulkStillingsinfoOutboundDto(stillingsIder)
