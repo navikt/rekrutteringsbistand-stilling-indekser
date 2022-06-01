@@ -2,6 +2,6 @@
   "ingress": [
     "https://rekrutteringsbistand-stilling-indekser.dev.intern.nav.no"
   ],
-  "rekrutteringsbistand-stilling-api-host": "rekrutteringsbistand-stilling-api.dev-fss-pub.nais.io",
+  "rekrutteringsbistand-stilling-api-host": "rekrutteringsbistand-stilling-api.dev.intern.nav.no",
   "kafka_pool": "nav-dev"
 }
