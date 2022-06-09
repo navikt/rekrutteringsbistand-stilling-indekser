@@ -6,6 +6,7 @@ import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.jackson.responseObject
 import com.github.kittinunf.result.Result
 import rekrutteringsbistand.stilling.indekser.utils.Environment
+import rekrutteringsbistand.stilling.indekser.utils.log
 import java.lang.RuntimeException
 import java.util.concurrent.TimeUnit
 
@@ -41,7 +42,9 @@ class AccessTokenClient(private val httpClient: FuelManager) {
 
         when (result) {
             is Result.Success -> return result.get()
-            is Result.Failure -> throw RuntimeException("Noe feil skjedde ved henting av access_token: ", result.getException())
+            is Result.Failure -> throw RuntimeException("Noe feil skjedde ved henting av access_token: ", result.getException()).also {
+                log.error("Noe feil skjedde ved henting av access_token: ", result.getException())
+            }
         }
     }
 }

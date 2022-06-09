@@ -26,8 +26,8 @@ spec:
       enabled: true
   accessPolicy:
     outbound:
-      external:
-        - host: {{rekrutteringsbistand-stilling-api-host}}
+      rules:
+        - application: rekrutteringsbistand-stilling-api
   openSearch:
     access: admin
     instance: rekrutteringsbistand-stilling
