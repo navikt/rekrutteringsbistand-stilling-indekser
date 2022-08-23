@@ -28,7 +28,7 @@ jobs:
     deploy-to-dev:
         name: Deploy to dev
         needs: test
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/migrere-stilling-api-til-gcp'
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/bump-docker-image-jvm'
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
