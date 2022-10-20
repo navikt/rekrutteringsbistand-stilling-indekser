@@ -23,7 +23,7 @@ class App(
 ) : Closeable {
 
     private val webServer = Javalin.create { config ->
-        config.defaultContentType = "application/json"
+        config.http.defaultContentType = "application/json"
     }.apply {
         routes {
             get("/internal/isAlive") { if (Liveness.isAlive) it.status(200) else it.status(500) }
