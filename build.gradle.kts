@@ -1,5 +1,5 @@
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.4.21"
+    id("org.jetbrains.kotlin.jvm") version "1.7.20"
     id("com.github.johnrengelman.shadow") version "7.0.0"
     id("com.github.davidmc24.gradle.plugin.avro") version "1.2.0"
     application
