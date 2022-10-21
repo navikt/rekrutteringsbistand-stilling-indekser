@@ -10,7 +10,7 @@ import org.elasticsearch.client.RestHighLevelClient
 import org.elasticsearch.client.indices.CreateIndexRequest
 import org.elasticsearch.client.indices.GetIndexRequest
 import org.elasticsearch.client.indices.PutMappingRequest
-import org.elasticsearch.xcontent.XContentType
+import org.elasticsearch.common.xcontent.XContentType
 import rekrutteringsbistand.stilling.indekser.utils.log
 
 class ElasticSearchClient(private val restHighLevelClient: RestHighLevelClient) {
