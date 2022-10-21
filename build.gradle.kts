@@ -40,8 +40,7 @@ dependencies {
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.1")
     implementation("org.apache.kafka:kafka-clients:3.3.1")
     implementation("io.confluent:kafka-avro-serializer:6.0.1")
-    implementation("co.elastic.clients:elasticsearch-java:8.4.3")
-    implementation("org.elasticsearch.client:elasticsearch-rest-high-level-client:7.17.6") // Deprecated, https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/java-rest-high-getting-started-initialization.html
+    implementation("org.opensearch.client:opensearch-rest-high-level-client:2.3.0")
 
     testImplementation("io.mockk:mockk:1.13.2")
     testImplementation("org.jetbrains.kotlin:kotlin-test")

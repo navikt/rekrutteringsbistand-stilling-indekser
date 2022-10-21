@@ -1,8 +1,8 @@
 package rekrutteringsbistand.stilling.indekser.setup
 
 import org.apache.http.HttpHost
-import org.elasticsearch.client.RestClient
-import org.elasticsearch.client.RestHighLevelClient
+import org.opensearch.client.RestClient
+import org.opensearch.client.RestHighLevelClient
 import rekrutteringsbistand.stilling.indekser.utils.Environment
 
 fun getLocalRestHighLevelClient(): RestHighLevelClient {

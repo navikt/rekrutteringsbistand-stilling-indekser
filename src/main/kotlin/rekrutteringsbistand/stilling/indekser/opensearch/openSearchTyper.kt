@@ -1,4 +1,4 @@
-package rekrutteringsbistand.stilling.indekser.elasticsearch
+package rekrutteringsbistand.stilling.indekser.opensearch
 
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.Stillingsinfo
 

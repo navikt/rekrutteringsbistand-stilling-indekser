@@ -32,7 +32,7 @@ class KonverterTilStillingTest {
     }
 }
 
-fun assertEqualContactLists(adContactList: List<Contact>, stillingContactList: List<rekrutteringsbistand.stilling.indekser.elasticsearch.Contact>) {
+fun assertEqualContactLists(adContactList: List<Contact>, stillingContactList: List<rekrutteringsbistand.stilling.indekser.opensearch.Contact>) {
     assertEquals(adContactList.size, stillingContactList.size)
     adContactList.forEachIndexed { index, adContact ->
         assertEquals(adContact.getName(), stillingContactList[index].name)
