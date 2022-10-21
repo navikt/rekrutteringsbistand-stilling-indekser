@@ -32,7 +32,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation("io.javalin:javalin:5.1.1")
     implementation("ch.qos.logback:logback-classic:1.4.4")
-    implementation("net.logstash.logback:logstash-logback-encoder:6.3")
+    implementation("net.logstash.logback:logstash-logback-encoder:7.2")
     val fuelVersion = "2.3.1"
     implementation("com.github.kittinunf.fuel:fuel:$fuelVersion")
     implementation("com.github.kittinunf.fuel:fuel-jackson:$fuelVersion")
