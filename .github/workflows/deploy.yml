@@ -28,7 +28,7 @@ jobs:
     deploy-to-dev:
         name: Deploy to dev
         needs: test
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/bump-docker-image-jvm'
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/bump-gradle-og-kotlin-jvm'
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
