@@ -38,7 +38,7 @@ dependencies {
     implementation("com.github.kittinunf.fuel:fuel-jackson:$fuelVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.4")
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.1")
-    implementation("org.apache.kafka:kafka-clients:2.7.2")
+    implementation("org.apache.kafka:kafka-clients:3.3.1")
     implementation("io.confluent:kafka-avro-serializer:6.0.1")
     implementation("org.elasticsearch.client:elasticsearch-rest-high-level-client:7.10.1")
 
