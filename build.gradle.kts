@@ -42,7 +42,7 @@ dependencies {
     implementation("io.confluent:kafka-avro-serializer:6.0.1")
     implementation("org.elasticsearch.client:elasticsearch-rest-high-level-client:7.10.1")
 
-    testImplementation("io.mockk:mockk:1.10.5")
+    testImplementation("io.mockk:mockk:1.13.2")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
 }
