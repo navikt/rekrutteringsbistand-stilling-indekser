@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.pam.stilling.ext.avro.Ad
 import no.nav.pam.stilling.ext.avro.RemarkType
-import rekrutteringsbistand.stilling.indekser.elasticsearch.*
+import rekrutteringsbistand.stilling.indekser.opensearch.*
 
 fun konverterTilStilling(ad: Ad): Stilling {
     return Stilling(
