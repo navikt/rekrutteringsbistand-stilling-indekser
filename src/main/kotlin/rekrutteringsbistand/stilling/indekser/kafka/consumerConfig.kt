@@ -1,6 +1,5 @@
 package rekrutteringsbistand.stilling.indekser.kafka
 
-import io.confluent.kafka.schemaregistry.client.SchemaRegistryClientConfig
 import io.confluent.kafka.serializers.KafkaAvroDeserializer
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig
 import org.apache.kafka.clients.CommonClientConfigs
@@ -10,7 +9,7 @@ import org.apache.kafka.common.serialization.StringDeserializer
 import rekrutteringsbistand.stilling.indekser.utils.Environment
 import java.util.*
 
-const val stillingstopic = "arbeidsgiver.rekrutteringsbistand-stilling-1"
+const val stillingstopic = "toi.rekrutteringsbistand-stilling-1"
 
 fun consumerConfig(versjon: Int) = Properties().apply {
     put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 100)
