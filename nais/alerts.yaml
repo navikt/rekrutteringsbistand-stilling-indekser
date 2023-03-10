@@ -1,23 +1,40 @@
-apiVersion: "nais.io/v1"
-kind: "Alert"
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
 metadata:
-  name: rekrutteringsbistand-stilling-indekser-alert
+  name: rekrutteringsbistand-stilling-indekser
   namespace: toi
   labels:
     team: toi
 spec:
-  receivers:
-    slack:
-      channel: 'inkludering-alerts-prod'
-  alerts:
-    - alert: Applikasjon nede
-      expr: sum(up{app="rekrutteringsbistand-stilling-indekser", job="kubernetes-pods"}) == 0
-      for: 1s
-      description: "rekrutteringsbistand-stilling-indekser er nede"
-      action: "Sjekk logs.adeo.no for logger: https://logs.adeo.no/goto/22b34ce93b86beed1518ff27fdff636a"
+  groups:
+    - name: rekrutteringsbistand-stilling-indekser
+      rules:
+        - alert: rekrutteringsbistand-stilling-indekser
+          expr: sum(up{app="rekrutteringsbistand-stilling-indekser", job="nais-system/monitoring-apps-tenant"}) == 0
+          for: 1s
+          annotations:
+            summary: Appen er nede
+            action: "https://logs.adeo.no/app/r/s/CuggT"
+          labels:
+            namespace: toi
+            severity: critical
 
-    - alert: Det har skjedd en feil i rekrutteringsbistand-stilling-indekser
-      expr: sum(increase(logd_messages_total{log_app="rekrutteringsbistand-stilling-indekser",log_level="Error"}[10m])) > 0
-      for: 10s
-      description: "rekrutteringsbistand-stilling-indekser har logget en feil"
-      action: "Sjekk logs.adeo.no for logger: https://logs.adeo.no/goto/c3198a1573b2c5f02ce848662d94b42b"
+        - alert: rekrutteringsbistand-stilling-indekser
+          expr: sum(increase(logd_messages_total{log_app="rekrutteringsbistand-stilling-indekser",log_level="Error"}[10m])) > 0
+          for: 1s
+          annotations:
+            summary: Appen har logget en error
+            action: "https://logs.adeo.no/app/r/s/CuggT"
+          labels:
+            namespace: toi
+            severity: critical
+
+        - alert: rekrutteringsbistand-stilling-indekser
+          expr: (100 * sum by (log_app, log_namespace) (rate(logd_messages_total{log_app="rekrutteringsbistand-stilling-indekser  ",log_level=~"Warning"}[5m])) / sum by (log_app, log_namespace) (rate(logd_messages_total{log_app="rekrutteringsbistand-stilling-indekser  "}[5m]))) > 5
+          for: 3m
+          annotations:
+            summary: Økning i warnings
+            action: "https://logs.adeo.no/app/r/s/CuggT"
+          labels:
+            namespace: toi
+            severity: warning
