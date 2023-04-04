@@ -35,7 +35,7 @@ spec:
     - secret: rekrutteringsbistand-stilling-indekser-servicebruker
   env:
     - name: REKRUTTERINGSBISTAND_STILLING_API_URL
-      value: https://{{rekrutteringsbistand-stilling-api-host}}
+      value: http://rekrutteringsbistand-stilling-api
     - name: INDEKS_VERSJON
       value: "1"
   kafka:
