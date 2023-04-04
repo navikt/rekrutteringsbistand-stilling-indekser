@@ -2,6 +2,5 @@
   "ingress": [
     "https://rekrutteringsbistand-stilling-indekser.intern.nav.no"
   ],
-  "rekrutteringsbistand-stilling-api-host": "rekrutteringsbistand-stilling-api.intern.nav.no",
   "kafka_pool": "nav-prod"
 }
