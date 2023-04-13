@@ -1,6 +1,6 @@
 {
   "ingress": [
-    "https://rekrutteringsbistand-stilling-indekser.dev.intern.nav.no"
+    "https://rekrutteringsbistand-stilling-indekser.intern.dev.nav.no"
   ],
   "kafka_pool": "nav-dev"
 }
