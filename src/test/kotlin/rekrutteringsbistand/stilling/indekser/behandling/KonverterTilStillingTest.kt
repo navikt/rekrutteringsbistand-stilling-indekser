@@ -12,8 +12,8 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class KonverterTilStillingTest {
-    // Koden i dag antar at categories ikke er null, og vi har ikke sett noen exceptions i prod,
-    // sa unit-tester ikke adferd for det her
+    // Koden som har kjørt i prod ville ha kastet null-pointer exception om categories er null. Vi har derfor
+    // ikke skrevet noen nye unit-tester for hva vi skal gjøre i en slik hypotetisk situasjon.
 
     val kassemedarbeider4siffer = StyrkCategory("5223", "Butikkmedarbeider")
     val kassemedarbeider6siffer = StyrkCategory("5223.19", "Kassemedarbeider (butikk)")
