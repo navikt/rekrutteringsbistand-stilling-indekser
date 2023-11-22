@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 
 fun enAdMed(
     source: String = "source",
-    categories: List<StyrkCategory> = listOf(StyrkCategory("1111", "name111"), StyrkCategory("2222", "name2222"), StyrkCategory("666666", "name666666")),
+    categories: List<StyrkCategory>? = listOf(StyrkCategory("1111", "name111"), StyrkCategory("2222", "name2222"), StyrkCategory("666666", "name666666")),
     title: String = "tittel",
 ) = Ad(
     "uuid",
