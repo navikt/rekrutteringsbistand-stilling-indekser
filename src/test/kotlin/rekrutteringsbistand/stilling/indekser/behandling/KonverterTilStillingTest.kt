@@ -14,22 +14,46 @@ class KonverterTilStillingTest {
 
     // Gitt en annonse for en direktemeldt stilling med flere styrk-koder
     // når konverterer
-    // så skal tittelfeltet være styrknavnet til styrk-oden med 6 siffer (fordi det er bare Rekbis som bruker 6 siffer)
+    // så skal styrkEllerTittel-feltet være styrknavnet til styrk-oden med 6 siffer (fordi det er bare Rekbis som bruker 6 siffer)
     @Test
-    fun `Skal mappe STYRK-navn til tittel for direktemeldt stilling`(){
+    fun `Skal mappe STYRK-navn til tittel for direktemeldt stilling`() {
         val forventetNavn = "navn666666"
         val styrkkodePåRekbisFormat = "6666.66"
         val styrk = listOf(StyrkCategory("1234", "aaa"), StyrkCategory("4567", "bbb"), StyrkCategory(styrkkodePåRekbisFormat, forventetNavn))
 
-        val resultat = konverterTilStilling(enAdMed(source = "DIR", categories = styrk))
+        val tittelFraArbeidsplassen = "Tittel fra arbeidsplassen"
+        val resultat = konverterTilStilling(enAdMed(
+            source = "DIR",
+            categories = styrk,
+            title = tittelFraArbeidsplassen
+        ))
 
         assertEquals(forventetNavn, resultat.styrkEllerTittel)
+        assertEquals(tittelFraArbeidsplassen, resultat.title) // NB: assert byttet ut med null-ish når migrering er ferdig
         assertEquals("DIR", resultat.source)
     }
 
     // Gitt en annonse for en ekstern stilling med flere styrk-koder
     // når konverterer
     // så skal tittelfeltet være arbeidsplassen-tittelen
+    @Test
+    fun `Skal mappe arbeidsplassentittel for ekstern stilling`() {
+        val tittelFraArbeidsplassen = "Tittel fra arbeidsplassen"
+        val styrkkodePåRekbisFormat = "6666.66"
+        val styrk = listOf(StyrkCategory("1234", "aaa"), StyrkCategory("4567", "bbb"), StyrkCategory(styrkkodePåRekbisFormat, tittelFraArbeidsplassen))
+        val kilde = "ekstern"
+
+        val resultat = konverterTilStilling(enAdMed(source = kilde, categories = styrk, title = tittelFraArbeidsplassen))
+
+        assertEquals(tittelFraArbeidsplassen, resultat.styrkEllerTittel)
+        assertEquals(tittelFraArbeidsplassen, resultat.title)
+        assertEquals(kilde, resultat.source)
+    }
+
+
+    // Gitt en annonse for en direktemeldt stilling med flere gylde styrk-koder
+    // når konverterer
+    // så skal tittelfeltet være ???
 
 
     // Gitt en annonse for en direktemeldt stilling uten styrk
