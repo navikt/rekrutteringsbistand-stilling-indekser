@@ -15,11 +15,11 @@ class KonverterTilStillingTest {
     // Koden i dag antar at categories ikke er null, og vi har ikke sett noen exceptions i prod,
     // sa unit-tester ikke adferd for det her
 
-    val styrk08Kassemedarbeider4siffer = StyrkCategory("5223", "Butikkmedarbeider")
-    val styrk08Kassemedarbeider6siffer = StyrkCategory("5223.19", "Kassemedarbeider (butikk)")
+    val kassemedarbeider4siffer = StyrkCategory("5223", "Butikkmedarbeider")
+    val kassemedarbeider6siffer = StyrkCategory("5223.19", "Kassemedarbeider (butikk)")
 
-    val styrk08Kranfører4siffer = StyrkCategory("8343", "Kranfører")
-    val styrk08Kranfører6siffer = StyrkCategory("8343.05", "Byggekranfører")
+    val kranfører4siffer = StyrkCategory("8343", "Kranfører")
+    val kranfører6siffer = StyrkCategory("8343.05", "Byggekranfører")
 
 
     // Gitt en annonse for en direktemeldt stilling med flere styrk-koder
@@ -27,16 +27,16 @@ class KonverterTilStillingTest {
     // så skal styrkEllerTittel-feltet være styrknavnet til styrk-oden med 6 siffer (fordi det er bare Rekbis som bruker 6 siffer)
     @Test
     fun `Skal mappe STYRK-navn til tittel for direktemeldt stilling`() {
-        val styrk = listOf(styrk08Kassemedarbeider4siffer, styrk08Kassemedarbeider6siffer)
-
+        val styrk = listOf(kassemedarbeider4siffer, kassemedarbeider6siffer)
         val tittelFraArbeidsplassen = "Tittel fra arbeidsplassen"
+
         val resultat = konverterTilStilling(enAdMed(
             source = "DIR",
             categories = styrk,
             title = tittelFraArbeidsplassen
         ))
 
-        assertEquals(styrk08Kassemedarbeider6siffer.getName(), resultat.styrkEllerTittel)
+        assertEquals(kassemedarbeider6siffer.getName(), resultat.styrkEllerTittel)
         assertEquals(tittelFraArbeidsplassen, resultat.title) // NB: assert byttet ut med null-ish når migrering er ferdig
         assertEquals("DIR", resultat.source)
     }
@@ -47,7 +47,7 @@ class KonverterTilStillingTest {
     @Test
     fun `Skal mappe arbeidsplassentittel for ekstern stilling`() {
         val tittelFraArbeidsplassen = "Tittel fra arbeidsplassen"
-        val styrk = listOf(styrk08Kassemedarbeider6siffer, styrk08Kassemedarbeider4siffer)
+        val styrk = listOf(kassemedarbeider6siffer, kassemedarbeider4siffer)
 
         val resultat = konverterTilStilling(
             enAdMed(
@@ -67,7 +67,7 @@ class KonverterTilStillingTest {
     // så skal vi kast exception
     @Test
     fun `Skal kaste feil dersom vi har flere gyldige styrk koder med seks siffer for intern stilling`() {
-        val styrk = listOf(styrk08Kassemedarbeider6siffer, styrk08Kranfører6siffer, styrk08Kranfører4siffer)
+        val styrk = listOf(kassemedarbeider6siffer, kranfører6siffer, kranfører4siffer)
 
         assertFailsWith(RuntimeException::class) {
             konverterTilStilling(enAdMed(source = "DIR", categories = styrk))
@@ -91,7 +91,7 @@ class KonverterTilStillingTest {
     @Test
     fun `Skal kaste feil dersom vi kun har 4-sifret styrk koder for intern stilling`() {
         assertFailsWith(RuntimeException::class) {
-            konverterTilStilling(enAdMed(source = "DIR", categories = listOf(styrk08Kranfører4siffer)))
+            konverterTilStilling(enAdMed(source = "DIR", categories = listOf(kranfører4siffer)))
         }
     }
 
