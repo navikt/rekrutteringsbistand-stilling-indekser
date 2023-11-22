@@ -3,11 +3,14 @@ package rekrutteringsbistand.stilling.indekser.behandling
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.pam.stilling.ext.avro.Contact
 import no.nav.pam.stilling.ext.avro.StyrkCategory
+import org.junit.Assert
 import org.junit.Test
 import rekrutteringsbistand.stilling.indekser.setup.enAd
 import rekrutteringsbistand.stilling.indekser.setup.enAdMed
 import rekrutteringsbistand.stilling.indekser.setup.enAdUtenKontaktinformasjon
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
+import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 class KonverterTilStillingTest {
@@ -51,9 +54,18 @@ class KonverterTilStillingTest {
     }
 
 
-    // Gitt en annonse for en direktemeldt stilling med flere gylde styrk-koder
+    // Gitt en annonse for en direktemeldt stilling med flere gyldige styrk-koder med seks siffer
     // når konverterer
-    // så skal tittelfeltet være ???
+    // så skal vi kast exception
+    @Test
+    fun `Skal kaste feil dersom vi har flere gyldige styrk koder med seks siffer for intern stilling`() {
+        val tittelFraArbeidsplassen = "Tittel fra arbeidsplassen"
+        val styrkkodePåRekbisFormat = "6666.66"
+        val styrkkodePåRekbisFormat2 = "7777.77"
+        val styrk = listOf(StyrkCategory(styrkkodePåRekbisFormat, "aaa"), StyrkCategory(styrkkodePåRekbisFormat2, "bbb"), StyrkCategory("4567", "bbb"), )
+
+        assertFailsWith(RuntimeException::class) {konverterTilStilling(enAdMed(source = "DIR", categories = styrk, title = tittelFraArbeidsplassen))}
+    }
 
 
     // Gitt en annonse for en direktemeldt stilling uten styrk
