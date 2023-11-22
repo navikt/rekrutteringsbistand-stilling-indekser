@@ -32,18 +32,20 @@ fun konverterTilStilling(ad: Ad): Stilling {
         ad.getSource(),
         ad.getMedium(),
         ad.getBusinessName(),
-        ad.getLocations().map { Location(
-            it.getAddress(),
-            it.getPostalCode(),
-            it.getCity(),
-            it.getCounty(),
-            it.countyCode,
-            it.getMunicipal(),
-            it.municipalCode,
-            it.getLatitude(),
-            it.getLongitude(),
-            it.getCountry()
-        ) },
+        ad.getLocations().map {
+            Location(
+                it.getAddress(),
+                it.getPostalCode(),
+                it.getCity(),
+                it.getCounty(),
+                it.countyCode,
+                it.getMunicipal(),
+                it.municipalCode,
+                it.getLatitude(),
+                it.getLongitude(),
+                it.getCountry()
+            )
+        },
         ad.getReference(),
         ad.getAdministration()?.let {
             Administration(
@@ -56,13 +58,16 @@ fun konverterTilStilling(ad: Ad): Stilling {
         },
         ad.getProperties().associate { it.getKey() to (tilJson(it.getValue()) ?: it.getValue()) },
         ad.getContacts()
-            ?.map { Contact(
-                it.getName(),
-                it.getRole(),
-                it.getTitle(),
-                it.getEmail(),
-                it.getPhone())
-            } ?: emptyList()
+            ?.map {
+                Contact(
+                    it.getName(),
+                    it.getRole(),
+                    it.getTitle(),
+                    it.getEmail(),
+                    it.getPhone()
+                )
+            } ?: emptyList(),
+        "whatever"
     )
 }
 

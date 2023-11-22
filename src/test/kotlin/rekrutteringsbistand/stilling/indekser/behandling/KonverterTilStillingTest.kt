@@ -2,13 +2,49 @@ package rekrutteringsbistand.stilling.indekser.behandling
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.pam.stilling.ext.avro.Contact
+import no.nav.pam.stilling.ext.avro.StyrkCategory
 import org.junit.Test
 import rekrutteringsbistand.stilling.indekser.setup.enAd
+import rekrutteringsbistand.stilling.indekser.setup.enAdMed
 import rekrutteringsbistand.stilling.indekser.setup.enAdUtenKontaktinformasjon
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class KonverterTilStillingTest {
+
+    // Gitt en annonse for en direktemeldt stilling med flere styrk-koder
+    // når konverterer
+    // så skal tittelfeltet være styrknavnet til styrk-oden med 6 siffer (fordi det er bare Rekbis som bruker 6 siffer)
+    @Test
+    fun `Skal mappe STYRK-navn til tittel for direktemeldt stilling`(){
+        val forventetNavn = "navn666666"
+        val styrkkodePåRekbisFormat = "6666.66"
+        val styrk = listOf(StyrkCategory("1234", "aaa"), StyrkCategory("4567", "bbb"), StyrkCategory(styrkkodePåRekbisFormat, forventetNavn))
+
+        val resultat = konverterTilStilling(enAdMed(source = "DIR", categories = styrk))
+
+        assertEquals(forventetNavn, resultat.styrkEllerTittel)
+        assertEquals("DIR", resultat.source)
+    }
+
+    // Gitt en annonse for en ekstern stilling med flere styrk-koder
+    // når konverterer
+    // så skal tittelfeltet være arbeidsplassen-tittelen
+
+
+    // Gitt en annonse for en direktemeldt stilling uten styrk
+    // når konverterer
+    // så skal ???
+
+    // Gitt en annonse for en direktemeldt stilling med styrk som har feil format
+    // når konverterer
+    // så skal tittelfeltet inneholde en standardtekst (TODO: hva?)
+
+    // Denne venter vi med til altt annet er gjort
+    // Gitt en annonse for en direktemeldt stilling, som selvfølgelig har tittel
+    // når konverterer
+    // så skal ikke tittel finnes
+
 
     @Test
     fun `Skal mappe felter riktig`() {
