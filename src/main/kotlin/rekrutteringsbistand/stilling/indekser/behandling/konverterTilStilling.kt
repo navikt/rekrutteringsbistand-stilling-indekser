@@ -6,6 +6,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.pam.stilling.ext.avro.Ad
 import no.nav.pam.stilling.ext.avro.RemarkType
 import rekrutteringsbistand.stilling.indekser.opensearch.*
+import rekrutteringsbistand.stilling.indekser.utils.log
 
 fun konverterTilStilling(ad: Ad): Stilling {
     return Stilling(
@@ -67,18 +68,21 @@ fun konverterTilStilling(ad: Ad): Stilling {
                     it.getPhone()
                 )
             } ?: emptyList(),
-        if (ad.erDirektemeldt()) ad.getCategories().tittelFraStyrk(ad.getUuid()) else ad.getTitle()
+        if (ad.erDirektemeldt()) ad.getCategories().tittelFraStyrk(ad.getUuid(), ad.getCreated()) else ad.getTitle()
     )
 }
 
 private fun Ad.erDirektemeldt(): Boolean = this.getSource() == "DIR"
 
-private fun List<no.nav.pam.stilling.ext.avro.StyrkCategory>.tittelFraStyrk(uuid: String): String {
+private fun List<no.nav.pam.stilling.ext.avro.StyrkCategory>.tittelFraStyrk(uuid: String, created: String): String {
     val passendeStyrkkkoder = this.filter { it.harØnsketStyrk8Format() }
 
     when (val antall = passendeStyrkkkoder.size) {
         1 -> return passendeStyrkkkoder[0].getName()
-        0 -> throw RuntimeException("Fant ikke styrk8 for stilling $uuid")
+        0 -> {
+            log.error ("Fant ikke styrk8 for stilling $uuid med opprettet dato $created ")
+            return "Stilling uten valgt jobbtittel"
+        }
         else -> throw RuntimeException("Forventer en 6-sifret styrk08-kode, fant $antall stykker for stilling $uuid")
     }
 }

@@ -3,7 +3,6 @@ package rekrutteringsbistand.stilling.indekser.behandling
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.pam.stilling.ext.avro.Contact
 import no.nav.pam.stilling.ext.avro.StyrkCategory
-import org.junit.Ignore
 import org.junit.Test
 import rekrutteringsbistand.stilling.indekser.setup.enAd
 import rekrutteringsbistand.stilling.indekser.setup.enAdMed
@@ -31,11 +30,13 @@ class KonverterTilStillingTest {
         val styrk = listOf(kassemedarbeider4siffer, kassemedarbeider6siffer)
         val tittelFraArbeidsplassen = "Tittel fra arbeidsplassen"
 
-        val resultat = konverterTilStilling(enAdMed(
-            source = "DIR",
-            categories = styrk,
-            title = tittelFraArbeidsplassen
-        ))
+        val resultat = konverterTilStilling(
+            enAdMed(
+                source = "DIR",
+                categories = styrk,
+                title = tittelFraArbeidsplassen
+            )
+        )
 
         assertEquals(kassemedarbeider6siffer.getName(), resultat.styrkEllerTittel)
         assertEquals(tittelFraArbeidsplassen, resultat.title) // NB: byttet ut med null-assert når migrering er ferdig
@@ -55,7 +56,8 @@ class KonverterTilStillingTest {
                 source = "ekstern",
                 categories = styrk,
                 title = tittelFraArbeidsplassen
-            ))
+            )
+        )
 
         assertEquals(tittelFraArbeidsplassen, resultat.styrkEllerTittel)
         assertEquals(tittelFraArbeidsplassen, resultat.title)  // NB: byttet ut med null-assert når migrering er ferdig
@@ -81,9 +83,10 @@ class KonverterTilStillingTest {
     // så skal ???
     @Test
     fun `Skal kaste feil dersom vi ikke har styrk koder for intern stilling`() {
-        assertFailsWith(RuntimeException::class) {
-            konverterTilStilling(enAdMed(source = "DIR", categories = listOf()))
-        }
+        val stilling1 = konverterTilStilling(enAdMed(source = "DIR", categories = listOf()))
+
+        assertEquals(stilling1.styrkEllerTittel, "Stilling uten valgt jobbtittel")
+
     }
 
     // Gitt en annonse for en direktemeldt stilling med kun 4-sifret styrkkode
@@ -91,9 +94,8 @@ class KonverterTilStillingTest {
     // så skal ???
     @Test
     fun `Skal kaste feil dersom vi kun har 4-sifret styrk koder for intern stilling`() {
-        assertFailsWith(RuntimeException::class) {
-            konverterTilStilling(enAdMed(source = "DIR", categories = listOf(kranfører4siffer)))
-        }
+        val stilling1 = konverterTilStilling(enAdMed(source = "DIR", categories = listOf(kranfører4siffer)))
+        assertEquals(stilling1.styrkEllerTittel, "Stilling uten valgt jobbtittel")
     }
 
 
@@ -101,13 +103,14 @@ class KonverterTilStillingTest {
     // når konverterer
     // så skal tittelfeltet inneholde en standardtekst (TODO: hva?)
     @Test
-    fun `Skal kaste feil dersom en direktemeldt stilling har feil format på styrk kode`() {
-        assertFailsWith(RuntimeException::class) {
+    fun `Skal kaste feil dersom en direktemeldt stilling har kun feil format på styrk kode`() {
+        val stilling1 =
             konverterTilStilling(enAdMed(source = "DIR", categories = listOf(StyrkCategory("000.000", "FEIL FORMAT"))))
-        }
-        assertFailsWith(RuntimeException::class) {
+        assertEquals(stilling1.styrkEllerTittel, "Stilling uten valgt jobbtittel")
+        val stilling2 =
             konverterTilStilling(enAdMed(source = "DIR", categories = listOf(StyrkCategory("000000", "FEIL FORMAT"))))
-        }
+        assertEquals(stilling1.styrkEllerTittel, "Stilling uten valgt jobbtittel")
+
     }
 
     @Test
@@ -132,7 +135,10 @@ class KonverterTilStillingTest {
     }
 }
 
-fun assertEqualContactLists(adContactList: List<Contact>, stillingContactList: List<rekrutteringsbistand.stilling.indekser.opensearch.Contact>) {
+fun assertEqualContactLists(
+    adContactList: List<Contact>,
+    stillingContactList: List<rekrutteringsbistand.stilling.indekser.opensearch.Contact>
+) {
     assertEquals(adContactList.size, stillingContactList.size)
     adContactList.forEachIndexed { index, adContact ->
         assertEquals(adContact.getName(), stillingContactList[index].name)
