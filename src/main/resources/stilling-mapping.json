@@ -79,6 +79,14 @@
           "type": "text",
           "analyzer": "norwegian"
         },
+        "styrkEllerTittel": {
+          "type": "text",
+          "copy_to": "stilling.styrkEllerTittel_no"
+        },
+        "styrkEllerTittel_no": {
+          "type": "text",
+          "analyzer": "norwegian"
+        },
         "businessName": {
           "type": "text",
           "copy_to": "stilling.employername"

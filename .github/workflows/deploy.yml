@@ -5,6 +5,10 @@ on: [push]
 env:
     IMAGE: ghcr.io/${{ github.repository }}/rekrutteringsbistand-stilling-indekser:${{ github.sha }}
 
+permissions:
+    contents: read
+    id-token: write
+
 jobs:
     test:
         name: Run tests
@@ -70,9 +74,6 @@ jobs:
         needs: deploy-to-dev
         if: github.ref == 'refs/heads/main'
         runs-on: ubuntu-latest
-        permissions:
-            contents: read
-            id-token: write
         steps:
             - uses: actions/checkout@v3
             - uses: nais/deploy/actions/deploy@v1
