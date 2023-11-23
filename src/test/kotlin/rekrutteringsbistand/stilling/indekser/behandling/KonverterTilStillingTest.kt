@@ -3,6 +3,7 @@ package rekrutteringsbistand.stilling.indekser.behandling
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.pam.stilling.ext.avro.Contact
 import no.nav.pam.stilling.ext.avro.StyrkCategory
+import org.junit.Ignore
 import org.junit.Test
 import rekrutteringsbistand.stilling.indekser.setup.enAd
 import rekrutteringsbistand.stilling.indekser.setup.enAdMed
@@ -99,12 +100,15 @@ class KonverterTilStillingTest {
     // Gitt en annonse for en direktemeldt stilling med styrk som har feil format
     // når konverterer
     // så skal tittelfeltet inneholde en standardtekst (TODO: hva?)
-
-    // Denne venter vi med til altt annet er gjort
-    // Gitt en annonse for en direktemeldt stilling, som selvfølgelig har tittel
-    // når konverterer
-    // så skal ikke tittel finnes
-
+    @Test
+    fun `Skal kaste feil dersom en direktemeldt stilling har feil format på styrk kode`() {
+        assertFailsWith(RuntimeException::class) {
+            konverterTilStilling(enAdMed(source = "DIR", categories = listOf(StyrkCategory("000.000", "FEIL FORMAT"))))
+        }
+        assertFailsWith(RuntimeException::class) {
+            konverterTilStilling(enAdMed(source = "DIR", categories = listOf(StyrkCategory("000000", "FEIL FORMAT"))))
+        }
+    }
 
     @Test
     fun `Skal mappe felter riktig`() {
