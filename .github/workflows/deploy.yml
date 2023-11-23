@@ -5,6 +5,11 @@ on: [push]
 env:
     IMAGE: ghcr.io/${{ github.repository }}/rekrutteringsbistand-stilling-indekser:${{ github.sha }}
 
+permissions:
+    contents: read
+    id-token: write
+    packages: write
+
 jobs:
     test:
         name: Run tests
