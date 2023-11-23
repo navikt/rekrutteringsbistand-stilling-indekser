@@ -67,9 +67,26 @@ fun konverterTilStilling(ad: Ad): Stilling {
                     it.getPhone()
                 )
             } ?: emptyList(),
-        "whatever"
+        if (ad.erDirektemeldt()) ad.getCategories().tittelFraStyrk() else ad.getTitle()
     )
 }
+
+private fun Ad.erDirektemeldt(): Boolean = this.getSource() == "DIR"
+
+private fun List<no.nav.pam.stilling.ext.avro.StyrkCategory>.tittelFraStyrk(): String {
+    val passendeStyrkkkoder = this.filter { it.harØnsketStyrk8Format() }
+
+    when (val antall = passendeStyrkkkoder.size) {
+        1 -> return passendeStyrkkkoder[0].getName()
+        0 -> throw RuntimeException("Fant ikke styrk8 for stilling")
+        else -> throw RuntimeException("Forventer en 6-sifret styrk08-kode, fant $antall stykker")
+    }
+}
+
+private val styrk08SeksSiffer = Regex("""^[0-9]{4}\.[0-9]{2}$""")
+
+private fun no.nav.pam.stilling.ext.avro.StyrkCategory.harØnsketStyrk8Format(): Boolean =
+    this.getStyrkCode().matches(styrk08SeksSiffer)
 
 fun tilJson(string: String): JsonNode? {
     return try {
