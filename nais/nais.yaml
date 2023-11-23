@@ -37,6 +37,6 @@ spec:
     - name: REKRUTTERINGSBISTAND_STILLING_API_URL
       value: http://rekrutteringsbistand-stilling-api
     - name: INDEKS_VERSJON
-      value: "1"
+      value: "2"
   kafka:
     pool: {{kafka_pool}}
