@@ -83,7 +83,7 @@ private fun List<no.nav.pam.stilling.ext.avro.StyrkCategory>.tittelFraStyrk(uuid
             log.error ("Fant ikke styrk8 for stilling $uuid med opprettet dato $created ")
             return "Stilling uten valgt jobbtittel"
         }
-        else -> throw RuntimeException("Forventer en 6-sifret styrk08-kode, fant $antall stykker for stilling $uuid")
+        else -> throw RuntimeException("Forventer en 6-sifret styrk08-kode, fant $antall stykker for stilling $uuid styrkkoder:" + joinToString { "${it.getStyrkCode()}-${it.getName()}" })
     }
 }
 
