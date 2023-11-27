@@ -67,14 +67,14 @@ class KonverterTilStillingTest {
 
     // Gitt en annonse for en direktemeldt stilling med flere gyldige styrk-koder med seks siffer
     // når konverterer
-    // så skal vi kast exception
+    // så skal vi flette sammen styrkene med bindestrek
     @Test
     fun `Skal kaste feil dersom vi har flere gyldige styrk koder med seks siffer for intern stilling`() {
         val styrk = listOf(kassemedarbeider6siffer, kranfører6siffer, kranfører4siffer)
 
-        assertFailsWith(RuntimeException::class) {
-            konverterTilStilling(enAdMed(source = "DIR", categories = styrk))
-        }
+        val stilling1 = konverterTilStilling(enAdMed(source = "DIR", categories = styrk))
+
+        assertEquals("Byggekranfører/Kassemedarbeider (butikk)", stilling1.styrkEllerTittel)
     }
 
 
@@ -85,7 +85,7 @@ class KonverterTilStillingTest {
     fun `Skal kaste feil dersom vi ikke har styrk koder for intern stilling`() {
         val stilling1 = konverterTilStilling(enAdMed(source = "DIR", categories = listOf()))
 
-        assertEquals(stilling1.styrkEllerTittel, "Stilling uten valgt jobbtittel")
+        assertEquals("Stilling uten valgt jobbtittel", stilling1.styrkEllerTittel)
 
     }
 
@@ -95,7 +95,7 @@ class KonverterTilStillingTest {
     @Test
     fun `Skal kaste feil dersom vi kun har 4-sifret styrk koder for intern stilling`() {
         val stilling1 = konverterTilStilling(enAdMed(source = "DIR", categories = listOf(kranfører4siffer)))
-        assertEquals(stilling1.styrkEllerTittel, "Stilling uten valgt jobbtittel")
+        assertEquals("Stilling uten valgt jobbtittel", stilling1.styrkEllerTittel)
     }
 
 
@@ -106,10 +106,10 @@ class KonverterTilStillingTest {
     fun `Skal kaste feil dersom en direktemeldt stilling har kun feil format på styrk kode`() {
         val stilling1 =
             konverterTilStilling(enAdMed(source = "DIR", categories = listOf(StyrkCategory("000.000", "FEIL FORMAT"))))
-        assertEquals(stilling1.styrkEllerTittel, "Stilling uten valgt jobbtittel")
+        assertEquals("Stilling uten valgt jobbtittel", stilling1.styrkEllerTittel)
         val stilling2 =
             konverterTilStilling(enAdMed(source = "DIR", categories = listOf(StyrkCategory("000000", "FEIL FORMAT"))))
-        assertEquals(stilling1.styrkEllerTittel, "Stilling uten valgt jobbtittel")
+        assertEquals("Stilling uten valgt jobbtittel", stilling1.styrkEllerTittel)
 
     }
 

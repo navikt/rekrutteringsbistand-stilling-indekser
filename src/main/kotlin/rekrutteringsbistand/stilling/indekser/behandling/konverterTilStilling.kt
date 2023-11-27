@@ -85,7 +85,7 @@ private fun List<no.nav.pam.stilling.ext.avro.StyrkCategory>.tittelFraStyrk(uuid
         }
         else -> {
             log.warn("Forventer en 6-sifret styrk08-kode, fant $antall stykker for stilling $uuid styrkkoder:" + joinToString { "${it.getStyrkCode()}-${it.getName()}" })
-            return sorted().joinToString("/") { it.getName() }
+            return passendeStyrkkkoder.map { it.getName() }.sorted().joinToString("/")
         }
     }
 }
