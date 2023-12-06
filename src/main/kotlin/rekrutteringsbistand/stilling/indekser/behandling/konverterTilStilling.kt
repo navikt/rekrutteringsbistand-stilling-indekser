@@ -68,24 +68,30 @@ fun konverterTilStilling(ad: Ad): Stilling {
                     it.getPhone()
                 )
             } ?: emptyList(),
-        if (ad.erDirektemeldt()) ad.getCategories().tittelFraStyrk(ad.getUuid(), ad.getCreated()) else ad.getTitle()
+        if (ad.erDirektemeldt()) ad.tittelFraStyrk() else ad.getTitle()
     )
 }
 
+
 private fun Ad.erDirektemeldt(): Boolean = this.getSource() == "DIR"
 
-private fun List<no.nav.pam.stilling.ext.avro.StyrkCategory>.tittelFraStyrk(uuid: String, created: String): String {
-    val passendeStyrkkkoder = this.filter { it.harØnsketStyrk8Format() }
+private fun Ad.tittelFraStyrk(): String {
+    val passendeStyrkkkoder = this.getCategories().filter { it.harØnsketStyrk8Format() }
+    val erKladd = getPublishedByAdmin() == null
 
-    when (val antall = passendeStyrkkkoder.size) {
-        1 -> return passendeStyrkkkoder[0].getName()
+    return when (val antall = passendeStyrkkkoder.size) {
+        1 -> passendeStyrkkkoder[0].getName()
         0 -> {
-            log.warn ("Fant ikke styrk8 for stilling $uuid med opprettet dato $created ")
-            return "Stilling uten valgt jobbtittel"
+            if (!erKladd)
+                log.warn("Fant ikke styrk8 for stilling ${getUuid()} med opprettet tidspunkt ${getCreated()}")
+            "Stilling uten valgt jobbtittel"
         }
+
         else -> {
-            log.warn("Forventer en 6-sifret styrk08-kode, fant $antall stykker for stilling $uuid styrkkoder:" + joinToString { "${it.getStyrkCode()}-${it.getName()}" })
-            return passendeStyrkkkoder.map { it.getName() }.sorted().joinToString("/")
+            log.warn(
+                "Forventer én 6-sifret styrk08-kode, fant $antall stykker for stilling ${getUuid()} styrkkoder:" + this.getCategories()
+                    .joinToString { "${it.getStyrkCode()}-${it.getName()}" })
+            passendeStyrkkkoder.map { it.getName() }.sorted().joinToString("/")
         }
     }
 }
