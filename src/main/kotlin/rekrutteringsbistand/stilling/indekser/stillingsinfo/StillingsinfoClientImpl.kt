@@ -45,8 +45,13 @@ data class BulkStillingsinfoOutboundDto(
     val uuider: List<String>
 )
 
+data class LittStillingData(
+    val stillingReferanse: String,
+)
+
 interface StillingsinfoClient {
     fun getStillingsinfo(stillingsIder: List<String>): List<Stillingsinfo>
+    fun postStilling(stillinger: List<LittStillingData>): List<Stillingsinfo>
 }
 
 class KunneIkkeHenteStillingsinsinfoException(melding: String) : Exception(melding)
