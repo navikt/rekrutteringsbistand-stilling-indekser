@@ -31,7 +31,7 @@ jobs:
     deploy-to-dev:
         name: Deploy to dev
         needs: test
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/styrk-tittel'
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/endre-filnavn'
         runs-on: ubuntu-latest
         outputs:
           image: ${{ steps.docker-build-push.outputs.image }}
