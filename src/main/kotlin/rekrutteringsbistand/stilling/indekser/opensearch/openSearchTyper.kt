@@ -1,4 +1,4 @@
-package rekrutteringsbistand.stilling.indekser.elasticsearch
+package rekrutteringsbistand.stilling.indekser.opensearch
 
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.Stillingsinfo
 
@@ -8,7 +8,7 @@ data class RekrutteringsbistandStilling(
 )
 
 data class Stilling(
-    val title: String,
+    val title: String,     // TODO: Husk å ta bort gammelt title-felt når det ikke lenger er i bruk
     val uuid: String,
     val annonsenr: String?,
     val status: String,
@@ -27,11 +27,14 @@ data class Stilling(
     val reference: String,
     val administration: Administration?,
     val properties: Map<String, Any>,
+    val contacts: List<Contact>,
+    val styrkEllerTittel: String
 )
 
 data class Location(
     val address: String?,
     val postalCode: String?,
+    val city: String?,
     val county: String?,
     val countyCode: String?,
     val municipal: String?,
@@ -60,4 +63,12 @@ data class Administration(
     val comments: String,
     val reportee: String,
     val navIdent: String
+)
+
+data class Contact(
+    val name: String,
+    val role: String,
+    val title: String,
+    val email: String,
+    val phone: String
 )

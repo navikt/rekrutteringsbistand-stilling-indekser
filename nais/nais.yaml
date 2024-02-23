@@ -2,15 +2,15 @@ apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: rekrutteringsbistand-stilling-indekser
-  namespace: arbeidsgiver
+  namespace: toi
   labels:
-    team: arbeidsgiver
+    team: toi
 spec:
   image: {{image}}
   port: 8222
   ingresses:
   {{#each ingress as |url|}}
-    - {{url}}
+      - {{url}}
   {{/each}}
   liveness:
     path: /internal/isAlive
@@ -26,19 +26,17 @@ spec:
       enabled: true
   accessPolicy:
     outbound:
-      external:
-        - host: {{rekrutteringsbistand-stilling-api-host}}
-  elastic:
+      rules:
+        - application: rekrutteringsbistand-stilling-api
+  openSearch:
+    access: admin
     instance: rekrutteringsbistand-stilling
   envFrom:
-    - secret: rekrutteringsbistand-stilling-indekser-es-credentials
     - secret: rekrutteringsbistand-stilling-indekser-servicebruker
   env:
     - name: REKRUTTERINGSBISTAND_STILLING_API_URL
-      value: https://{{rekrutteringsbistand-stilling-api-host}}
-    - name: ELASTIC_SEARCH_API
-      value: {{elastic-search-api}}
+      value: http://rekrutteringsbistand-stilling-api
     - name: INDEKS_VERSJON
-      value: "11"
+      value: "2"
   kafka:
     pool: {{kafka_pool}}

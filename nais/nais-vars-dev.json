@@ -1,8 +1,6 @@
 {
   "ingress": [
-    "https://rekrutteringsbistand-stilling-indekser.dev.intern.nav.no"
+    "https://rekrutteringsbistand-stilling-indekser.intern.dev.nav.no"
   ],
-  "rekrutteringsbistand-stilling-api-host": "rekrutteringsbistand-stilling-api.dev-fss-pub.nais.io",
-  "elastic-search-api": "https://elastic-arbeidsgiver-rekrutteringsbistand-stilling-nav-dev.aivencloud.com:26482",
   "kafka_pool": "nav-dev"
 }

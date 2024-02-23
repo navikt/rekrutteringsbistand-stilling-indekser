@@ -1,18 +1,18 @@
-package rekrutteringsbistand.stilling.indekser.elasticsearch
+package rekrutteringsbistand.stilling.indekser.opensearch
 
 import org.apache.http.HttpHost
 import org.apache.http.auth.AuthScope
 import org.apache.http.auth.UsernamePasswordCredentials
 import org.apache.http.client.CredentialsProvider
 import org.apache.http.impl.client.BasicCredentialsProvider
-import org.elasticsearch.client.RestClient
-import org.elasticsearch.client.RestHighLevelClient
+import org.opensearch.client.RestClient
+import org.opensearch.client.RestHighLevelClient
 import rekrutteringsbistand.stilling.indekser.utils.Environment
 
 fun getRestHighLevelClient(): RestHighLevelClient {
-    val url = Environment.get("ELASTIC_SEARCH_API")
-    val username = Environment.get("ES_USERNAME")
-    val password = Environment.get("ES_PASSWORD")
+    val url = Environment.get("OPEN_SEARCH_URI")
+    val username = Environment.get("OPEN_SEARCH_USERNAME")
+    val password = Environment.get("OPEN_SEARCH_PASSWORD")
 
     val credentialsProvider: CredentialsProvider = BasicCredentialsProvider()
     credentialsProvider.setCredentials(

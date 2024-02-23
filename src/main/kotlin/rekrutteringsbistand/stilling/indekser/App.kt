@@ -6,7 +6,7 @@ import no.nav.pam.stilling.ext.avro.Ad
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import rekrutteringsbistand.stilling.indekser.autentisering.AccessTokenClient
 import rekrutteringsbistand.stilling.indekser.behandling.StillingMottattService
-import rekrutteringsbistand.stilling.indekser.elasticsearch.*
+import rekrutteringsbistand.stilling.indekser.opensearch.*
 import rekrutteringsbistand.stilling.indekser.kafka.StillingConsumer
 import rekrutteringsbistand.stilling.indekser.kafka.consumerConfig
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClientImpl
@@ -17,18 +17,19 @@ import java.io.Closeable
 import kotlin.concurrent.thread
 
 class App(
-    private val elasticSearchService: ElasticSearchService,
+    private val openSearchService: OpenSearchService,
     private val stillingConsumer: StillingConsumer,
     private val gammelStillingConsumer: StillingConsumer?
 ) : Closeable {
 
-    private val webServer = Javalin.create().apply {
-        config.defaultContentType = "application/json"
+    private val webServer = Javalin.create { config ->
+        config.http.defaultContentType = "application/json"
+    }.apply {
         routes {
             get("/internal/isAlive") { if (Liveness.isAlive) it.status(200) else it.status(500) }
             get("/internal/isReady") { it.status(200) }
             get("/internal/byttIndeks") {
-                byttIndeks(it, gammelStillingConsumer, elasticSearchService)
+                byttIndeks(it, gammelStillingConsumer, openSearchService)
             }
         }
     }
@@ -36,7 +37,7 @@ class App(
     fun start() = try {
         webServer.start(8222)
 
-        if (elasticSearchService.skalReindeksere()) {
+        if (openSearchService.skalReindeksere()) {
             startReindeksering()
         } else {
             startIndeksering()
@@ -49,8 +50,8 @@ class App(
 
     private fun startReindeksering() {
         val nyIndeks = hentNyesteIndeks()
-        val gjeldendeIndeks = elasticSearchService.hentGjeldendeIndeks() ?: kanIkkeStarteReindeksering()
-        elasticSearchService.initialiserReindeksering(nyIndeks, gjeldendeIndeks)
+        val gjeldendeIndeks = openSearchService.hentGjeldendeIndeks() ?: kanIkkeStarteReindeksering()
+        openSearchService.initialiserReindeksering(nyIndeks, gjeldendeIndeks)
 
         thread { stillingConsumer.start(nyIndeks) }
         thread { gammelStillingConsumer!!.start(gjeldendeIndeks) }
@@ -58,7 +59,7 @@ class App(
 
     private fun startIndeksering() {
         val indeks = hentNyesteIndeks()
-        elasticSearchService.initialiserIndeksering(indeks)
+        openSearchService.initialiserIndeksering(indeks)
 
         thread { stillingConsumer.start(indeks) }
     }
@@ -76,26 +77,26 @@ fun main() {
         val httpClientAutentisertMedAccessToken = authenticateWithAccessToken(FuelManager(), accessTokenClient)
         val stillingsinfoClient = StillingsinfoClientImpl(httpClientAutentisertMedAccessToken)
 
-        val esClient = ElasticSearchClient(getRestHighLevelClient())
-        val elasticSearchService = ElasticSearchService(esClient)
+        val osClient = OpenSearchClient(getRestHighLevelClient())
+        val openSearchService = OpenSearchService(osClient)
 
         val versjonTilStillingConsumer = hentVersjonFraNaisConfig()
         val kafkaConsumer = KafkaConsumer<String, Ad>(consumerConfig(versjonTilStillingConsumer))
-        val stillingMottattService = StillingMottattService(stillingsinfoClient, elasticSearchService)
+        val stillingMottattService = StillingMottattService(stillingsinfoClient, openSearchService)
         val stillingConsumer = StillingConsumer(kafkaConsumer, stillingMottattService)
 
-        val skalReindeksere = elasticSearchService.skalReindeksere()
+        val skalReindeksere = openSearchService.skalReindeksere()
         val gammelStillingConsumer = if (skalReindeksere) {
-            val versjonTilGammelConsumer = elasticSearchService.hentGjeldendeIndeksversjon()
+            val versjonTilGammelConsumer = openSearchService.hentGjeldendeIndeksversjon()
                 ?: kanIkkeStarteReindeksering()
             val gammelKafkaConsumer = KafkaConsumer<String, Ad>(consumerConfig(versjonTilGammelConsumer))
 
-            val gammelStillingMottattService = StillingMottattService(stillingsinfoClient, elasticSearchService)
+            val gammelStillingMottattService = StillingMottattService(stillingsinfoClient, openSearchService)
             StillingConsumer(gammelKafkaConsumer, gammelStillingMottattService)
         } else null
 
         App(
-            elasticSearchService,
+            openSearchService,
             stillingConsumer,
             gammelStillingConsumer
         ).start()

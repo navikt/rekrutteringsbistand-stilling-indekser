@@ -1,19 +1,19 @@
-package rekrutteringsbistand.stilling.indekser.elasticsearch
+package rekrutteringsbistand.stilling.indekser.opensearch
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest
-import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest
-import org.elasticsearch.action.bulk.BulkRequest
-import org.elasticsearch.action.index.IndexRequest
-import org.elasticsearch.client.RequestOptions
-import org.elasticsearch.client.RestHighLevelClient
-import org.elasticsearch.client.indices.CreateIndexRequest
-import org.elasticsearch.client.indices.GetIndexRequest
-import org.elasticsearch.client.indices.PutMappingRequest
-import org.elasticsearch.common.xcontent.XContentType
+import org.opensearch.action.admin.indices.alias.IndicesAliasesRequest
+import org.opensearch.action.admin.indices.alias.get.GetAliasesRequest
+import org.opensearch.action.bulk.BulkRequest
+import org.opensearch.action.index.IndexRequest
+import org.opensearch.client.RequestOptions
+import org.opensearch.client.RestHighLevelClient
+import org.opensearch.client.indices.CreateIndexRequest
+import org.opensearch.client.indices.GetIndexRequest
+import org.opensearch.client.indices.PutMappingRequest
+import org.opensearch.common.xcontent.XContentType
 import rekrutteringsbistand.stilling.indekser.utils.log
 
-class ElasticSearchClient(private val restHighLevelClient: RestHighLevelClient) {
+class OpenSearchClient(private val restHighLevelClient: RestHighLevelClient) {
 
     fun indekser(rekrutteringsbistandStillinger: List<RekrutteringsbistandStilling>, indeks: String) {
         val bulkRequest = BulkRequest()
@@ -32,7 +32,7 @@ class ElasticSearchClient(private val restHighLevelClient: RestHighLevelClient) 
     }
 
     fun opprettIndeks(indeksNavn: String) {
-        val request = CreateIndexRequest(indeksNavn).source(esSettings, XContentType.JSON)
+        val request = CreateIndexRequest(indeksNavn).source(osSettings, XContentType.JSON)
         restHighLevelClient.indices().create(request, RequestOptions.DEFAULT)
 
         val stillingMappingRequest = PutMappingRequest(indeksNavn)
@@ -76,9 +76,9 @@ class ElasticSearchClient(private val restHighLevelClient: RestHighLevelClient) 
     }
 
     companion object {
-        private val esSettings = ElasticSearchService::class.java
+        private val osSettings = OpenSearchService::class.java
             .getResource("/stilling-common.json").readText()
-        private val stillingMappig = ElasticSearchService::class.java
+        private val stillingMappig = OpenSearchService::class.java
             .getResource("/stilling-mapping.json").readText()
     }
 }

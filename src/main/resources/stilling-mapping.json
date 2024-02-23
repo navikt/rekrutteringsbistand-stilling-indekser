@@ -22,6 +22,9 @@
         },
         "stillingsinfoid": {
           "type": "keyword"
+        },
+        "stillingskategori": {
+          "type": "keyword"
         }
       }
     },
@@ -76,6 +79,14 @@
           "type": "text",
           "analyzer": "norwegian"
         },
+        "styrkEllerTittel": {
+          "type": "text",
+          "copy_to": "stilling.styrkEllerTittel_no"
+        },
+        "styrkEllerTittel_no": {
+          "type": "text",
+          "analyzer": "norwegian"
+        },
         "businessName": {
           "type": "text",
           "copy_to": "stilling.employername"
@@ -103,10 +114,33 @@
           "type": "text",
           "analyzer": "norwegian"
         },
+        "contacts": {
+          "type": "nested",
+          "properties": {
+            "name": {
+              "type": "text"
+            },
+            "title": {
+              "type": "text"
+            },
+            "email": {
+              "type": "text"
+            },
+            "phone": {
+              "type": "text"
+            },
+            "role": {
+              "type": "text"
+            }
+          }
+        },
         "locations": {
           "type": "nested",
           "properties": {
             "address": {
+              "type": "text"
+            },
+            "city": {
               "type": "text"
             },
             "county": {
