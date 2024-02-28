@@ -10,7 +10,7 @@ import rekrutteringsbistand.stilling.indekser.utils.log
 
 fun konverterTilStilling(ad: Ad): Stilling {
     return Stilling(
-        ad.getTitle(),
+        if (ad.erDirektemeldt()) ad.tittelFraStyrk() else ad.getTitle(),
         ad.getUuid(),
         ad.getAdnr(),
         ad.getStatus().name,
