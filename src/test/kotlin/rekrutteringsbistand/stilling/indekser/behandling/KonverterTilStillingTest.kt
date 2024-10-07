@@ -1,6 +1,7 @@
 package rekrutteringsbistand.stilling.indekser.behandling
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import no.nav.pam.stilling.ext.avro.Classification
 import no.nav.pam.stilling.ext.avro.Contact
 import no.nav.pam.stilling.ext.avro.StyrkCategory
 import org.junit.Test
@@ -8,7 +9,7 @@ import rekrutteringsbistand.stilling.indekser.setup.enAd
 import rekrutteringsbistand.stilling.indekser.setup.enAdMed
 import rekrutteringsbistand.stilling.indekser.setup.enAdUtenKontaktinformasjon
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class KonverterTilStillingTest {
@@ -75,6 +76,32 @@ class KonverterTilStillingTest {
         val stilling1 = konverterTilStilling(enAdMed(source = "DIR", categories = styrk))
 
         assertEquals("Byggekranfører/Kassemedarbeider (butikk)", stilling1.styrkEllerTittel)
+    }
+
+
+    // Gitt en annonse for en direktemeldt stilling med janzz-kode
+    // når konverterer
+    // så skal jenzTittel bli janzz-kategorien
+    @Test
+    fun `Skal returnere janzzkategori om tilgjengelig`() {
+        val stilling1 = konverterTilStilling(enAdMed(classification = listOf(
+            Classification("JANZZ", "1234", "Feil tittel", 0.1, "123"),
+            Classification("JANZZ", "1234", "Løvetemmer", 1.0, "123"),
+            Classification("JANZZ", "1234", "Feil tittel", 0.99, "123")
+        )))
+
+        assertEquals("Løvetemmer", stilling1.janzzTittel)
+    }
+
+
+    // Gitt en annonse for en direktemeldt stilling uten janzz-kode
+    // når konverterer
+    // så skal janzTittel ikke returneres
+    @Test
+    fun `Skal ikke returnere janzzkategori om ikke tilgjengelig`() {
+        val stilling1 = konverterTilStilling(enAdMed(classification = emptyList()))
+
+        assertNull(stilling1.janzzTittel)
     }
 
 
