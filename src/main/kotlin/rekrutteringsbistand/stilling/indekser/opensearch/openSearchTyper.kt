@@ -29,7 +29,7 @@ data class Stilling(
     val properties: Map<String, Any>,
     val contacts: List<Contact>,
     val styrkEllerTittel: String,
-    val janzzTittel: String?
+    val tittel: String
 )
 
 data class Location(

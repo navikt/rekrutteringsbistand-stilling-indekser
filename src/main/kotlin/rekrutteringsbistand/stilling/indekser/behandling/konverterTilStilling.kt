@@ -70,13 +70,11 @@ fun konverterTilStilling(ad: Ad): Stilling {
                 )
             } ?: emptyList(),
         if (ad.erDirektemeldt()) ad.tittelFraStyrk() else ad.getTitle(),
-        ad.tittelFraJanzz()
+        ad.tittelFraKategori()
     )
 }
 
-/*private fun Ad.tittelFraKategori() = (getClassifications() ?: emptyList()).let { classifications ->
-    if(classifications.isEmpty()) tittelFraStyrk() else tittelFraJanzz()
-}*/
+private fun Ad.tittelFraKategori() = tittelFraJanzz() ?: tittelFraStyrk()
 
 private fun Ad.erDirektemeldt(): Boolean = this.getSource() == "DIR"
 
