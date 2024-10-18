@@ -1,4 +1,3 @@
-FROM ghcr.io/navikt/baseimages/temurin:18
-COPY ./build/libs/rekrutteringsbistand-stilling-indekser-all.jar app.jar
-
-EXPOSE 8222
+FROM gcr.io/distroless/java17-debian12:nonroot
+ADD build/distributions/rekrutteringsbistand-stilling-indekser.tar /
+ENTRYPOINT ["java", "-cp", "/rekrutteringsbistand-sttilling-indekser/lib/*", "rekrutteringsbistand.stilling.indekser.AppKt"]
