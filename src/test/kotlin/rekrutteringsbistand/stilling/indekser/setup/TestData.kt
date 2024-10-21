@@ -9,6 +9,7 @@ fun enAdMed(
     source: String = "source",
     categories: List<StyrkCategory>? = listOf(StyrkCategory("1111", "name111"), StyrkCategory("2222", "name2222"), StyrkCategory("666666", "name666666")),
     title: String = "tittel",
+    classification: List<Classification>? = null
 ) = Ad(
     "uuid",
     "annonsenr",
@@ -61,7 +62,8 @@ fun enAdMed(
     ),
     listOf(
         Contact("Vegard Veiledersen", "veileder@nav.no", "", "Veileder","Markedskontakt")
-    )
+    ),
+    classification
 )
 
 val enAd = enAdMed()
@@ -116,6 +118,7 @@ val enAdUtenKontaktinformasjon = Ad(
         Property("searchtags", "[{\"label\":\"Sales Promotion Manager\",\"score\":1.0},{\"label\":\"Salgssjef\",\"score\":0.25137392},{\"label\":\"Sales Manager (Hotels)\",\"score\":0.21487874},{\"label\":\"Promotions Director\",\"score\":0.09032349},{\"label\":\"Salgsfremmer\",\"score\":0.09004237}]"),
         Property("tags", "[\"INKLUDERING__ARBEIDSTID\", \"TILTAK_ELLER_VIRKEMIDDEL__LÆRLINGPLASS\"]")
     ),
+    null,
     null
 )
 
