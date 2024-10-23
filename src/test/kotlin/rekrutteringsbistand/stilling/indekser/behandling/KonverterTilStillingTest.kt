@@ -97,7 +97,7 @@ class KonverterTilStillingTest {
             Classification("JANZZ", "1234", "Feil tittel", 0.1, "123"),
             Classification("JANZZ", "1234", "Løvetemmer", 1.0, "123"),
             Classification("JANZZ", "1234", "Feil tittel", 0.99, "123")
-        )))
+        ), source = "DIR"))
 
         assertEquals("Løvetemmer", stilling1.tittel)
     }

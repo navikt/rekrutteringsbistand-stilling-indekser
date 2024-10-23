@@ -70,7 +70,7 @@ fun konverterTilStilling(ad: Ad): Stilling {
                 )
             } ?: emptyList(),
         if (ad.erDirektemeldt()) ad.tittelFraStyrk() else ad.getTitle(),
-        ad.tittelFraKategori()
+        if (ad.erDirektemeldt()) ad.tittelFraKategori() else ad.getTitle()
     )
 }
 
