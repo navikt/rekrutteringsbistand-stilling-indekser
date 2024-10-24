@@ -22,6 +22,14 @@ protocol StillingEkstern {
     string name;
   }
 
+  record Classification {
+    string categoryType; // STYRK08, STYRK08NAV, ESCO eller JANZZ
+    string code; // F.eks styrkkode eller esco kode. For janzz er det konseptid, i esco så er det en url
+    string name; // F.eks butikkmedarbeider
+    double score; // Score er mellom 0.0 og 1.0. En score på 1.0 antyder manuell bruk. F.eks av NKS eller SBL
+    string janzzParentId; // Janzz konseptid som er knyttet til klassifiseringen. For categoryType=JANZZ så bør dette vare det samme som code
+  }
+
   enum AdministrationStatus {
     RECEIVED,
     PENDING,
@@ -93,7 +101,7 @@ protocol StillingEkstern {
   // Dette er hovedrecorden som beskriver en stillingsannonse.
   record Ad {
     // uuid er den unike id'en til annonsen. Dette er også key på topicet.
-    string uuid;
+    string `uuid`;
     // adnr er et unikt annonsenummer. Det kan inneholde bokstaver og tall
     // adnr er ment å være en kort id på en annonse som er egnet til muntlig bruk
     // For maskinell og varig identifisering av en annonse bør uuid brukes.
@@ -206,5 +214,6 @@ protocol StillingEkstern {
     practice(PropertyType.TEXT),
     */
     union {null, array<Contact>} contacts = null;
+    union {null, array<Classification>} classifications = null;
   }
 }

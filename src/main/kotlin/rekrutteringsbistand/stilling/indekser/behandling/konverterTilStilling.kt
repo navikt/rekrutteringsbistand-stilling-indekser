@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.pam.stilling.ext.avro.Ad
+import no.nav.pam.stilling.ext.avro.Classification
 import no.nav.pam.stilling.ext.avro.RemarkType
 import rekrutteringsbistand.stilling.indekser.opensearch.*
 import rekrutteringsbistand.stilling.indekser.utils.log
@@ -68,12 +69,16 @@ fun konverterTilStilling(ad: Ad): Stilling {
                     it.getPhone()
                 )
             } ?: emptyList(),
-        if (ad.erDirektemeldt()) ad.tittelFraStyrk() else ad.getTitle()
+        if (ad.erDirektemeldt()) ad.tittelFraStyrk() else ad.getTitle(),
+        if (ad.erDirektemeldt()) ad.tittelFraKategori() else ad.getTitle()
     )
 }
 
+private fun Ad.tittelFraKategori() = tittelFraJanzz() ?: tittelFraStyrk()
 
 private fun Ad.erDirektemeldt(): Boolean = this.getSource() == "DIR"
+
+fun Ad.tittelFraJanzz() = getClassifications()?.maxByOrNull(Classification::getScore)?.getName()
 
 private fun Ad.tittelFraStyrk(): String {
     val passendeStyrkkkoder = this.getCategories().filter { it.harØnsketStyrk8Format() }
