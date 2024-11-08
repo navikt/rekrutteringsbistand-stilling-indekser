@@ -82,15 +82,10 @@ fun Ad.tittelFraJanzz() = getClassifications()?.maxByOrNull(Classification::getS
 
 private fun Ad.tittelFraStyrk(): String {
     val passendeStyrkkkoder = this.getCategories().filter { it.harØnsketStyrk8Format() }
-    val erKladd = getPublishedByAdmin() == null
 
     return when (val antall = passendeStyrkkkoder.size) {
         1 -> passendeStyrkkkoder[0].getName()
-        0 -> {
-            if (!erKladd)
-                log.warn("Fant ikke styrk8 for stilling ${getUuid()} med opprettet tidspunkt ${getCreated()}")
-            "Stilling uten valgt jobbtittel"
-        }
+        0 -> "Stilling uten valgt jobbtittel"
 
         else -> {
             log.warn(
