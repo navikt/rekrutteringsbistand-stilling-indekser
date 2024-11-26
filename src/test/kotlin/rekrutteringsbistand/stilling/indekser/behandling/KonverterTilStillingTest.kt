@@ -49,7 +49,6 @@ class KonverterTilStillingTest {
 
         assertEquals(kassemedarbeider6siffer.getName(), resultat.styrkEllerTittel)
         assertEquals(janzzkategori.getName(), resultat.tittel)
-        assertEquals(tittelFraArbeidsplassen, resultat.title) // NB: byttet ut med null-assert når migrering er ferdig
         assertEquals("DIR", resultat.source)
     }
 
@@ -70,7 +69,6 @@ class KonverterTilStillingTest {
         )
 
         assertEquals(tittelFraArbeidsplassen, resultat.styrkEllerTittel)
-        assertEquals(tittelFraArbeidsplassen, resultat.title)  // NB: byttet ut med null-assert når migrering er ferdig
         assertEquals("ekstern", resultat.source)
     }
 
