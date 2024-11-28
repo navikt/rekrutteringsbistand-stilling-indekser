@@ -68,7 +68,6 @@ fun konverterTilStilling(ad: Ad): Stilling {
                     it.getPhone()
                 )
             } ?: emptyList(),
-        if (ad.erDirektemeldt()) ad.tittelFraStyrk() else ad.getTitle(),
         if (ad.erDirektemeldt()) ad.tittelFraKategori() else ad.getTitle()
     )
 }

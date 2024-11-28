@@ -27,7 +27,6 @@ data class Stilling(
     val administration: Administration?,
     val properties: Map<String, Any>,
     val contacts: List<Contact>,
-    val styrkEllerTittel: String,
     val tittel: String
 )
 

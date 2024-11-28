@@ -25,7 +25,7 @@ class KonverterTilStillingTest {
 
     // Gitt en annonse for en direktemeldt stilling med flere styrk-koder
     // når konverterer
-    // så skal styrkEllerTittel-feltet være styrknavnet til styrk-oden med 6 siffer (fordi det er bare Rekbis som bruker 6 siffer)
+    // så skal tittel-feltet være styrknavnet til styrk-oden med 6 siffer (fordi det er bare Rekbis som bruker 6 siffer)
     @Test
     fun `Skal mappe JANZZ-navn til tittel for direktemeldt stilling`() {
         val styrk = listOf(kassemedarbeider4siffer, kassemedarbeider6siffer)
@@ -47,7 +47,6 @@ class KonverterTilStillingTest {
             )
         )
 
-        assertEquals(kassemedarbeider6siffer.getName(), resultat.styrkEllerTittel)
         assertEquals(janzzkategori.getName(), resultat.tittel)
         assertEquals("DIR", resultat.source)
     }
@@ -68,23 +67,9 @@ class KonverterTilStillingTest {
             )
         )
 
-        assertEquals(tittelFraArbeidsplassen, resultat.styrkEllerTittel)
+        assertEquals(tittelFraArbeidsplassen, resultat.tittel)
         assertEquals("ekstern", resultat.source)
     }
-
-
-    // Gitt en annonse for en direktemeldt stilling med flere gyldige styrk-koder med seks siffer
-    // når konverterer
-    // så skal vi flette sammen styrkene med bindestrek
-    @Test
-    fun `Skal kaste feil dersom vi har flere gyldige styrk koder med seks siffer for intern stilling`() {
-        val styrk = listOf(kassemedarbeider6siffer, kranfører6siffer, kranfører4siffer)
-
-        val stilling1 = konverterTilStilling(enAdMed(source = "DIR", categories = styrk))
-
-        assertEquals("Byggekranfører/Kassemedarbeider (butikk)", stilling1.styrkEllerTittel)
-    }
-
 
     // Gitt en annonse for en direktemeldt stilling med janzz-kode
     // når konverterer
@@ -107,7 +92,6 @@ class KonverterTilStillingTest {
     fun `Skal kaste feil dersom vi ikke har styrk koder for intern stilling`() {
         val stilling1 = konverterTilStilling(enAdMed(source = "DIR", categories = listOf()))
 
-        assertEquals("Stilling uten valgt jobbtittel", stilling1.styrkEllerTittel)
         assertEquals("Stilling uten valgt jobbtittel", stilling1.tittel)
 
     }
@@ -118,7 +102,6 @@ class KonverterTilStillingTest {
     @Test
     fun `Skal kaste feil dersom vi kun har 4-sifret styrk koder for intern stilling`() {
         val stilling1 = konverterTilStilling(enAdMed(source = "DIR", categories = listOf(kranfører4siffer)))
-        assertEquals("Stilling uten valgt jobbtittel", stilling1.styrkEllerTittel)
         assertEquals("Stilling uten valgt jobbtittel", stilling1.tittel)
     }
 
@@ -130,11 +113,9 @@ class KonverterTilStillingTest {
     fun `Skal kaste feil dersom en direktemeldt stilling har kun feil format på styrk kode`() {
         val stilling1 =
             konverterTilStilling(enAdMed(source = "DIR", categories = listOf(StyrkCategory("000.000", "FEIL FORMAT"))))
-        assertEquals("Stilling uten valgt jobbtittel", stilling1.styrkEllerTittel)
         assertEquals("Stilling uten valgt jobbtittel", stilling1.tittel)
         val stilling2 =
             konverterTilStilling(enAdMed(source = "DIR", categories = listOf(StyrkCategory("000000", "FEIL FORMAT"))))
-        assertEquals("Stilling uten valgt jobbtittel", stilling1.styrkEllerTittel)
         assertEquals("Stilling uten valgt jobbtittel", stilling1.tittel)
 
     }
