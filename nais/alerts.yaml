@@ -11,7 +11,7 @@ spec:
       rules:
         - alert: rekrutteringsbistand-stilling-indekser
           expr: kube_deployment_status_replicas_available{deployment="rekrutteringsbistand-stilling-indekser"} == 0
-          for: 10s
+          for: 5m
           annotations:
             summary: Appen er nede
             action: "https://logs.adeo.no/app/r/s/CuggT"
