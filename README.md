@@ -26,6 +26,9 @@ Den andre Kafka-konsumenten vil hente alle stillinger fra start, og indeksere di
 
 Hvordan vet den koden som leser fra Opensearch sin indeks at den skal lese fra en ny (versjon av) indeks? Koden som leser fra indeks bruker et alias istedenfor å referere til en konkret indeks. Dette aliaset er mulig å endre slik at aliasnavnet mapperet til nytt indeksnavn (som er dete samme som indeks versjon). Etter reindeksering - dvs. når ny indeks er populert med nyeste stillinger og inneholder samme stillinger som den gamle indeksen - så kan man sende en HTTP GET-request til `/internal/byttIndeks`-endepunktet til appen. Da vil aliaset som peker på indeksen som skal brukes i produksjon byttes over til ny indeks, og brukerne vil kunne hente data på nytt format.
 
+Vær oppmerksom på at gammel indekser pr 3/12/2024 stanser å indeksere under reindeksering, slik at forespørsel-api kan feile, og brukere ikke finner nye stillinger under "mine stilliger" før alias er byttet. Bør derfor gjøres på kveldstid, eventuelt med nedetid på frontend,  frem til dette er fikset.
+
+
 ## Slette gamle indekser
 
 Det er ingen automatikk for sletting av gamle indekser som ikke er i bruk lengre. Man må da manuelt gjøre REST-kall direkte mot Open Search for å liste opp og slette gamle indekser.
