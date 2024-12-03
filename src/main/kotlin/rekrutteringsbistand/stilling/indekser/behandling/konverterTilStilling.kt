@@ -11,7 +11,6 @@ import rekrutteringsbistand.stilling.indekser.utils.log
 
 fun konverterTilStilling(ad: Ad): Stilling {
     return Stilling(
-        ad.getTitle(),
         ad.getUuid(),
         ad.getAdnr(),
         ad.getStatus().name,
@@ -69,7 +68,6 @@ fun konverterTilStilling(ad: Ad): Stilling {
                     it.getPhone()
                 )
             } ?: emptyList(),
-        if (ad.erDirektemeldt()) ad.tittelFraStyrk() else ad.getTitle(),
         if (ad.erDirektemeldt()) ad.tittelFraKategori() else ad.getTitle()
     )
 }

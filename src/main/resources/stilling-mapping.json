@@ -71,19 +71,11 @@
         "medium": {
           "type": "keyword"
         },
-        "title": {
+        "tittel": {
           "type": "text",
-          "copy_to": "stilling.title_no"
+          "copy_to": "stilling.tittel_no"
         },
-        "title_no": {
-          "type": "text",
-          "analyzer": "norwegian"
-        },
-        "styrkEllerTittel": {
-          "type": "text",
-          "copy_to": "stilling.styrkEllerTittel_no"
-        },
-        "styrkEllerTittel_no": {
+        "tittel_no": {
           "type": "text",
           "analyzer": "norwegian"
         },

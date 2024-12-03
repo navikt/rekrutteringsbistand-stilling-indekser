@@ -36,7 +36,7 @@ class OpenSearchClient(private val restHighLevelClient: RestHighLevelClient) {
         restHighLevelClient.indices().create(request, RequestOptions.DEFAULT)
 
         val stillingMappingRequest = PutMappingRequest(indeksNavn)
-            .source(stillingMappig, XContentType.JSON)
+            .source(stillingMapping, XContentType.JSON)
         restHighLevelClient.indices().putMapping(stillingMappingRequest, RequestOptions.DEFAULT)
 
         log.info("Opprettet indeks '$indeksNavn'")
@@ -78,7 +78,7 @@ class OpenSearchClient(private val restHighLevelClient: RestHighLevelClient) {
     companion object {
         private val osSettings = OpenSearchService::class.java
             .getResource("/stilling-common.json").readText()
-        private val stillingMappig = OpenSearchService::class.java
+        private val stillingMapping = OpenSearchService::class.java
             .getResource("/stilling-mapping.json").readText()
     }
 }

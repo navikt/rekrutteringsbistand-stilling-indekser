@@ -8,7 +8,6 @@ data class RekrutteringsbistandStilling(
 )
 
 data class Stilling(
-    val title: String,     // TODO: Husk å ta bort gammelt title-felt når det ikke lenger er i bruk
     val uuid: String,
     val annonsenr: String?,
     val status: String,
@@ -28,7 +27,6 @@ data class Stilling(
     val administration: Administration?,
     val properties: Map<String, Any>,
     val contacts: List<Contact>,
-    val styrkEllerTittel: String,
     val tittel: String
 )
 
