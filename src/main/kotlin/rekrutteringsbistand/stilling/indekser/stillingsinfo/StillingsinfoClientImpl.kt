@@ -36,7 +36,7 @@ class StillingsinfoClientImpl(private val httpClient: FuelManager): Stillingsinf
     override fun sendStillingsId(stillingsid: String) {
         val (_, response, result) = httpClient
             .post(path = internStillingUrl)
-            .objectBody(stillingsid)
+            .body(stillingsid)
             .response()
 
         log.info("Sender stillingsid $stillingsid til stilling-api fordi stilling er oppdatert")
