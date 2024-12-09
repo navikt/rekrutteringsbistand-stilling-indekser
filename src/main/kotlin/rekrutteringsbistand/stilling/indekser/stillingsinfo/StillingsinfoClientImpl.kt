@@ -44,10 +44,8 @@ class StillingsinfoClientImpl(private val httpClient: FuelManager): Stillingsinf
         when (result) {
             is Result.Success -> { log.info("Sendte oppdatering til stiling-api for $stillingsid"); return }
             is Result.Failure -> {
-                throw KunneIkkeSendeStillingsOppdateringException(
-                    "Kunne ikke sende oppdatering til stilling-api for $stillingsid" +
-                            "HTTP-status: ${response.statusCode}, responseMessage: ${response.responseMessage}"
-                )
+                log.warn("Kunne ikke sende oppdatering til stilling-api for $stillingsid" +
+                        "HTTP-status: ${response.statusCode}, responseMessage: ${response.responseMessage}")
             }
         }
     }
