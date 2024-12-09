@@ -33,7 +33,18 @@ class StillingMottattService(
             RekrutteringsbistandStilling(stilling, stillingsinfo.find { info -> info.stillingsid == stilling.uuid })
         }
 
+        // Sender stillingene til stilling-api for lagring
+        sendDIRStillingtilStillingsApi(rekrutteringsbistandStillinger)
+
         osService.indekser(rekrutteringsbistandStillinger, indeksNavn)
+    }
+
+    private fun sendDIRStillingtilStillingsApi(stillinger: List<RekrutteringsbistandStilling>) {
+        stillinger.forEach { stilling ->
+            if(stilling.stilling.source == "DIR") (
+                stillingsinfoClient.sendStillingsId(stilling.stilling.uuid)
+            )
+        }
     }
 
     private fun beholdSisteMeldingPerStilling(stillinger: List<Stilling>) =
