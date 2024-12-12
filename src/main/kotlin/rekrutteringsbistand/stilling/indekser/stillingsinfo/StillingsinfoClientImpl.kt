@@ -9,6 +9,8 @@ import rekrutteringsbistand.stilling.indekser.utils.log
 
 class StillingsinfoClientImpl(private val httpClient: FuelManager): StillingsinfoClient {
     private val stillingsinfoUrl: String = "${Environment.get("REKRUTTERINGSBISTAND_STILLING_API_URL")}/indekser/stillingsinfo"
+    private val internStillingUrl: String = "${Environment.get("REKRUTTERINGSBISTAND_STILLING_API_URL")}/rekrutteringsbistandstilling/lagre"
+
     init {
         log.info("Setter opp stillinginfo-klient til å gå mot $stillingsinfoUrl")
     }
@@ -30,6 +32,23 @@ class StillingsinfoClientImpl(private val httpClient: FuelManager): Stillingsinf
             }
         }
     }
+
+    override fun sendStillingsId(stillingsid: String) {
+        val (_, response, result) = httpClient
+            .post(path = internStillingUrl)
+            .body(stillingsid)
+            .response()
+
+        log.info("Sender stillingsid $stillingsid til stilling-api fordi stilling er oppdatert")
+
+        when (result) {
+            is Result.Success -> { log.info("Sendte oppdatering til stiling-api for $stillingsid"); return }
+            is Result.Failure -> {
+                log.warn("Kunne ikke sende oppdatering til stilling-api for $stillingsid" +
+                        "HTTP-status: ${response.statusCode}, responseMessage: ${response.responseMessage}")
+            }
+        }
+    }
 }
 
 data class Stillingsinfo(
@@ -47,6 +66,8 @@ data class BulkStillingsinfoOutboundDto(
 
 interface StillingsinfoClient {
     fun getStillingsinfo(stillingsIder: List<String>): List<Stillingsinfo>
+    fun sendStillingsId(stillingsid: String)
 }
 
 class KunneIkkeHenteStillingsinsinfoException(melding: String) : Exception(melding)
+class KunneIkkeSendeStillingsOppdateringException(melding: String) : Exception(melding)
