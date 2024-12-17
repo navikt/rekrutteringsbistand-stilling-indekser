@@ -2,5 +2,6 @@
   "ingress": [
     "https://rekrutteringsbistand-stilling-indekser.intern.dev.nav.no"
   ],
-  "kafka_pool": "nav-dev"
+  "kafka_pool": "nav-dev",
+  "indeks_versjon": "6"
 }
