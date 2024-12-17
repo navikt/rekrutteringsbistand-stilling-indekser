@@ -3,5 +3,5 @@
     "https://rekrutteringsbistand-stilling-indekser.intern.nav.no"
   ],
   "kafka_pool": "nav-prod",
-  "indeks_versjon": "5"
+  "indeks_versjon": 5
 }
