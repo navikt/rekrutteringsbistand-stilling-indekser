@@ -41,6 +41,8 @@ jobs:
 
     - name: Autobuild
       uses: github/codeql-action/autobuild@v2
+      with:
+        options: '--no-daemon -Dorg.gradle.jvmargs="-Xmx4g" -Dkotlin.daemon.jvmargs="-Xmx4g"'
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
