@@ -39,7 +39,7 @@ dependencies {
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
     implementation("org.apache.kafka:kafka-clients:3.9.0")
     implementation("io.confluent:kafka-avro-serializer:7.8.0")
-    implementation("org.opensearch.client:opensearch-rest-high-level-client:2.3.0")
+    implementation("org.opensearch.client:opensearch-rest-high-level-client:2.18.0")
 
     testImplementation("io.mockk:mockk:1.13.14")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
