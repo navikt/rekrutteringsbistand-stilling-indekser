@@ -6,9 +6,9 @@ import no.nav.pam.stilling.ext.avro.Ad
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import rekrutteringsbistand.stilling.indekser.autentisering.AccessTokenClient
 import rekrutteringsbistand.stilling.indekser.behandling.StillingMottattService
-import rekrutteringsbistand.stilling.indekser.opensearch.*
 import rekrutteringsbistand.stilling.indekser.kafka.StillingConsumer
 import rekrutteringsbistand.stilling.indekser.kafka.consumerConfig
+import rekrutteringsbistand.stilling.indekser.opensearch.*
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.StillingsinfoClientImpl
 import rekrutteringsbistand.stilling.indekser.stillingsinfo.authenticateWithAccessToken
 import rekrutteringsbistand.stilling.indekser.utils.Liveness
@@ -25,12 +25,14 @@ class App(
     private val webServer = Javalin.create { config ->
         config.http.defaultContentType = "application/json"
     }.apply {
-        routes {
-            get("/internal/isAlive") { if (Liveness.isAlive) it.status(200) else it.status(500) }
-            get("/internal/isReady") { it.status(200) }
-            get("/internal/byttIndeks") {
-                byttIndeks(it, gammelStillingConsumer, openSearchService)
-            }
+        get("/internal/isAlive") { ctx ->
+            if (Liveness.isAlive) ctx.status(200) else ctx.status(500)
+        }
+        get("/internal/isReady") { ctx ->
+            ctx.status(200)
+        }
+        get("/internal/byttIndeks") { ctx ->
+            byttIndeks(ctx, gammelStillingConsumer, openSearchService)
         }
     }
 
