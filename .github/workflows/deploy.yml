@@ -5,7 +5,7 @@ jobs:
     call-build-and-deploy:
         uses: navikt/toi-github-actions-workflows/.github/workflows/build-and-deploy.yaml@main
         with:
-            java-version: '17'
+            java-version: '21'
             deploy-to-dev-if-branch-name-is: 'oppgrader-diverse'
         permissions:
             contents: read

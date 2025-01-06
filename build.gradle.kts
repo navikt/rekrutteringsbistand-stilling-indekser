@@ -1,11 +1,12 @@
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.7.20"
+    id("org.jetbrains.kotlin.jvm") version "2.1.0"
     id("com.github.davidmc24.gradle.plugin.avro") version "1.2.0"
+    id("com.github.ben-manes.versions") version "0.51.0" // Gir oversikt over nyere dependencies med "./gradlew dependencyUpdates"
     application
 }
 
-java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+kotlin {
+    jvmToolchain(21)
 }
 
 application {
@@ -41,7 +42,7 @@ dependencies {
     implementation("io.confluent:kafka-avro-serializer:6.0.1")
     implementation("org.opensearch.client:opensearch-rest-high-level-client:2.3.0")
 
-    testImplementation("io.mockk:mockk:1.13.2")
+    testImplementation("io.mockk:mockk:1.13.14")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
 }
