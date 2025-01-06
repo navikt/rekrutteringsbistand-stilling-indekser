@@ -29,7 +29,7 @@ dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom")) // Aligns all the Kotlin SDK libraries with the same version
     implementation("org.apache.avro:avro:1.12.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
-    implementation("io.javalin:javalin:5.1.1")
+    implementation("io.javalin:javalin:6.4.0")
     implementation("ch.qos.logback:logback-classic:1.5.16")
     implementation("net.logstash.logback:logstash-logback-encoder:8.0")
     val fuelVersion = "2.3.1"
