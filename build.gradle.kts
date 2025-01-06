@@ -1,6 +1,6 @@
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "2.1.0"
-    id("com.github.davidmc24.gradle.plugin.avro") version "1.9.1"; // TODO: End of life - This project is no longer maintained
+    kotlin("jvm") version "2.1.0"
+    id("com.github.davidmc24.gradle.plugin.avro") version "1.9.1" // TODO: End of life - This project is no longer maintained
     id("com.github.ben-manes.versions") version "0.51.0" // Gir oversikt over nyere dependencies med "./gradlew dependencyUpdates"
     application
 }

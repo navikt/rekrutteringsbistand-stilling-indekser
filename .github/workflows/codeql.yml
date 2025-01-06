@@ -21,11 +21,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'java' ]
+        language: [ 'java', 'kotlin' ]
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '21'
+        cache: 'gradle'
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v2
