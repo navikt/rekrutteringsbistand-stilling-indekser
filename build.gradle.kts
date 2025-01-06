@@ -27,7 +27,6 @@ repositories {
 
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom")) // Aligns all the Kotlin SDK libraries with the same version
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.apache.avro:avro:1.12.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
     implementation("io.javalin:javalin:5.1.1")
@@ -36,7 +35,7 @@ dependencies {
     val fuelVersion = "2.3.1"
     implementation("com.github.kittinunf.fuel:fuel:$fuelVersion")
     implementation("com.github.kittinunf.fuel:fuel-jackson:$fuelVersion")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.1")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.2")
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
     implementation("org.apache.kafka:kafka-clients:3.9.0")
     implementation("io.confluent:kafka-avro-serializer:7.8.0")
