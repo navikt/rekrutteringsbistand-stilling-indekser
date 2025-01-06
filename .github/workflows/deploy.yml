@@ -5,8 +5,8 @@ jobs:
     call-build-and-deploy:
         uses: navikt/toi-github-actions-workflows/.github/workflows/build-and-deploy.yaml@main
         with:
-            java-version: '17'
-            deploy-to-dev-if-branch-name-is: 'feature/send_endring_paa_dir_stilling'
+            java-version: '21'
+            deploy-to-dev-if-branch-name-is: 'oppgrader-diverse'
         permissions:
             contents: read
             id-token: write
