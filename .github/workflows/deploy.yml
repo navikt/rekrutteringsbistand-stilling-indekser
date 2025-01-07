@@ -8,7 +8,7 @@ jobs:
             java-version: '21'
             deploy-to-dev-if-branch-name-is: 'oppgrader-diverse'
         permissions:
-            contents: write
+            contents: read
             id-token: write
             security-events: write
         secrets: inherit
