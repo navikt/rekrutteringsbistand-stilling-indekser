@@ -7,9 +7,11 @@ import com.github.kittinunf.result.Result
 import rekrutteringsbistand.stilling.indekser.utils.Environment
 import rekrutteringsbistand.stilling.indekser.utils.log
 
-class StillingsinfoClientImpl(private val httpClient: FuelManager): StillingsinfoClient {
-    private val stillingsinfoUrl: String = "${Environment.get("REKRUTTERINGSBISTAND_STILLING_API_URL")}/indekser/stillingsinfo"
-    private val internStillingUrl: String = "${Environment.get("REKRUTTERINGSBISTAND_STILLING_API_URL")}/rekrutteringsbistandstilling/lagre"
+class StillingsinfoClientImpl(private val httpClient: FuelManager) : StillingsinfoClient {
+    private val stillingsinfoUrl: String =
+        "${Environment.get("REKRUTTERINGSBISTAND_STILLING_API_URL")}/indekser/stillingsinfo"
+    private val internStillingUrl: String =
+        "${Environment.get("REKRUTTERINGSBISTAND_STILLING_API_URL")}/rekrutteringsbistandstilling/lagre"
 
     init {
         log.info("Setter opp stillinginfo-klient til å gå mot $stillingsinfoUrl")
@@ -23,11 +25,15 @@ class StillingsinfoClientImpl(private val httpClient: FuelManager): Stillingsinf
             .responseObject<List<Stillingsinfo>>()
 
         when (result) {
-            is Result.Success -> { return result.get() }
+            is Result.Success -> {
+                return result.get()
+            }
+
             is Result.Failure -> {
                 throw KunneIkkeHenteStillingsinsinfoException(
                     "Kunne ikke hente stillingsinfo for stillinger." +
-                    "HTTP-status: ${response.statusCode}, responseMessage: ${response.responseMessage}"
+                            " HTTP-status=[${response.statusCode}], responseMessage=[${response.responseMessage}]",
+                    result.error
                 )
             }
         }
@@ -42,10 +48,16 @@ class StillingsinfoClientImpl(private val httpClient: FuelManager): Stillingsinf
         log.info("Sender stillingsid $stillingsid til stilling-api fordi stilling er oppdatert")
 
         when (result) {
-            is Result.Success -> { log.info("Sendte oppdatering til stiling-api for $stillingsid"); return }
+            is Result.Success -> {
+                log.info("Sendte oppdatering til stiling-api for $stillingsid"); return
+            }
+
             is Result.Failure -> {
-                log.warn("Kunne ikke sende oppdatering til stilling-api for $stillingsid" +
-                        "HTTP-status: ${response.statusCode}, responseMessage: ${response.responseMessage}")
+                log.warn(
+                    "Kunne ikke sende oppdatering til stilling-api for $stillingsid" +
+                            " HTTP-status=[${response.statusCode}], responseMessage=[${response.responseMessage}]",
+                    result.error
+                )
             }
         }
     }
@@ -69,5 +81,9 @@ interface StillingsinfoClient {
     fun sendStillingsId(stillingsid: String)
 }
 
-class KunneIkkeHenteStillingsinsinfoException(melding: String) : Exception(melding)
+class KunneIkkeHenteStillingsinsinfoException : Exception {
+    constructor(melding: String) : super(melding)
+    constructor(melding: String, cause: Exception) : super(melding, cause)
+}
+
 class KunneIkkeSendeStillingsOppdateringException(melding: String) : Exception(melding)
