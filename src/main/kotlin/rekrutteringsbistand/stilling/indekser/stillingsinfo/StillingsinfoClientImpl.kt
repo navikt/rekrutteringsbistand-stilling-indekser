@@ -53,11 +53,10 @@ class StillingsinfoClientImpl(private val httpClient: FuelManager) : Stillingsin
             }
 
             is Result.Failure -> {
-                log.warn(
-                    "Kunne ikke sende oppdatering til stilling-api for $stillingsid" +
-                            " HTTP-status=[${response.statusCode}], responseMessage=[${response.responseMessage}]",
-                    result.error
-                )
+
+                throw KunneIkkeSendeStillingsOppdateringException("Kunne ikke sende oppdatering til stilling-api for $stillingsid" +
+                        " HTTP-status=[${response.statusCode}], responseMessage=[${response.responseMessage}]",
+                    result.error)
             }
         }
     }
@@ -86,4 +85,5 @@ class KunneIkkeHenteStillingsinsinfoException : Exception {
     constructor(melding: String, cause: Exception) : super(melding, cause)
 }
 
-class KunneIkkeSendeStillingsOppdateringException(melding: String) : Exception(melding)
+class KunneIkkeSendeStillingsOppdateringException(melding: String, cause: Exception) : Exception(melding, cause) {
+}
