@@ -33,8 +33,8 @@ class StillingMottattService(
             RekrutteringsbistandStilling(stilling, stillingsinfo.find { info -> info.stillingsid == stilling.uuid })
         }
 
-        // Sender stillingene til stilling-api for lagring
-        sendDIRStillingtilStillingsApi(rekrutteringsbistandStillinger)
+        // Sender stillingene til stilling-api for lagring, stoppet midlertidig
+        //sendDIRStillingtilStillingsApi(rekrutteringsbistandStillinger)
 
         osService.indekser(rekrutteringsbistandStillinger, indeksNavn)
     }
