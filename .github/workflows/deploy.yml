@@ -6,7 +6,7 @@ jobs:
         uses: navikt/toi-github-actions-workflows/.github/workflows/build-and-deploy.yaml@v1
         with:
             java-version: '21'
-            deploy-to-dev-if-branch-name-is: 'stopp_lagring_av_stillinger_til_stilling_api'
+            deploy-to-dev-if-branch-name-is: 'reindekser_for_stilling_api'
         permissions:
             contents: read
             id-token: write
