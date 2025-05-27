@@ -40,3 +40,9 @@ spec:
       value: "{{indeks}}"
   kafka:
     pool: {{kafka_pool}}
+  observability:
+    logging:
+      destinations:
+        - id: loki
+        - id: elastic
+      enabled: true
