@@ -34,7 +34,7 @@ class StillingMottattService(
         }
 
         // Sender stillingene til stilling-api for lagring
-        sendDIRStillingtilStillingsApi(rekrutteringsbistandStillinger)
+        //sendDIRStillingtilStillingsApi(rekrutteringsbistandStillinger)
 
         osService.indekser(rekrutteringsbistandStillinger, indeksNavn)
     }
